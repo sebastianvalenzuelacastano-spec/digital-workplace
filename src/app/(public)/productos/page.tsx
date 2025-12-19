@@ -1,20 +1,12 @@
 import ProductCard from "@/components/ProductCard";
+import { readDb } from "@/lib/db";
 
 export default function ProductsPage() {
-    const products = [
-        { title: "Marraqueta", description: "Crujiente y dorada, el clásico pan chileno.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/marraqueta-4.png" },
-        { title: "Hallulla", description: "Suave y esponjosa, perfecta para cualquier hora.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/hallulla-4.png" },
-        { title: "Hallulla Integral", description: "La versión saludable de nuestro clásico.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/hallulla-integral-2.png" },
-        { title: "Bollo", description: "Pan suave ideal para acompañar tus comidas.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/Bollito-3.png" },
-        { title: "Bollo Integral", description: "Rico en fibra y sabor natural.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/Bollito-integral-3.png" },
-        { title: "Coliza", description: "Pan cuadrado de miga suave y corteza delicada.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/coliza-3.png" },
-        { title: "Pan de Molde", description: "Perfecto para sándwiches y tostadas.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/Molde-2.png" },
-        { title: "Frica", description: "El pan ideal para tus hamburguesas y sándwiches.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/frica-4.png" },
-        { title: "Frica Sésamo", description: "Con semillas de sésamo para un toque especial.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/frica-sesamo-2.png" },
-        { title: "Hot Dog", description: "Pan alargado y suave para completos.", category: "Pan", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/hotdog-2.png" },
-        { title: "Pizza", description: "Masa lista para tus preparaciones favoritas.", category: "Masa", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/pizza-2.png" },
-        { title: "Rosita", description: "Dulce y suave, una delicia tradicional.", category: "Pastelería", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/rosita-2.png" }
-    ];
+    // Fetch products from database (server-side)
+    const db = readDb();
+    const products = db.productos
+        .filter((p: any) => p.activo) // Only show active products
+        .sort((a: any, b: any) => a.orden - b.orden); // Sort by orden
 
     return (
         <main>
@@ -68,13 +60,13 @@ export default function ProductsPage() {
                     gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
                     gap: '2.5rem'
                 }}>
-                    {products.map((product, index) => (
-                        <div key={index} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
+                    {products.map((product: any, index: number) => (
+                        <div key={product.id} className="animate-fade-in" style={{ animationDelay: `${index * 0.1}s` }}>
                             <ProductCard
-                                title={product.title}
-                                description={product.description}
-                                category={product.category}
-                                image={product.image}
+                                title={product.nombre}
+                                description={product.descripcion}
+                                category={product.categoria}
+                                image={product.imagen}
                             />
                         </div>
                     ))}

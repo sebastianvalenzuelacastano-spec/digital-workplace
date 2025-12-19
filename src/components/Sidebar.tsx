@@ -62,6 +62,7 @@ export default function Sidebar() {
                         { name: 'Insumos', path: '/dashboard/inventario' },
                         { name: 'Pagos', path: '/dashboard/pagos' },
                         { name: 'Pedidos', path: '/dashboard/pedidos' },
+                        { name: 'Productos (Web)', path: '/dashboard/productos-web', role: 'manager' },
                         { name: 'Rendimiento', path: '/dashboard/rendimiento' },
                         { name: 'Usuarios', path: '/dashboard/usuarios', role: 'manager' },
                         { name: 'Ventas', path: '/dashboard/ventas' },

@@ -1,9 +1,12 @@
+import { readDb } from "@/lib/db";
+
 export default function Highlights() {
-    const products = [
-        { title: "Marraqueta", desc: "Crujiente y dorada, el clásico pan chileno.", image: "/marraqueta.png" },
-        { title: "Hallulla", desc: "Suave y esponjosa, perfecta para cualquier hora.", image: "/hallulla.png" },
-        { title: "Rosita", desc: "Dulce y suave, una delicia tradicional.", image: "/rosita.png" }
-    ];
+    // Fetch featured products from database (server-side)
+    const db = readDb();
+    const products = db.productos
+        .filter((p: any) => p.activo && p.destacado) // Only active and featured
+        .sort((a: any, b: any) => a.orden - b.orden) // Sort by orden
+        .slice(0, 3); // Show max 3
 
     return (
         <section className="container" style={{ padding: '6rem 24px' }}>
@@ -17,8 +20,8 @@ export default function Highlights() {
                 gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
                 gap: '2.5rem'
             }}>
-                {products.map((p, i) => (
-                    <div key={i} className="product-card" style={{
+                {products.map((p: any, i: number) => (
+                    <div key={p.id} className="product-card" style={{
                         backgroundColor: '#fff',
                         padding: '2.5rem',
                         borderRadius: 'var(--border-radius)',
@@ -39,8 +42,8 @@ export default function Highlights() {
                             overflow: 'hidden'
                         }}>
                             <img
-                                src={p.image}
-                                alt={p.title}
+                                src={p.imagen}
+                                alt={p.nombre}
                                 style={{
                                     width: '100%',
                                     height: '100%',
@@ -49,8 +52,8 @@ export default function Highlights() {
                                 }}
                             />
                         </div>
-                        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{p.title}</h3>
-                        <p style={{ color: 'var(--color-text-light)', marginBottom: '1.5rem', lineHeight: 1.6 }}>{p.desc}</p>
+                        <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{p.nombre}</h3>
+                        <p style={{ color: 'var(--color-text-light)', marginBottom: '1.5rem', lineHeight: 1.6 }}>{p.descripcion}</p>
                         <a href="/productos" className="btn btn-outline" style={{
                             display: 'inline-block',
                             padding: '8px 24px',
