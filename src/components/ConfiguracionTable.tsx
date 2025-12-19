@@ -15,7 +15,7 @@ export default function ConfiguracionTable() {
         maestroTrabajadores, addMaestroTrabajador, updateMaestroTrabajador, deleteMaestroTrabajador
     } = useDashboard();
 
-    const [activeTab, setActiveTab] = useState<'areas' | 'insumos' | 'proveedores' | 'clientes' | 'trabajadores'>('areas');
+    const [activeTab, setActiveTab] = useState<'areas' | 'insumos' | 'proveedores' | 'clientes' | 'trabajadores' | 'respaldos'>('areas');
 
     // Areas Modal State
     const [isAreaModalOpen, setIsAreaModalOpen] = useState(false);
@@ -350,6 +350,20 @@ export default function ConfiguracionTable() {
                     }}
                 >
                     👷 Trabajadores
+                </button>
+                <button
+                    onClick={() => setActiveTab('respaldos')}
+                    style={{
+                        padding: '0.75rem 1.5rem',
+                        border: 'none',
+                        background: 'none',
+                        cursor: 'pointer',
+                        borderBottom: activeTab === 'respaldos' ? '3px solid var(--color-primary)' : 'none',
+                        fontWeight: activeTab === 'respaldos' ? 'bold' : 'normal',
+                        color: activeTab === 'respaldos' ? 'var(--color-primary)' : '#666'
+                    }}
+                >
+                    💾 Respaldos
                 </button>
             </div>
 
@@ -1188,6 +1202,49 @@ export default function ConfiguracionTable() {
                             </div>
                         </form>
                     </Modal>
+                </>
+            )}
+
+            {/* Respaldos Tab */}
+            {activeTab === 'respaldos' && (
+                <>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                        <div>
+                            <h4 style={{ marginBottom: '0.5rem' }}>Respaldar Base de Datos</h4>
+                            <p style={{ color: '#666', marginBottom: '1.5rem' }}>
+                                Descarga una copia completa de tu base de datos (usuarios, ventas, inventario, etc.)
+                                para guardarla en un lugar seguro como Google Drive, Dropbox o tu computadora.
+                            </p>
+                            <a
+                                href="/api/backup"
+                                download
+                                className="btn btn-primary"
+                                style={{
+                                    display: 'inline-flex',
+                                    alignItems: 'center',
+                                    gap: '0.5rem',
+                                    textDecoration: 'none'
+                                }}
+                            >
+                                💾 Descargar Respaldo
+                            </a>
+                        </div>
+
+                        <div style={{
+                            padding: '1.5rem',
+                            backgroundColor: '#f5f5f5',
+                            borderRadius: '8px',
+                            borderLeft: '4px solid var(--color-primary)'
+                        }}>
+                            <h5 style={{ marginTop: 0, marginBottom: '1rem' }}>📋 Recomendaciones:</h5>
+                            <ul style={{ marginLeft: '1.5rem', lineHeight: 1.8 }}>
+                                <li>Haz respaldos semanalmente o antes de cambios importantes</li>
+                                <li>Guarda el archivo en un lugar seguro (Drive, Dropbox, USB externo)</li>
+                                <li>El archivo contiene TODOS tus datos en formato JSON</li>
+                                <li>Puedes restaurar los datos contactando a soporte si es necesario</li>
+                            </ul>
+                        </div>
+                    </div>
                 </>
             )}
         </div>
