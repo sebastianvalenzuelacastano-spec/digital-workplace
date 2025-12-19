@@ -1,6 +1,10 @@
 import ProductCard from "@/components/ProductCard";
 import { readDb } from "@/lib/db";
 
+// Force dynamic rendering (don't pre-render at build time)
+export const dynamic = 'force-dynamic';
+
+
 export default function ProductsPage() {
     // Fetch products from database (server-side)
     const db = readDb();
