@@ -1,29 +1,24 @@
 import fs from 'fs';
 import path from 'path';
 
-const defaultDbPath = path.join(process.cwd(), 'src/data/db.json');
-const dbPath = process.env.DB_PATH || defaultDbPath;
+// The global dbPath and its initialization logic are removed as per the new readDb implementation.
 
-// Initialize DB if using custom path and file doesn't exist
-if (dbPath !== defaultDbPath && !fs.existsSync(dbPath)) {
-    try {
-        console.log(`Initializing DB at ${dbPath} from ${defaultDbPath}`);
-        const defaultData = fs.readFileSync(defaultDbPath, 'utf-8');
-        fs.writeFileSync(dbPath, defaultData);
-    } catch (error) {
-        console.error('Error initializing DB:', error);
-    }
-}
+export function readDb() {
+    // Use persistent DB if configured, otherwise default
+    const dbPath = process.env.DB_PATH || path.join(process.cwd(), 'src/data/db.json');
 
-export const readDb = () => {
-    try {
-        if (!fs.existsSync(dbPath)) {
-            console.log('readDb: file does not exist');
-            return null;
+    // If persistent DB path is configured but doesn't exist, initialize it from default
+    if (process.env.DB_PATH && !fs.existsSync(dbPath)) {
+        const defaultDbPath = path.join(process.cwd(), 'src/data/db.json');
+        try {
+            const defaultDb = JSON.parse(fs.readFileSync(defaultDbPath, 'utf-8'));
+            fs.writeFileSync(dbPath, JSON.stringify(defaultDb, null, 2));
+            console.log('readDb: initialized persistent DB from default');
+        } catch (error) {
+            console.error('readDb: Error initializing persistent DB:', error);
+            // Fallback to default DB if initialization fails
+            return JSON.parse(fs.readFileSync(defaultDbPath, 'utf-8'));
         }
-        // Always read fresh from disk - no caching
-        const data = fs.readFileSync(dbPath, 'utf-8');
-        console.log('readDb: reading fresh from disk');
         return JSON.parse(data);
     } catch (error) {
         console.error('readDb error:', error);
