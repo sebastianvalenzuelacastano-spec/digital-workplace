@@ -36,13 +36,19 @@ export async function uploadDatabaseToDrive() {
         const fileName = `backup_panificadora_${new Date().toISOString().split('T')[0]}.json`;
 
         // 4. Upload
+        const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+
+        const requestBody: any = {
+            name: fileName,
+            mimeType: 'application/json',
+        };
+
+        if (folderId) {
+            requestBody.parents = [folderId];
+        }
+
         const response = await drive.files.create({
-            requestBody: {
-                name: fileName,
-                mimeType: 'application/json',
-                // Optional: Specify parent folder ID if you want to put it in a specific folder
-                // parents: ['FOLDER_ID'] 
-            },
+            requestBody,
             media: {
                 mimeType: 'application/json',
                 body: fs.createReadStream(dbPath),
