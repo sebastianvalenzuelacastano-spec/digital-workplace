@@ -1,7 +1,19 @@
 import fs from 'fs';
 import path from 'path';
 
-const dbPath = process.env.DB_PATH || path.join(process.cwd(), 'src/data/db.json');
+const defaultDbPath = path.join(process.cwd(), 'src/data/db.json');
+const dbPath = process.env.DB_PATH || defaultDbPath;
+
+// Initialize DB if using custom path and file doesn't exist
+if (dbPath !== defaultDbPath && !fs.existsSync(dbPath)) {
+    try {
+        console.log(`Initializing DB at ${dbPath} from ${defaultDbPath}`);
+        const defaultData = fs.readFileSync(defaultDbPath, 'utf-8');
+        fs.writeFileSync(dbPath, defaultData);
+    } catch (error) {
+        console.error('Error initializing DB:', error);
+    }
+}
 
 export const readDb = () => {
     try {
