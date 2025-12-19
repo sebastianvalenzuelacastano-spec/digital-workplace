@@ -5,7 +5,7 @@ export default function Hero() {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundImage: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url("https://pansansebastian.cl/wp-content/uploads/2024/03/marraquetamitadagenciauno-9e487c6f5bd4d6ffdf2011e75995d0b3-600x400-7.jpg")',
+            backgroundImage: 'linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.7)), url("/hero-bg.jpg")',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             backgroundAttachment: 'fixed',

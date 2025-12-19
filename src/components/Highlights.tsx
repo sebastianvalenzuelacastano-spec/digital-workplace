@@ -1,8 +1,8 @@
 export default function Highlights() {
     const products = [
-        { title: "Marraqueta", desc: "Crujiente y dorada, el clásico pan chileno.", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/marraqueta-4.png" },
-        { title: "Hallulla", desc: "Suave y esponjosa, perfecta para cualquier hora.", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/hallulla-4.png" },
-        { title: "Rosita", desc: "Dulce y suave, una delicia tradicional.", image: "https://pansansebastian.cl/wp-content/uploads/2024/03/rosita-2.png" }
+        { title: "Marraqueta", desc: "Crujiente y dorada, el clásico pan chileno.", image: "/marraqueta.png" },
+        { title: "Hallulla", desc: "Suave y esponjosa, perfecta para cualquier hora.", image: "/hallulla.png" },
+        { title: "Rosita", desc: "Dulce y suave, una delicia tradicional.", image: "/rosita.png" }
     ];
 
     return (
