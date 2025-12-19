@@ -10,12 +10,16 @@ export async function GET() {
             return NextResponse.json({
                 message: 'Backup successful',
                 fileId: result.fileId,
-                fileName: result.name
+                fileName: result.name,
+                targetFolder: result.folderIdUsed
             });
         } else {
             return NextResponse.json({
                 error: 'Backup failed',
-                details: result.error
+                details: result.error,
+                debug: {
+                    folderVarSet: result.folderIdConfigured
+                }
             }, { status: 500 });
         }
     } catch (error) {

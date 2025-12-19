@@ -38,6 +38,9 @@ export async function uploadDatabaseToDrive() {
         // 4. Upload
         const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
 
+        console.log('Backup Debug - Folder ID Configured:', folderId ? 'YES' : 'NO');
+        if (folderId) console.log('Backup Debug - Using Folder ID:', folderId);
+
         const requestBody: any = {
             name: fileName,
             mimeType: 'application/json',
@@ -53,13 +56,17 @@ export async function uploadDatabaseToDrive() {
                 mimeType: 'application/json',
                 body: fs.createReadStream(dbPath),
             },
+            // Add these fields to support Shared Drives just in case
+            supportsAllDrives: true,
+            fields: 'id, name, parents'
         });
 
-        console.log('File uploaded with ID:', response.data.id);
-        return { success: true, fileId: response.data.id, name: fileName };
+        console.log('File uploaded successfully. ID:', response.data.id);
+        return { success: true, fileId: response.data.id, name: fileName, folderIdUsed: folderId };
 
     } catch (error) {
+        // Enhanced error logging
         console.error('Error uploading to Drive:', error);
-        return { success: false, error: String(error) };
+        return { success: false, error: String(error), folderIdConfigured: !!process.env.GOOGLE_DRIVE_FOLDER_ID };
     }
 }
