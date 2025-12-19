@@ -1,0 +1,407 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import Modal from './Modal';
+import { useDashboard } from '@/context/DashboardContext';
+import type { BankTransaction } from '@/types/dashboard';
+import { formatDate, getTodayString } from '@/lib/dateUtils';
+import DateFilter from './DateFilter';
+import ExportButtons from './ExportButtons';
+
+export default function BankTable() {
+    const { bankTransactions, addBankTransaction, updateBankTransaction, deleteBankTransaction, insumoTransactions, maestroProveedores, maestroClientes } = useDashboard();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [editingId, setEditingId] = useState<number | null>(null);
+    const [role, setRole] = useState<string | null>(null);
+    const [filterDate, setFilterDate] = useState<string>('');
+    const [formData, setFormData] = useState<Partial<BankTransaction>>({
+        fecha: '',
+        entrada: 0,
+        salida: 0,
+        descripcion: '',
+        documento: '',
+        observacion: '',
+        proveedor: '',
+        cliente: ''
+    });
+
+    // Check role on mount
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            setRole(localStorage.getItem('role'));
+        }
+    }, []);
+
+    if (role !== 'manager') {
+        return (
+            <div style={{ padding: '2rem', textAlign: 'center', color: '#666' }}>
+                <h2>Acceso Restringido</h2>
+                <p>No tienes permisos para ver este módulo.</p>
+            </div>
+        );
+    }
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        const entradaVal = Number(formData.entrada) || 0;
+        const salidaVal = Number(formData.salida) || 0;
+
+        if (editingId) {
+            updateBankTransaction(editingId, {
+                fecha: formData.fecha || '',
+                entrada: entradaVal,
+                salida: salidaVal,
+                descripcion: formData.descripcion || '',
+                documento: formData.documento || '',
+                observacion: formData.observacion || '',
+                proveedor: formData.proveedor,
+                cliente: formData.cliente
+            });
+        } else {
+            addBankTransaction({
+                fecha: formData.fecha || '',
+                entrada: entradaVal,
+                salida: salidaVal,
+                descripcion: formData.descripcion || '',
+                documento: formData.documento || '',
+                observacion: formData.observacion || '',
+                proveedor: formData.proveedor,
+                cliente: formData.cliente
+            });
+        }
+
+        setIsModalOpen(false);
+        setEditingId(null);
+        setFormData({
+            fecha: '',
+            entrada: 0,
+            salida: 0,
+            descripcion: '',
+            documento: '',
+            observacion: '',
+            proveedor: '',
+            cliente: ''
+        });
+    };
+
+    const handleEdit = (item: BankTransaction) => {
+        setEditingId(item.id);
+        setFormData({
+            fecha: item.fecha,
+            entrada: item.entrada,
+            salida: item.salida,
+            descripcion: item.descripcion,
+            documento: item.documento,
+            observacion: item.observacion,
+            proveedor: item.proveedor || '',
+            cliente: item.cliente || ''
+        });
+        setIsModalOpen(true);
+    };
+
+    const handleDelete = (id: number) => {
+        if (confirm('¿Estás seguro de eliminar esta transacción?')) {
+            deleteBankTransaction(id);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setEditingId(null);
+        setFormData({
+            fecha: '',
+            entrada: 0,
+            salida: 0,
+            descripcion: '',
+            documento: '',
+            observacion: '',
+            proveedor: '',
+            cliente: ''
+        });
+    };
+
+    // Check if there's a matching unpaid invoice
+    const getMatchingInvoice = () => {
+        if (!formData.documento || formData.documento === '-' || formData.salida === 0) return null;
+        return insumoTransactions.find(
+            inv => inv.factura === formData.documento && inv.estadoPago !== 'pagada'
+        );
+    };
+
+    const matchingInvoice = getMatchingInvoice();
+
+    // Filter by date
+    const filteredTransactions = filterDate
+        ? bankTransactions.filter(t => t.fecha === filterDate)
+        : bankTransactions;
+
+    const totalIngresos = bankTransactions.reduce((sum, t) => sum + t.entrada, 0);
+    const totalEgresos = bankTransactions.reduce((sum, t) => sum + t.salida, 0);
+    const saldoActual = bankTransactions.length > 0 ? bankTransactions[bankTransactions.length - 1].saldo : 0;
+
+    return (
+        <div style={{ backgroundColor: '#fff', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+                <h3>Movimientos Bancarios</h3>
+                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <ExportButtons
+                        data={filteredTransactions.map(item => ({
+                            ...item,
+                            fecha: formatDate(item.fecha)
+                        }))}
+                        filename={`banco_${filterDate || 'todos'}`}
+                        title="Movimientos Bancarios"
+                        columns={[
+                            { key: 'fecha', header: 'Fecha' },
+                            { key: 'descripcion', header: 'Descripción' },
+                            { key: 'entrada', header: 'Entrada' },
+                            { key: 'salida', header: 'Salida' },
+                            { key: 'saldo', header: 'Saldo' }
+                        ]}
+                    />
+                    <button
+                        className="btn btn-primary"
+                        style={{ fontSize: '0.9rem', padding: '8px 16px' }}
+                        onClick={() => {
+                            setFormData({ fecha: filterDate || getTodayString(), entrada: 0, salida: 0, descripcion: '', documento: '', observacion: '', saldo: saldoActual });
+                            setIsModalOpen(true);
+                        }}
+                    >
+                        + Nueva Transacción
+                    </button>
+                </div>
+
+                <DateFilter
+                    selectedDate={filterDate}
+                    onDateChange={setFilterDate}
+                    totalRecords={bankTransactions.length}
+                    filteredRecords={filteredTransactions.length}
+                />
+
+                <Modal isOpen={isModalOpen} onClose={handleCloseModal} title={editingId ? "Editar Transacción" : "Nueva Transacción"}>
+                    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Fecha *</label>
+                            <input
+                                type="date"
+                                required
+                                value={formData.fecha}
+                                onChange={(e) => setFormData({ ...formData, fecha: e.target.value })}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '0.5rem' }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                <input
+                                    type="radio"
+                                    name="type"
+                                    checked={formData.entrada! > 0}
+                                    onChange={() => setFormData({ ...formData, entrada: 1, salida: 0 })}
+                                />
+                                <span style={{ color: 'green', fontWeight: 'bold' }}>Entrada</span>
+                            </label>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                <input
+                                    type="radio"
+                                    name="type"
+                                    checked={formData.salida! > 0}
+                                    onChange={() => setFormData({ ...formData, salida: 1, entrada: 0 })}
+                                />
+                                <span style={{ color: 'red', fontWeight: 'bold' }}>Salida</span>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Monto *</label>
+                            <input
+                                type="number"
+                                required
+                                min="0"
+                                value={formData.entrada! > 0 ? formData.entrada : formData.salida}
+                                onChange={(e) => {
+                                    const val = Number(e.target.value);
+                                    if (formData.entrada! > 0) setFormData({ ...formData, entrada: val, salida: 0 });
+                                    else setFormData({ ...formData, salida: val, entrada: 0 });
+                                }}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                        </div>
+
+                        {/* Proveedor selector (for Salidas) */}
+                        {formData.salida! > 0 && (
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Proveedor</label>
+                                <select
+                                    value={formData.proveedor || ''}
+                                    onChange={(e) => setFormData({ ...formData, proveedor: e.target.value })}
+                                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                >
+                                    <option value="">Seleccionar proveedor...</option>
+                                    {maestroProveedores
+                                        .filter(p => p.activo)
+                                        .sort((a, b) => a.nombre.localeCompare(b.nombre))
+                                        .map(p => (
+                                            <option key={p.id} value={p.nombre}>{p.nombre}</option>
+                                        ))}
+                                </select>
+                            </div>
+                        )}
+
+                        {/* Cliente selector (for Entradas) */}
+                        {formData.entrada! > 0 && (
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Cliente</label>
+                                <select
+                                    value={formData.cliente || ''}
+                                    onChange={(e) => setFormData({ ...formData, cliente: e.target.value })}
+                                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                >
+                                    <option value="">Seleccionar cliente...</option>
+                                    {maestroClientes
+                                        .filter(c => c.activo)
+                                        .sort((a, b) => a.nombre.localeCompare(b.nombre))
+                                        .map(c => (
+                                            <option key={c.id} value={c.nombre}>{c.nombre}</option>
+                                        ))}
+                                </select>
+                            </div>
+                        )}
+
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Descripción *</label>
+                            <input
+                                type="text"
+                                required
+                                value={formData.descripcion}
+                                onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>N° Documento</label>
+                            <input
+                                type="text"
+                                value={formData.documento}
+                                onChange={(e) => setFormData({ ...formData, documento: e.target.value })}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                            {matchingInvoice && (
+                                <div style={{
+                                    marginTop: '0.5rem',
+                                    padding: '8px',
+                                    backgroundColor: '#e8f5e9',
+                                    borderLeft: '3px solid #4caf50',
+                                    borderRadius: '4px',
+                                    fontSize: '0.85rem'
+                                }}>
+                                    ✓ Se marcará como pagada la factura <strong>{matchingInvoice.factura}</strong> del insumo <strong>{matchingInvoice.insumo}</strong>
+                                </div>
+                            )}
+                        </div>
+
+                        <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Observación</label>
+                            <textarea
+                                rows={2}
+                                value={formData.observacion}
+                                onChange={(e) => setFormData({ ...formData, observacion: e.target.value })}
+                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                            />
+                        </div>
+
+                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                            <button type="submit" className="btn btn-primary" style={{ flex: 1 }}>
+                                Guardar
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setIsModalOpen(false)}
+                                style={{ flex: 1, padding: '10px', borderRadius: '4px', border: '1px solid #ccc', backgroundColor: '#fff', cursor: 'pointer' }}
+                            >
+                                Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
+
+                {/* Summary Cards */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
+                    <div style={{ backgroundColor: '#e8f5e9', padding: '1rem', borderRadius: '8px' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#666' }}>Total Entradas</p>
+                        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'green' }}>
+                            ${totalIngresos.toLocaleString()}
+                        </p>
+                    </div>
+                    <div style={{ backgroundColor: '#ffebee', padding: '1rem', borderRadius: '8px' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#666' }}>Total Salidas</p>
+                        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'red' }}>
+                            ${totalEgresos.toLocaleString()}
+                        </p>
+                    </div>
+                    <div style={{ backgroundColor: '#e3f2fd', padding: '1rem', borderRadius: '8px' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#666' }}>Saldo Actual</p>
+                        <p style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'var(--color-primary)' }}>
+                            ${saldoActual.toLocaleString()}
+                        </p>
+                    </div>
+                </div>
+
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr style={{ borderBottom: '2px solid #eee', textAlign: 'left' }}>
+                            <th style={{ padding: '10px' }}>Fecha</th>
+                            <th style={{ padding: '10px' }}>Entrada</th>
+                            <th style={{ padding: '10px' }}>Salida</th>
+                            <th style={{ padding: '10px' }}>Descripción</th>
+                            <th style={{ padding: '10px' }}>Doc.</th>
+                            <th style={{ padding: '10px' }}>Obs.</th>
+                            <th style={{ padding: '10px' }}>Saldo</th>
+                            <th style={{ padding: '10px' }}>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {[...filteredTransactions]
+                            .sort((a, b) => b.fecha.localeCompare(a.fecha))
+                            .map((transaction) => (
+                                <tr key={transaction.id} style={{ borderBottom: '1px solid #eee' }}>
+                                    <td style={{ padding: '10px' }}>{formatDate(transaction.fecha)}</td>
+                                    <td style={{ padding: '10px', color: 'green', fontWeight: transaction.entrada > 0 ? 'bold' : 'normal' }}>
+                                        {transaction.entrada > 0 ? `$${transaction.entrada.toLocaleString()}` : '-'}
+                                    </td>
+                                    <td style={{ padding: '10px', color: 'red', fontWeight: transaction.salida > 0 ? 'bold' : 'normal' }}>
+                                        {transaction.salida > 0 ? `$${transaction.salida.toLocaleString()}` : '-'}
+                                    </td>
+                                    <td style={{ padding: '10px' }}>{transaction.descripcion}</td>
+                                    <td style={{ padding: '10px' }}>{transaction.documento}</td>
+                                    <td style={{ padding: '10px' }}>{transaction.observacion}</td>
+                                    <td style={{ padding: '10px', fontWeight: 'bold', color: transaction.saldo >= 0 ? 'green' : 'red' }}>
+                                        ${transaction.saldo.toLocaleString()}
+                                    </td>
+                                    <td style={{ padding: '10px' }}>
+                                        <button
+                                            onClick={() => handleEdit(transaction)}
+                                            style={{ marginRight: '5px', padding: '4px 8px', cursor: 'pointer', border: '1px solid #2196f3', backgroundColor: '#e3f2fd', borderRadius: '4px' }}
+                                            title="Editar"
+                                        >
+                                            ✏️
+                                        </button>
+                                        {role === 'manager' && (
+                                            <button
+                                                onClick={() => handleDelete(transaction.id)}
+                                                style={{ padding: '4px 8px', cursor: 'pointer', border: '1px solid #f44336', backgroundColor: '#ffebee', borderRadius: '4px' }}
+                                                title="Eliminar"
+                                            >
+                                                🗑️
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}</tbody>
+                </table >
+            </div >
+        </div>
+    );
+}

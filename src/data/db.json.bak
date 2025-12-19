@@ -1,0 +1,375 @@
+{
+  "orders": [
+    {
+      "id": 1,
+      "cliente": "Juan Pérez",
+      "productos": "2kg Hallulla, 1kg Marraqueta",
+      "total": 8500,
+      "fecha": "2025-11-30",
+      "estado": "pendiente"
+    },
+    {
+      "id": 2,
+      "cliente": "María González",
+      "productos": "5kg Hallulla",
+      "total": 12500,
+      "fecha": "2025-11-29",
+      "estado": "completado"
+    },
+    {
+      "id": 3,
+      "cliente": "Pedro Soto",
+      "productos": "1 Torta Selva Negra",
+      "total": 18000,
+      "fecha": "2025-11-28",
+      "estado": "completado"
+    }
+  ],
+  "ventas": [
+    {
+      "fecha": "2025-12-05",
+      "cliente": "Test Auto",
+      "kilos": 200,
+      "monto": 520000,
+      "id": 7
+    }
+  ],
+  "payments": [
+    {
+      "id": 1,
+      "factura": "FAC-2023-001",
+      "cliente": "Restaurant El Buen Gusto",
+      "fechaPago": "2025-11-28",
+      "montoPagado": 150000
+    },
+    {
+      "id": 2,
+      "factura": "BOL-2023-089",
+      "cliente": "Cafetería Centro",
+      "fechaPago": "2025-11-27",
+      "montoPagado": 45000
+    },
+    {
+      "id": 3,
+      "factura": "FAC-2023-005",
+      "cliente": "Hotel Plaza",
+      "fechaPago": "2025-11-26",
+      "montoPagado": 320000
+    }
+  ],
+  "rendimientos": [
+    {
+      "id": 1,
+      "fecha": "2025-11-28",
+      "kilosProducidos": 0,
+      "sacos": 0,
+      "rinde": 0,
+      "barrido": 5,
+      "merma": 2
+    },
+    {
+      "id": 2,
+      "fecha": "2025-11-27",
+      "kilosProducidos": 1150,
+      "sacos": 23,
+      "rinde": 100,
+      "barrido": 4,
+      "merma": 3
+    },
+    {
+      "id": 3,
+      "fecha": "2025-11-26",
+      "kilosProducidos": 1300,
+      "sacos": 26,
+      "rinde": 100,
+      "barrido": 6,
+      "merma": 2
+    },
+    {
+      "id": 4,
+      "fecha": "2025-11-25",
+      "kilosProducidos": 1100,
+      "sacos": 22,
+      "rinde": 100,
+      "barrido": 3,
+      "merma": 1
+    },
+    {
+      "fecha": "2025-11-08",
+      "kilosProducidos": 0,
+      "sacos": 0,
+      "rinde": 0,
+      "barrido": 33,
+      "merma": 6,
+      "id": 5
+    },
+    {
+      "fecha": "2025-12-01",
+      "kilosProducidos": 0,
+      "sacos": 100,
+      "rinde": 0,
+      "barrido": 10,
+      "merma": 12,
+      "id": 6
+    },
+    {
+      "fecha": "2025-12-05",
+      "kilosProducidos": 200,
+      "sacos": 0,
+      "rinde": 0,
+      "barrido": 0,
+      "merma": 0,
+      "id": 7
+    }
+  ],
+  "insumoTransactions": [
+    {
+      "id": 1,
+      "fecha": "2025-11-28",
+      "insumo": "Harina",
+      "cantidadEntrada": 1000,
+      "cantidadSalida": 0,
+      "proveedor": "Molino Central",
+      "fechaCompra": "2025-11-28",
+      "fechaPago": "2025-11-30",
+      "factura": "FAC-001",
+      "estadoPago": "pendiente"
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Harina",
+      "cantidadEntrada": 1000,
+      "cantidadSalida": 0,
+      "proveedor": "Estampa",
+      "fechaCompra": "2025-12-01",
+      "fechaPago": "2025-12-01",
+      "factura": "62363",
+      "estadoPago": "pendiente",
+      "precioUnitario": 10000,
+      "id": 2
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Harina",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 100,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 3
+    }
+  ],
+  "bankTransactions": [
+    {
+      "id": 1,
+      "fecha": "2025-11-28",
+      "entrada": 1500000,
+      "salida": 0,
+      "descripcion": "Venta del día",
+      "documento": "BOL-001",
+      "observacion": "Venta normal",
+      "saldo": 1500000
+    },
+    {
+      "id": 2,
+      "fecha": "2025-11-28",
+      "entrada": 0,
+      "salida": 350000,
+      "descripcion": "Pago Proveedor Harina",
+      "documento": "FAC-123",
+      "observacion": "Pago contado",
+      "saldo": 1150000
+    },
+    {
+      "id": 3,
+      "fecha": "2025-11-27",
+      "entrada": 800000,
+      "salida": 0,
+      "descripcion": "Anticipo Evento",
+      "documento": "TRF-999",
+      "observacion": "Matrimonio",
+      "saldo": 1950000
+    },
+    {
+      "id": 4,
+      "fecha": "2025-11-27",
+      "entrada": 0,
+      "salida": 120000,
+      "descripcion": "Compra Insumos Aseo",
+      "documento": "BOL-555",
+      "observacion": "",
+      "saldo": 1830000
+    }
+  ],
+  "cajaChica": [
+    {
+      "fecha": "2025-12-01",
+      "area": "Panificadores",
+      "monto": 20000,
+      "descripcion": "Pago Gutierrez\n",
+      "id": 4
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Insumos",
+      "monto": 250000,
+      "descripcion": "se",
+      "id": 5
+    },
+    {
+      "fecha": "2025-11-30",
+      "area": "Bonos",
+      "monto": 10,
+      "descripcion": "prueba",
+      "id": 7
+    },
+    {
+      "id": 1,
+      "fecha": "2025-11-28",
+      "area": "Producción",
+      "monto": 15000,
+      "descripcion": "Compra de artículos de limpieza"
+    },
+    {
+      "id": 2,
+      "fecha": "2025-11-27",
+      "area": "Administración",
+      "monto": 8500,
+      "descripcion": "Pago de estacionamiento"
+    },
+    {
+      "id": 3,
+      "fecha": "2025-11-26",
+      "area": "Ventas",
+      "monto": 12000,
+      "descripcion": "Gasolina para reparto"
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Panificadores",
+      "monto": 5878,
+      "descripcion": "sueldo",
+      "trabajador": "Sebastian Valenzuela",
+      "id": 8
+    }
+  ],
+  "maestroAreas": [
+    {
+      "id": 1,
+      "nombre": "Insumos",
+      "activo": true
+    },
+    {
+      "id": 2,
+      "nombre": "Administración",
+      "activo": true
+    },
+    {
+      "id": 3,
+      "nombre": "Ventas",
+      "activo": true
+    },
+    {
+      "id": 4,
+      "nombre": "Mantenimiento",
+      "activo": true
+    },
+    {
+      "id": 5,
+      "nombre": "Otros",
+      "activo": true
+    },
+    {
+      "nombre": "Panificadores",
+      "activo": true,
+      "id": 6
+    },
+    {
+      "nombre": "Vehiculos",
+      "activo": true,
+      "id": 7
+    },
+    {
+      "nombre": "Bonos",
+      "activo": true,
+      "id": 8
+    }
+  ],
+  "maestroInsumos": [
+    {
+      "id": 1,
+      "nombre": "Harina",
+      "unidad": "sacos_25kg",
+      "activo": true,
+      "costoUnitario": 10000,
+      "tieneImpuestoAdicional": true
+    },
+    {
+      "id": 2,
+      "nombre": "Levadura",
+      "unidad": "kg",
+      "activo": true,
+      "costoUnitario": 3500
+    },
+    {
+      "id": 3,
+      "nombre": "Sal",
+      "unidad": "sacos",
+      "activo": true,
+      "costoUnitario": 4000
+    },
+    {
+      "id": 4,
+      "nombre": "Aceite",
+      "unidad": "unidades",
+      "activo": true,
+      "costoUnitario": 1800
+    },
+    {
+      "id": 5,
+      "nombre": "Mejorador Marraqueta",
+      "unidad": "unidades",
+      "activo": true,
+      "costoUnitario": 2500
+    },
+    {
+      "id": 6,
+      "nombre": "Mejorador Hallulla",
+      "unidad": "unidades",
+      "activo": true,
+      "costoUnitario": 2500
+    },
+    {
+      "id": 7,
+      "nombre": "Manteca",
+      "unidad": "kg",
+      "activo": true,
+      "costoUnitario": 2800
+    },
+    {
+      "id": 8,
+      "nombre": "Grasa",
+      "unidad": "kg",
+      "activo": true,
+      "costoUnitario": 2200
+    }
+  ],
+  "gastosGenerales": [],
+  "maestroProveedores": [],
+  "maestroClientes": [],
+  "maestroTrabajadores": [
+    {
+      "rut": "95789773",
+      "nombre": "Sebastian Valenzuela",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2008-06-01",
+      "activo": true,
+      "id": 1
+    }
+  ]
+}
