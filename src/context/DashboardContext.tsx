@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import type { Order, Venta, Payment, Rendimiento, InsumoTransaction, BankTransaction, CajaChica, MaestroArea, Insumo, GastoGeneral, Proveedor, Cliente, Trabajador, Equipo, Mantenimiento } from '@/types/dashboard';
+import type { Order, Venta, Payment, Rendimiento, InsumoTransaction, BankTransaction, CajaChica, MaestroArea, Insumo, GastoGeneral, Proveedor, Cliente, Trabajador, Equipo, Mantenimiento, Vehiculo, MantenimientoVehiculo } from '@/types/dashboard';
 
 interface DashboardContextType {
     // Orders
@@ -95,6 +95,18 @@ interface DashboardContextType {
     addMantenimiento: (mantenimiento: Omit<Mantenimiento, 'id'>) => void;
     updateMantenimiento: (id: number, mantenimiento: Partial<Mantenimiento>) => void;
     deleteMantenimiento: (id: number) => void;
+
+    // Vehículos
+    vehiculos: Vehiculo[];
+    addVehiculo: (vehiculo: Omit<Vehiculo, 'id'>) => void;
+    updateVehiculo: (id: number, vehiculo: Partial<Vehiculo>) => void;
+    deleteVehiculo: (id: number) => void;
+
+    // Mantenimientos Vehículos
+    mantenimientosVehiculos: MantenimientoVehiculo[];
+    addMantenimientoVehiculo: (mantenimiento: Omit<MantenimientoVehiculo, 'id'>) => void;
+    updateMantenimientoVehiculo: (id: number, mantenimiento: Partial<MantenimientoVehiculo>) => void;
+    deleteMantenimientoVehiculo: (id: number) => void;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
@@ -192,6 +204,12 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     // Mantenimientos State
     const [mantenimientos, setMantenimientos] = useState<Mantenimiento[]>([]);
 
+    // Vehículos State
+    const [vehiculos, setVehiculos] = useState<Vehiculo[]>([]);
+
+    // Mantenimientos Vehículos State
+    const [mantenimientosVehiculos, setMantenimientosVehiculos] = useState<MantenimientoVehiculo[]>([]);
+
     // Orders Functions
     // Load initial data from API
     useEffect(() => {
@@ -230,6 +248,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
                     setMaestroTrabajadores(data.maestroTrabajadores || []);
                     setEquipos(data.equipos || []);
                     setMantenimientos(data.mantenimientos || []);
+                    setVehiculos(data.vehiculos || []);
+                    setMantenimientosVehiculos(data.mantenimientosVehiculos || []);
                 }
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -846,6 +866,46 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos: newMantenimientos });
     };
 
+    // Vehículos Functions
+    const addVehiculo = (vehiculo: Omit<Vehiculo, 'id'>) => {
+        const newVehiculo = { ...vehiculo, id: Math.max(...vehiculos.map(v => v.id), 0) + 1 };
+        const newVehiculos = [...vehiculos, newVehiculo];
+        setVehiculos(newVehiculos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos: newVehiculos, mantenimientosVehiculos });
+    };
+
+    const updateVehiculo = (id: number, vehiculo: Partial<Vehiculo>) => {
+        const newVehiculos = vehiculos.map(v => v.id === id ? { ...v, ...vehiculo } : v);
+        setVehiculos(newVehiculos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos: newVehiculos, mantenimientosVehiculos });
+    };
+
+    const deleteVehiculo = (id: number) => {
+        const newVehiculos = vehiculos.filter(v => v.id !== id);
+        setVehiculos(newVehiculos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos: newVehiculos, mantenimientosVehiculos });
+    };
+
+    // Mantenimientos Vehículos Functions
+    const addMantenimientoVehiculo = (mantenimiento: Omit<MantenimientoVehiculo, 'id'>) => {
+        const newMantenimiento = { ...mantenimiento, id: Math.max(...mantenimientosVehiculos.map(m => m.id), 0) + 1 };
+        const newMantenimientosVehiculos = [...mantenimientosVehiculos, newMantenimiento];
+        setMantenimientosVehiculos(newMantenimientosVehiculos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos, mantenimientosVehiculos: newMantenimientosVehiculos });
+    };
+
+    const updateMantenimientoVehiculo = (id: number, mantenimiento: Partial<MantenimientoVehiculo>) => {
+        const newMantenimientosVehiculos = mantenimientosVehiculos.map(m => m.id === id ? { ...m, ...mantenimiento } : m);
+        setMantenimientosVehiculos(newMantenimientosVehiculos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos, mantenimientosVehiculos: newMantenimientosVehiculos });
+    };
+
+    const deleteMantenimientoVehiculo = (id: number) => {
+        const newMantenimientosVehiculos = mantenimientosVehiculos.filter(m => m.id !== id);
+        setMantenimientosVehiculos(newMantenimientosVehiculos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos, mantenimientosVehiculos: newMantenimientosVehiculos });
+    };
+
     const value: DashboardContextType = {
         orders,
         addOrder,
@@ -909,6 +969,14 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         addMantenimiento,
         updateMantenimiento,
         deleteMantenimiento,
+        vehiculos,
+        addVehiculo,
+        updateVehiculo,
+        deleteVehiculo,
+        mantenimientosVehiculos,
+        addMantenimientoVehiculo,
+        updateMantenimientoVehiculo,
+        deleteMantenimientoVehiculo,
     };
 
     return (

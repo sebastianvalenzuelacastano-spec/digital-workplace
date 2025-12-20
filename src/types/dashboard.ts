@@ -171,3 +171,34 @@ export interface Mantenimiento {
     proximoMantenimiento?: string;
     observaciones?: string;
 }
+
+// Vehicle Management
+export interface Vehiculo {
+    id: number;
+    patente: string;
+    marca: string;
+    modelo: string;
+    anio: number;
+    tipo: 'Camioneta' | 'Furgón' | 'Camión' | 'Automóvil';
+    kilometraje: number;
+    proximaRevisionTecnica: string; // Date
+    vencimientoSeguro: string; // Date
+    vencimientoPermisoCirculacion: string; // Date
+    estado: 'Operativo' | 'En Taller' | 'Fuera de Servicio';
+    conductorAsignado?: string;
+    observaciones?: string;
+    activo: boolean;
+}
+
+export interface MantenimientoVehiculo {
+    id: number;
+    vehiculoId: number;
+    tipo: 'Preventivo' | 'Correctivo' | 'Cambio Aceite' | 'Neumáticos';
+    fecha: string;
+    kilometraje: number;
+    descripcion: string;
+    taller: string;
+    costo: number;
+    proximoMantenimientoKm?: number;
+    observaciones?: string;
+}
