@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import type { Order, Venta, Payment, Rendimiento, InsumoTransaction, BankTransaction, CajaChica, MaestroArea, Insumo, GastoGeneral, Proveedor, Cliente, Trabajador } from '@/types/dashboard';
+import type { Order, Venta, Payment, Rendimiento, InsumoTransaction, BankTransaction, CajaChica, MaestroArea, Insumo, GastoGeneral, Proveedor, Cliente, Trabajador, Equipo, Mantenimiento } from '@/types/dashboard';
 
 interface DashboardContextType {
     // Orders
@@ -83,6 +83,18 @@ interface DashboardContextType {
     addMaestroTrabajador: (trabajador: Omit<Trabajador, 'id'>) => void;
     updateMaestroTrabajador: (id: number, trabajador: Partial<Trabajador>) => void;
     deleteMaestroTrabajador: (id: number) => void;
+
+    // Equipos
+    equipos: Equipo[];
+    addEquipo: (equipo: Omit<Equipo, 'id'>) => void;
+    updateEquipo: (id: number, equipo: Partial<Equipo>) => void;
+    deleteEquipo: (id: number) => void;
+
+    // Mantenimientos
+    mantenimientos: Mantenimiento[];
+    addMantenimiento: (mantenimiento: Omit<Mantenimiento, 'id'>) => void;
+    updateMantenimiento: (id: number, mantenimiento: Partial<Mantenimiento>) => void;
+    deleteMantenimiento: (id: number) => void;
 }
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
@@ -174,6 +186,12 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     // Master Data - Trabajadores
     const [maestroTrabajadores, setMaestroTrabajadores] = useState<Trabajador[]>([]);
 
+    // Equipos State
+    const [equipos, setEquipos] = useState<Equipo[]>([]);
+
+    // Mantenimientos State
+    const [mantenimientos, setMantenimientos] = useState<Mantenimiento[]>([]);
+
     // Orders Functions
     // Load initial data from API
     useEffect(() => {
@@ -210,6 +228,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
                     setMaestroProveedores(data.maestroProveedores || []);
                     setMaestroClientes(data.maestroClientes || []);
                     setMaestroTrabajadores(data.maestroTrabajadores || []);
+                    setEquipos(data.equipos || []);
+                    setMantenimientos(data.mantenimientos || []);
                 }
             } catch (error) {
                 console.error('Error loading data:', error);
@@ -786,6 +806,46 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores: newMaestroTrabajadores });
     };
 
+    // Equipos Functions
+    const addEquipo = (equipo: Omit<Equipo, 'id'>) => {
+        const newEquipo = { ...equipo, id: Math.max(...equipos.map(e => e.id), 0) + 1 };
+        const newEquipos = [...equipos, newEquipo];
+        setEquipos(newEquipos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos: newEquipos, mantenimientos });
+    };
+
+    const updateEquipo = (id: number, equipo: Partial<Equipo>) => {
+        const newEquipos = equipos.map(e => e.id === id ? { ...e, ...equipo } : e);
+        setEquipos(newEquipos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos: newEquipos, mantenimientos });
+    };
+
+    const deleteEquipo = (id: number) => {
+        const newEquipos = equipos.filter(e => e.id !== id);
+        setEquipos(newEquipos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos: newEquipos, mantenimientos });
+    };
+
+    // Mantenimientos Functions
+    const addMantenimiento = (mantenimiento: Omit<Mantenimiento, 'id'>) => {
+        const newMantenimiento = { ...mantenimiento, id: Math.max(...mantenimientos.map(m => m.id), 0) + 1 };
+        const newMantenimientos = [...mantenimientos, newMantenimiento];
+        setMantenimientos(newMantenimientos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos: newMantenimientos });
+    };
+
+    const updateMantenimiento = (id: number, mantenimiento: Partial<Mantenimiento>) => {
+        const newMantenimientos = mantenimientos.map(m => m.id === id ? { ...m, ...mantenimiento } : m);
+        setMantenimientos(newMantenimientos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos: newMantenimientos });
+    };
+
+    const deleteMantenimiento = (id: number) => {
+        const newMantenimientos = mantenimientos.filter(m => m.id !== id);
+        setMantenimientos(newMantenimientos);
+        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos: newMantenimientos });
+    };
+
     const value: DashboardContextType = {
         orders,
         addOrder,
@@ -841,6 +901,14 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         addMaestroTrabajador,
         updateMaestroTrabajador,
         deleteMaestroTrabajador,
+        equipos,
+        addEquipo,
+        updateEquipo,
+        deleteEquipo,
+        mantenimientos,
+        addMantenimiento,
+        updateMantenimiento,
+        deleteMantenimiento,
     };
 
     return (

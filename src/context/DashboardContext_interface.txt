@@ -1,0 +1,98 @@
+'use client';
+
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import type { Order, Venta, Payment, Rendimiento, InsumoTransaction, BankTransaction, CajaChica, MaestroArea, Insumo, GastoGeneral, Proveedor, Cliente, Trabajador, Equipo, Mantenimiento } from '@/types/dashboard';
+
+interface DashboardContextType {
+    // Orders
+    orders: Order[];
+    addOrder: (order: Omit<Order, 'id'>) => void;
+    updateOrder: (id: number, order: Partial<Order>) => void;
+    deleteOrder: (id: number) => void;
+
+    // Sales
+    ventas: Venta[];
+    addVenta: (venta: Omit<Venta, 'id'>) => void;
+    updateVenta: (id: number, venta: Partial<Venta>) => void;
+    deleteVenta: (id: number) => void;
+
+    // Payments
+    payments: Payment[];
+    addPayment: (payment: Omit<Payment, 'id'>) => void;
+    updatePayment: (id: number, payment: Partial<Payment>) => void;
+    deletePayment: (id: number) => void;
+
+    // Performance
+    rendimientos: Rendimiento[];
+    addRendimiento: (rendimiento: Omit<Rendimiento, 'id'>) => void;
+    updateRendimiento: (id: number, rendimiento: Partial<Rendimiento>) => void;
+    deleteRendimiento: (id: number) => void;
+
+    // Inventory
+    insumoTransactions: InsumoTransaction[];
+    addInsumoTransaction: (transaction: Omit<InsumoTransaction, 'id'>) => void;
+    updateInsumoTransaction: (id: number, transaction: Partial<InsumoTransaction>) => void;
+    deleteInsumoTransaction: (id: number) => void;
+    registerInsumoPurchase: (transaction: Omit<InsumoTransaction, 'id'>, newPrice: number) => void;
+    updateInsumoPurchase: (id: number, transaction: Partial<InsumoTransaction>, newPrice: number) => void;
+
+    // Bank
+    bankTransactions: BankTransaction[];
+    addBankTransaction: (transaction: Omit<BankTransaction, 'id' | 'saldo'>) => void;
+    updateBankTransaction: (id: number, transaction: Partial<BankTransaction>) => void;
+    deleteBankTransaction: (id: number) => void;
+
+    // Caja Chica
+    cajaChica: CajaChica[];
+    addCajaChica: (item: Omit<CajaChica, 'id'>) => void;
+    updateCajaChica: (id: number, item: Partial<CajaChica>) => void;
+    deleteCajaChica: (id: number) => void;
+
+    // Master Data - Areas
+    maestroAreas: MaestroArea[];
+    addMaestroArea: (area: Omit<MaestroArea, 'id'>) => void;
+    updateMaestroArea: (id: number, area: Partial<MaestroArea>) => void;
+    deleteMaestroArea: (id: number) => void;
+
+    // Master Data - Insumos
+    maestroInsumos: Insumo[];
+    addMaestroInsumo: (insumo: Omit<Insumo, 'id'>) => void;
+    updateMaestroInsumo: (id: number, insumo: Partial<Insumo>) => void;
+    deleteMaestroInsumo: (id: number) => void;
+
+    // Gastos Generales
+    gastosGenerales: GastoGeneral[];
+    addGastoGeneral: (gasto: Omit<GastoGeneral, 'id'>) => void;
+    updateGastoGeneral: (id: number, gasto: Partial<GastoGeneral>) => void;
+    deleteGastoGeneral: (id: number) => void;
+
+    // Master Data - Proveedores
+    maestroProveedores: Proveedor[];
+    addMaestroProveedor: (proveedor: Omit<Proveedor, 'id'>) => void;
+    updateMaestroProveedor: (id: number, proveedor: Partial<Proveedor>) => void;
+    deleteMaestroProveedor: (id: number) => void;
+
+    // Master Data - Clientes
+    maestroClientes: Cliente[];
+    addMaestroCliente: (cliente: Omit<Cliente, 'id'>) => void;
+    updateMaestroCliente: (id: number, cliente: Partial<Cliente>) => void;
+    deleteMaestroCliente: (id: number) => void;
+
+    // Master Data - Trabajadores
+    maestroTrabajadores: Trabajador[];
+    addMaestroTrabajador: (trabajador: Omit<Trabajador, 'id'>) => void;
+    updateMaestroTrabajador: (id: number, trabajador: Partial<Trabajador>) => void;
+    deleteMaestroTrabajador: (id: number) => void;
+
+    // Equipos
+    equipos: Equipo[];
+    addEquipo: (equipo: Omit<Equipo, 'id'>) => void;
+    updateEquipo: (id: number, equipo: Partial<Equipo>) => void;
+    deleteEquipo: (id: number) => void;
+
+    // Mantenimientos
+    mantenimientos: Mantenimiento[];
+    addMantenimiento: (mantenimiento: Omit<Mantenimiento, 'id'>) => void;
+    updateMantenimiento: (id: number, mantenimiento: Partial<Mantenimiento>) => void;
+    deleteMantenimiento: (id: number) => void;
+}
