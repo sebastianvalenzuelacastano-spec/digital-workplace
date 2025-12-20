@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile } from 'fs/promises';
+import { writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import fs from 'fs';
 
 export async function POST(request: NextRequest) {
     try {
@@ -36,12 +37,29 @@ export async function POST(request: NextRequest) {
         const originalName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_');
         const filename = `${timestamp}_${originalName}`;
 
-        // Save to public/productos
-        const filepath = path.join(process.cwd(), 'public', 'productos', filename);
-        await writeFile(filepath, buffer);
+        // Determine save path based on environment
+        let productosDir: string;
+        let imageUrl: string;
 
-        // Return relative URL
-        const imageUrl = `/productos/${filename}`;
+        if (process.env.DB_PATH) {
+            // Railway: Use persistent volume
+            const persistentDir = path.dirname(process.env.DB_PATH);
+            productosDir = path.join(persistentDir, 'productos');
+            imageUrl = `/api/product-images/${filename}`;
+        } else {
+            // Local: Use public folder
+            productosDir = path.join(process.cwd(), 'public', 'productos');
+            imageUrl = `/productos/${filename}`;
+        }
+
+        // Create directory if it doesn't exist
+        if (!fs.existsSync(productosDir)) {
+            await mkdir(productosDir, { recursive: true });
+        }
+
+        // Save file
+        const filepath = path.join(productosDir, filename);
+        await writeFile(filepath, buffer);
 
         return NextResponse.json({
             success: true,
@@ -51,7 +69,8 @@ export async function POST(request: NextRequest) {
     } catch (error) {
         console.error('Upload error:', error);
         return NextResponse.json({
-            error: 'Failed to upload image'
+            error: 'Failed to upload image',
+            details: String(error)
         }, { status: 500 });
     }
 }
