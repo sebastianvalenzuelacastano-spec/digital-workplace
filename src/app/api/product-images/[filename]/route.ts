@@ -4,10 +4,17 @@ import fs from 'fs';
 
 export async function GET(
     request: NextRequest,
-    { params }: { params: { filename: string } }
+    context: { params: Promise<{ filename: string }> }
 ) {
     try {
+        // In Next.js 15, params is a Promise
+        const params = await context.params;
         const filename = params.filename;
+
+        if (!filename) {
+            return NextResponse.json({ error: 'Filename is required' }, { status: 400 });
+        }
+
         let filepath: string | null = null;
 
         console.log('[product-images] Looking for:', filename);
