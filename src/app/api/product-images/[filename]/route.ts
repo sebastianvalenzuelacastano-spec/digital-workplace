@@ -8,17 +8,36 @@ export async function GET(
 ) {
     try {
         const filename = params.filename;
+        let filepath: string | null = null;
 
-        // Get image from persistent volume
-        if (!process.env.DB_PATH) {
-            return NextResponse.json({ error: 'Not configured' }, { status: 404 });
+        // Try persistent volume first (for uploaded images)
+        if (process.env.DB_PATH) {
+            const persistentDir = path.dirname(process.env.DB_PATH);
+            const productosDir = path.join(persistentDir, 'productos');
+            const persistentPath = path.join(productosDir, filename);
+
+            if (fs.existsSync(persistentPath)) {
+                filepath = persistentPath;
+            }
         }
 
-        const persistentDir = path.dirname(process.env.DB_PATH);
-        const productosDir = path.join(persistentDir, 'productos');
-        const filepath = path.join(productosDir, filename);
+        // Fallback to public folder (for pre-loaded images)
+        if (!filepath) {
+            const publicPath = path.join(process.cwd(), 'public', filename);
+            if (fs.existsSync(publicPath)) {
+                filepath = publicPath;
+            }
+        }
 
-        if (!fs.existsSync(filepath)) {
+        // Also try public/productos
+        if (!filepath) {
+            const productosPath = path.join(process.cwd(), 'public', 'productos', filename);
+            if (fs.existsSync(productosPath)) {
+                filepath = productosPath;
+            }
+        }
+
+        if (!filepath) {
             return NextResponse.json({ error: 'Image not found' }, { status: 404 });
         }
 
