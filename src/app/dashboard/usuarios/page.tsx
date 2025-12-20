@@ -7,14 +7,17 @@ import Modal from '@/components/Modal';
 
 const AVAILABLE_MODULES = [
     { name: 'Balance', path: '/dashboard/balance' },
-    { name: 'Banco', path: '/dashboard/banco' },
+    { name: 'Conciliación Bancaria', path: '/dashboard/banco' },
     { name: 'Caja Chica', path: '/dashboard/caja-chica' },
     { name: 'Configuración', path: '/dashboard/configuracion' },
     { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Equipos', path: '/dashboard/equipos' },
+    { name: 'Vehículos', path: '/dashboard/vehiculos' },
     { name: 'Informes', path: '/dashboard/informes' },
     { name: 'Insumos', path: '/dashboard/inventario' },
     { name: 'Pagos', path: '/dashboard/pagos' },
     { name: 'Pedidos', path: '/dashboard/pedidos' },
+    { name: 'Productos (Web)', path: '/dashboard/productos-web' },
     { name: 'Rendimiento', path: '/dashboard/rendimiento' },
     { name: 'Ventas', path: '/dashboard/ventas' },
 ];
