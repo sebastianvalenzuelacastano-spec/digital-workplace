@@ -54,7 +54,7 @@ export default function Sidebar() {
                 <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                     {[
                         { name: 'Balance', path: '/dashboard/balance', role: 'manager' },
-                        { name: 'Banco', path: '/dashboard/banco', role: 'manager' },
+                        { name: 'Conciliación Bancaria', path: '/dashboard/banco', role: 'manager' },
                         { name: 'Caja Chica', path: '/dashboard/caja-chica' },
                         { name: 'Configuración', path: '/dashboard/configuracion', role: 'manager' },
                         { name: 'Dashboard', path: '/dashboard' },
