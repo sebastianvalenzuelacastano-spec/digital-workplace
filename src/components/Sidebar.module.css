@@ -177,3 +177,10 @@
         opacity: 1;
     }
 }
+
+/* Global adjustment for main content on mobile */
+@media (max-width: 768px) {
+    main {
+        margin-left: 0 !important;
+    }
+}

@@ -10,7 +10,7 @@ export default function DashboardLayout({
         <DashboardProvider>
             <div style={{ display: 'flex', minHeight: '100vh' }}>
                 <Sidebar />
-                <main style={{ flex: 1, padding: '2rem', backgroundColor: '#f5f5f5' }}>
+                <main style={{ flex: 1, marginLeft: '250px', padding: '2rem', backgroundColor: '#f5f5f5' }}>
                     {children}
                 </main>
             </div>
