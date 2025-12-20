@@ -1285,7 +1285,7 @@
       "nombre": "Hallulla Integral",
       "descripcion": "La versión saludable de nuestro clásico.",
       "categoria": "Pan",
-      "imagen": "/hallulla integral.png",
+      "imagen": "/hallulla_integral.png",
       "destacado": false,
       "activo": true,
       "orden": 4
@@ -1305,7 +1305,7 @@
       "nombre": "Bollo Integral",
       "descripcion": "Rico en fibra y sabor natural.",
       "categoria": "Pan",
-      "imagen": "/Bollito integral.png",
+      "imagen": "/Bollito_integral.png",
       "destacado": false,
       "activo": true,
       "orden": 6
@@ -1345,7 +1345,7 @@
       "nombre": "Frica Sésamo",
       "descripcion": "Con semillas de sésamo para un toque especial.",
       "categoria": "Pan",
-      "imagen": "/frica sesamo.png",
+      "imagen": "/frica_sesamo.png",
       "destacado": false,
       "activo": true,
       "orden": 10
