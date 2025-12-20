@@ -295,3 +295,20 @@ button {
     padding: 8px;
   }
 }
+
+/* Dashboard Layout - Desktop */
+.dashboard-main {
+  margin-left: 250px;
+}
+
+/* Force Sidebar Background globally */
+div[class*="sidebar"] {
+  background-color: #1A1A1A !important;
+}
+
+/* Dashboard Layout - Mobile Responsive */
+@media (max-width: 768px) {
+  .dashboard-main {
+    margin-left: 0 !important;
+  }
+}
