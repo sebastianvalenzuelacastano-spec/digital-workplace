@@ -58,6 +58,7 @@ export default function Sidebar() {
                         { name: 'Caja Chica', path: '/dashboard/caja-chica' },
                         { name: 'Configuración', path: '/dashboard/configuracion', role: 'manager' },
                         { name: 'Dashboard', path: '/dashboard' },
+                        { name: 'Equipos', path: '/dashboard/equipos', role: 'manager' },
                         { name: 'Informes', path: '/dashboard/informes', role: 'manager' },
                         { name: 'Insumos', path: '/dashboard/inventario' },
                         { name: 'Pagos', path: '/dashboard/pagos' },

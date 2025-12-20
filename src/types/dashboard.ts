@@ -139,3 +139,35 @@ export interface GastoGeneral {
     monto: number;
     categoria: string; // e.g., "Arriendo", "Servicios", "Sueldos"
 }
+
+// Equipment Management
+export interface Equipo {
+    id: number;
+    codigo: string;
+    nombre: string;
+    tipo: 'Horno' | 'Amasadora' | 'Batidora' | 'Refrigerador' | 'Otro';
+    marca: string;
+    modelo: string;
+    numeroSerie: string;
+    fechaCompra: string;
+    proveedor: string;
+    estado: 'Operativo' | 'En Mantenimiento' | 'Fuera de Servicio';
+    ubicacion: 'Producción' | 'Bodega' | 'Ventas';
+    garantiaHasta?: string;
+    valorCompra: number;
+    observaciones?: string;
+    activo: boolean;
+}
+
+export interface Mantenimiento {
+    id: number;
+    equipoId: number;
+    tipo: 'Preventivo' | 'Correctivo' | 'Calibración';
+    fecha: string;
+    descripcion: string;
+    tecnico: string;
+    empresaExterna?: string;
+    costo: number;
+    proximoMantenimiento?: string;
+    observaciones?: string;
+}
