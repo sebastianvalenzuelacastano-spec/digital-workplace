@@ -40,12 +40,28 @@ export default function EmpresasClientesPage() {
                 fetch('/api/empresas-clientes'),
                 fetch('/api/casinos')
             ]);
+
             const empresasData = await empresasRes.json();
             const casinosData = await casinosRes.json();
-            setEmpresas(empresasData.filter((e: EmpresaCliente) => e.activo));
-            setCasinos(casinosData);
+
+            // Validate responses are arrays
+            if (Array.isArray(empresasData)) {
+                setEmpresas(empresasData.filter((e: EmpresaCliente) => e.activo));
+            } else {
+                console.error('empresasData is not an array:', empresasData);
+                setEmpresas([]);
+            }
+
+            if (Array.isArray(casinosData)) {
+                setCasinos(casinosData);
+            } else {
+                console.error('casinosData is not an array:', casinosData);
+                setCasinos([]);
+            }
         } catch (error) {
             console.error('Error loading data:', error);
+            setEmpresas([]);
+            setCasinos([]);
         } finally {
             setLoading(false);
         }
