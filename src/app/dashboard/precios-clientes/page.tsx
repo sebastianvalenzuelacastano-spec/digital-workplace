@@ -59,7 +59,7 @@ function PreciosContent() {
             }
 
             if (Array.isArray(productosData)) {
-                setProductos(productosData.filter((p: ProductoCatalogo) => p.activo !== false));
+                setProductos(productosData);
             } else {
                 console.error('productosData is not an array:', productosData);
                 setProductos([]);
