@@ -262,6 +262,10 @@ export interface PedidoCliente {
     diasRecurrencia?: string[]; // ['lunes', 'miercoles', 'viernes']
     notificadoEmail: boolean;
     notificadoWhatsapp: boolean;
+    // Nuevos campos para gestión de entregas
+    repartidor?: string; // Nombre del repartidor asignado
+    origenPedido?: 'web' | 'manual'; // Origen del pedido
+    horaEntrega?: string; // Hora estimada de entrega
 }
 
 // Detalle del pedido

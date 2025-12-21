@@ -59,6 +59,22 @@ export default function PedidosDiaPage() {
         }
     };
 
+    const updateRepartidor = async (pedidoId: number, repartidor: string) => {
+        try {
+            const res = await fetch('/api/pedidos-clientes', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: pedidoId, repartidor })
+            });
+
+            if (res.ok) {
+                loadData();
+            }
+        } catch (error) {
+            console.error('Error updating driver:', error);
+        }
+    };
+
     const formatDate = (dateStr: string) => {
         const date = new Date(dateStr + 'T12:00:00');
         return date.toLocaleDateString('es-CL', {
@@ -269,6 +285,7 @@ export default function PedidosDiaPage() {
                                     <th style={{ padding: '15px' }}>Hora</th>
                                     <th style={{ padding: '15px' }}>Productos</th>
                                     <th style={{ padding: '15px' }}>Total</th>
+                                    <th style={{ padding: '15px' }}>Repartidor</th>
                                     <th style={{ padding: '15px' }}>Estado</th>
                                     <th style={{ padding: '15px' }}>Acciones</th>
                                 </tr>
@@ -285,6 +302,21 @@ export default function PedidosDiaPage() {
                                         <td style={{ padding: '15px' }}>{pedido.detalles.length}</td>
                                         <td style={{ padding: '15px', fontWeight: 'bold', color: '#2e7d32' }}>
                                             ${pedido.total.toLocaleString()}
+                                        </td>
+                                        <td style={{ padding: '15px' }}>
+                                            <input
+                                                type="text"
+                                                placeholder="Sin asignar"
+                                                value={pedido.repartidor || ''}
+                                                onChange={(e) => updateRepartidor(pedido.id, e.target.value)}
+                                                style={{
+                                                    padding: '6px 10px',
+                                                    border: '1px solid #ddd',
+                                                    borderRadius: '6px',
+                                                    fontSize: '0.9rem',
+                                                    width: '150px'
+                                                }}
+                                            />
                                         </td>
                                         <td style={{ padding: '15px' }}>
                                             <select
