@@ -63,6 +63,15 @@ export default function Navbar() {
                             Digital Workplace
                         </Link>
                     </li>
+                    <li>
+                        <Link href="/pedidos/login" className="btn btn-secondary" style={{
+                            padding: '10px 24px',
+                            fontSize: '0.85rem',
+                            boxShadow: 'none'
+                        }}>
+                            Portal Pedidos
+                        </Link>
+                    </li>
                 </ul>
             </div>
         </nav>
