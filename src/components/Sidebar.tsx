@@ -107,6 +107,7 @@ export default function Sidebar() {
                                     { name: 'Empresas', path: '/dashboard/empresas-clientes', role: 'manager' },
                                     { name: 'Precios', path: '/dashboard/precios-clientes', role: 'manager' },
                                     { name: 'Pedidos del Día', path: '/dashboard/pedidos-dia', role: 'manager' },
+                                    { name: 'Hoja de Ruta', path: '/dashboard/hoja-ruta', role: 'manager' },
                                 ]
                             },
                             {
