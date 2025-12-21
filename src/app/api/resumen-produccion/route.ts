@@ -12,8 +12,16 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Fecha requerida' }, { status: 400 });
     }
 
-    if (!db || !db.pedidosClientes || !db.detallesPedidos) {
+    if (!db) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    }
+
+    // Initialize collections if they don't exist
+    if (!db.pedidosClientes) {
+        db.pedidosClientes = [];
+    }
+    if (!db.detallesPedidos) {
+        db.detallesPedidos = [];
     }
 
     // Get all orders for the specified delivery date
