@@ -107,7 +107,7 @@ export default function DashboardPage() {
 
             {/* Stock Summary Section */}
             <h2 style={{ marginBottom: '1rem', fontSize: '1.5rem' }}>Stock de Insumos</h2>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
                 {maestroInsumos.filter(i => i.activo).map(insumo => {
                     const stock = calculateStock(insumo.nombre);
                     const isLow = stock < 10; // Threshold for visual warning
@@ -117,7 +117,9 @@ export default function DashboardPage() {
                             padding: '1rem',
                             borderRadius: '8px',
                             boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
-                            border: isLow ? '1px solid #f44336' : '1px solid transparent'
+                            border: isLow ? '1px solid #f44336' : '1px solid transparent',
+                            minWidth: '150px',
+                            flex: '0 0 auto'
                         }}>
                             <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '0.5rem' }}>{insumo.nombre}</p>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.5rem' }}>
@@ -133,5 +135,6 @@ export default function DashboardPage() {
                 })}
             </div>
         </div>
+        </div >
     );
 }
