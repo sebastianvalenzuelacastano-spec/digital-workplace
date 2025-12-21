@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import type { PedidoCliente, DetallePedido } from '@/types/dashboard';
+import NuevoPedidoModal from '@/components/NuevoPedidoModal';
 
 interface PedidoConDetalles extends PedidoCliente {
     detalles: DetallePedido[];
@@ -24,6 +25,7 @@ export default function PedidosDiaPage() {
     const [viewMode, setViewMode] = useState<'pedidos' | 'produccion'>('pedidos');
     const [selectedRepartidor, setSelectedRepartidor] = useState<string>(''); // For filtering by driver
     const [printMode, setPrintMode] = useState<'none' | 'produccion' | 'repartidor'>('none'); // What to print
+    const [isNuevoPedidoOpen, setIsNuevoPedidoOpen] = useState(false);
 
     useEffect(() => {
         loadData();
@@ -199,6 +201,21 @@ export default function PedidosDiaPage() {
                         className="no-print"
                     >
                         🖨️ Imprimir
+                    </button>
+                    <button
+                        onClick={() => setIsNuevoPedidoOpen(true)}
+                        style={{
+                            padding: '10px 20px',
+                            backgroundColor: '#4caf50',
+                            color: '#fff',
+                            border: 'none',
+                            borderRadius: '8px',
+                            cursor: 'pointer',
+                            fontWeight: 'bold'
+                        }}
+                        className="no-print"
+                    >
+                        ➕ Nuevo Pedido
                     </button>
                 </div>
             </div>
@@ -597,6 +614,14 @@ export default function PedidosDiaPage() {
                     }
                 }
             `}</style>
+
+            {/* Nuevo Pedido Modal */}
+            <NuevoPedidoModal
+                isOpen={isNuevoPedidoOpen}
+                onClose={() => setIsNuevoPedidoOpen(false)}
+                onSuccess={loadData}
+                fechaEntrega={fecha}
+            />
         </div>
     );
 }
