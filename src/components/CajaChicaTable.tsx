@@ -322,11 +322,11 @@ export default function CajaChicaTable() {
                 {Object.keys(gastosPorArea).length > 0 && (
                     <div style={{ marginBottom: '1.5rem' }}>
                         <h4 style={{ fontSize: '1rem', marginBottom: '0.75rem', color: '#666' }}>Gastos por Área</h4>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '0.75rem' }}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
                             {Object.entries(gastosPorArea).map(([area, monto]) => (
-                                <div key={area} style={{ backgroundColor: '#f5f5f5', padding: '0.75rem', borderRadius: '6px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <span style={{ fontSize: '0.85rem', color: '#666' }}>{area}</span>
-                                    <span style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#333' }}>
+                                <div key={area} style={{ backgroundColor: '#f5f5f5', padding: '0.75rem 1rem', borderRadius: '6px', display: 'flex', gap: '0.75rem', alignItems: 'center', minWidth: 'fit-content' }}>
+                                    <span style={{ fontSize: '0.85rem', color: '#666', whiteSpace: 'nowrap' }}>{area}:</span>
+                                    <span style={{ fontSize: '0.95rem', fontWeight: 'bold', color: '#333', whiteSpace: 'nowrap' }}>
                                         ${monto.toLocaleString()}
                                     </span>
                                 </div>

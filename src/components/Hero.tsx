@@ -46,7 +46,8 @@ export default function Hero() {
                 </p>
                 <div style={{ display: 'flex', gap: '1.5rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                     <a href="/productos" className="btn btn-secondary delay-100">Ver Productos</a>
-                    <a href="/contacto" className="btn btn-outline delay-200">Contáctanos</a>
+                    <a href="/pedidos/login" className="btn btn-primary delay-200">Portal de Pedidos</a>
+                    <a href="/contacto" className="btn btn-outline delay-300">Contáctanos</a>
                 </div>
             </div>
         </section>
