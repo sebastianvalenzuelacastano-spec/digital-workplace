@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import type { PedidoCliente, DetallePedido } from '@/types/dashboard';
+import type { PedidoCliente, DetallePedido, Trabajador } from '@/types/dashboard';
 import NuevoPedidoModal from '@/components/NuevoPedidoModal';
 
 interface PedidoConDetalles extends PedidoCliente {
@@ -26,6 +26,7 @@ export default function PedidosDiaPage() {
     const [selectedRepartidor, setSelectedRepartidor] = useState<string>(''); // For filtering by driver
     const [printMode, setPrintMode] = useState<'none' | 'produccion' | 'repartidor'>('none'); // What to print
     const [isNuevoPedidoOpen, setIsNuevoPedidoOpen] = useState(false);
+    const [repartidores, setRepartidores] = useState<Trabajador[]>([]);
 
     useEffect(() => {
         loadData();
@@ -34,12 +35,28 @@ export default function PedidosDiaPage() {
     const loadData = async () => {
         setLoading(true);
         try {
-            const res = await fetch(`/api/resumen-produccion?fecha=${fecha}`);
-            const data = await res.json();
+            const [resumenRes, dbRes] = await Promise.all([
+                fetch(`/api/resumen-produccion?fecha=${fecha}`),
+                fetch('/api/db', {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+            ]);
 
+            const data = await resumenRes.json();
             setPedidos(data.pedidosPorCasino || []);
             setResumen(data.resumenProduccion || []);
             setTotales(data.totales || { totalPedidos: 0, totalProductos: 0, totalUnidades: 0, totalMonto: 0 });
+
+            // Load repartidores
+            if (dbRes.ok) {
+                const db = await dbRes.json();
+                const trabajadores = db.maestroTrabajadores || [];
+                setRepartidores(trabajadores.filter((t: Trabajador) =>
+                    t.activo && t.cargo.toLowerCase().includes('repartidor')
+                ));
+            }
         } catch (error) {
             console.error('Error loading data:', error);
         } finally {
@@ -138,8 +155,8 @@ export default function PedidosDiaPage() {
         }, 100);
     };
 
-    // Get unique repartidores
-    const repartidores = Array.from(new Set(pedidos.map(p => p.repartidor).filter(Boolean))) as string[];
+    // Get unique repartidores from pedidos (for the filter dropdown)
+    const repartidoresAsignados = Array.from(new Set(pedidos.map(p => p.repartidor).filter(Boolean))) as string[];
 
     // Filter pedidos by repartidor if selected
     const filteredPorRepartidor = selectedRepartidor
@@ -184,7 +201,7 @@ export default function PedidosDiaPage() {
                         className="no-print"
                     >
                         <option value="">Todos los repartidores</option>
-                        {repartidores.map(rep => (
+                        {repartidoresAsignados.map(rep => (
                             <option key={rep} value={rep}>{rep}</option>
                         ))}
                     </select>
@@ -360,9 +377,7 @@ export default function PedidosDiaPage() {
                                             ${pedido.total.toLocaleString()}
                                         </td>
                                         <td style={{ padding: '15px' }}>
-                                            <input
-                                                type="text"
-                                                placeholder="Sin asignar"
+                                            <select
                                                 value={pedido.repartidor || ''}
                                                 onChange={(e) => updateRepartidor(pedido.id, e.target.value)}
                                                 style={{
@@ -370,9 +385,16 @@ export default function PedidosDiaPage() {
                                                     border: '1px solid #ddd',
                                                     borderRadius: '6px',
                                                     fontSize: '0.9rem',
-                                                    width: '150px'
+                                                    width: '100%'
                                                 }}
-                                            />
+                                            >
+                                                <option value="">Sin asignar</option>
+                                                {repartidores.map(rep => (
+                                                    <option key={rep.id} value={rep.nombre}>
+                                                        {rep.nombre}
+                                                    </option>
+                                                ))}
+                                            </select>
                                         </td>
                                         <td style={{ padding: '15px' }}>
                                             <select
