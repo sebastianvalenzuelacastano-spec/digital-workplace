@@ -44,21 +44,45 @@ export default function PedidosDiaPage() {
                 })
             ]);
 
-            const data = await resumenRes.json();
-            setPedidos(data.pedidosPorCasino || []);
-            setResumen(data.resumenProduccion || []);
-            setTotales(data.totales || { totalPedidos: 0, totalProductos: 0, totalUnidades: 0, totalMonto: 0 });
+            if (resumenRes.ok) {
+                const data = await resumenRes.json();
+                setPedidos(Array.isArray(data.pedidosPorCasino) ? data.pedidosPorCasino : []);
+                setResumen(Array.isArray(data.resumenProduccion) ? data.resumenProduccion : []);
+
+                // Ensure totales has valid numbers
+                const totalesData = data.totales || {};
+                setTotales({
+                    totalPedidos: totalesData.totalPedidos || 0,
+                    totalProductos: totalesData.totalProductos || 0,
+                    totalUnidades: totalesData.totalUnidades || 0,
+                    totalMonto: totalesData.totalMonto || 0
+                });
+            } else {
+                console.error('Error loading resumen:', await resumenRes.text());
+                setPedidos([]);
+                setResumen([]);
+                setTotales({ totalPedidos: 0, totalProductos: 0, totalUnidades: 0, totalMonto: 0 });
+            }
 
             // Load repartidores
             if (dbRes.ok) {
                 const db = await dbRes.json();
                 const trabajadores = db.maestroTrabajadores || [];
-                setRepartidores(trabajadores.filter((t: Trabajador) =>
-                    t.activo && t.cargo.toLowerCase().includes('repartidor')
-                ));
+                if (Array.isArray(trabajadores)) {
+                    setRepartidores(trabajadores.filter((t: Trabajador) =>
+                        t.activo && t.cargo && t.cargo.toLowerCase().includes('repartidor')
+                    ));
+                }
+            } else {
+                console.error('Error loading db:', dbRes.status);
+                setRepartidores([]);
             }
         } catch (error) {
             console.error('Error loading data:', error);
+            setPedidos([]);
+            setResumen([]);
+            setTotales({ totalPedidos: 0, totalProductos: 0, totalUnidades: 0, totalMonto: 0 });
+            setRepartidores([]);
         } finally {
             setLoading(false);
         }
