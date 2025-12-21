@@ -50,10 +50,24 @@ function PreciosContent() {
             const empresasData = await empresasRes.json();
             const productosData = await productosRes.json();
 
-            setEmpresas(empresasData.filter((e: EmpresaCliente) => e.activo));
-            setProductos(productosData);
+            // Validate responses
+            if (Array.isArray(empresasData)) {
+                setEmpresas(empresasData.filter((e: EmpresaCliente) => e.activo));
+            } else {
+                console.error('empresasData is not an array:', empresasData);
+                setEmpresas([]);
+            }
+
+            if (Array.isArray(productosData)) {
+                setProductos(productosData.filter((p: ProductoCatalogo) => p.activo !== false));
+            } else {
+                console.error('productosData is not an array:', productosData);
+                setProductos([]);
+            }
         } catch (error) {
             console.error('Error loading data:', error);
+            setEmpresas([]);
+            setProductos([]);
         } finally {
             setLoading(false);
         }
