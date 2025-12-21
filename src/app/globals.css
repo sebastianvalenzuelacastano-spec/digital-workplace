@@ -334,7 +334,7 @@ div[class*="sidebar"] {
 }
 
 /* Reduce padding in all dashboard containers */
-.dashboard-main>div {
+.dashboard-main > div {
   padding: 1rem !important;
 }
 
