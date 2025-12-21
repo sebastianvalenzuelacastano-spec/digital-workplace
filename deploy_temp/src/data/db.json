@@ -1,0 +1,1469 @@
+{
+  "orders": [],
+  "ventas": [
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Aliservice",
+      "kilos": 88.74,
+      "monto": 178884,
+      "id": 1
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Aramark",
+      "kilos": 376.99,
+      "monto": 754208,
+      "id": 2
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Comalin",
+      "kilos": 113.98,
+      "monto": 205660,
+      "id": 3
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Salud y vida",
+      "kilos": 733.24,
+      "monto": 1927398,
+      "id": 4
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "SSCC",
+      "kilos": 7.72,
+      "monto": 16323,
+      "id": 5
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Help",
+      "kilos": 4.5,
+      "monto": 8075,
+      "id": 6
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Jif",
+      "kilos": 3.92,
+      "monto": 11318,
+      "id": 7
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Tujina",
+      "kilos": 3,
+      "monto": 5369,
+      "id": 8
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Upla",
+      "kilos": 33.34,
+      "monto": 60345,
+      "id": 9
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Sodexo",
+      "kilos": 29.08,
+      "monto": 67740,
+      "id": 10
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Miraflores",
+      "kilos": 5.4,
+      "monto": 11737,
+      "id": 11
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Ami",
+      "kilos": 22.36,
+      "monto": 42922,
+      "id": 12
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Matriz",
+      "kilos": 498,
+      "monto": 690621,
+      "id": 13
+    },
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Litero",
+      "kilos": 170,
+      "monto": 202400,
+      "id": 14
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Aliservice",
+      "kilos": 89.24,
+      "monto": 182537,
+      "id": 15
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Aramark",
+      "kilos": 364.67,
+      "monto": 781688,
+      "id": 16
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Comalin",
+      "kilos": 111.46,
+      "monto": 206171,
+      "id": 17
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Salud y Vida",
+      "kilos": 755.6,
+      "monto": 2096362,
+      "id": 18
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "SSCC ",
+      "kilos": 5.08,
+      "monto": 11072,
+      "id": 19
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Help",
+      "kilos": 4.6,
+      "monto": 8255,
+      "id": 20
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Jif",
+      "kilos": 4.14,
+      "monto": 12102,
+      "id": 21
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Tujina",
+      "kilos": 6.9,
+      "monto": 11607,
+      "id": 22
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Upla",
+      "kilos": 28.94,
+      "monto": 52381,
+      "id": 23
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Sodexo Servicios",
+      "kilos": 33.78,
+      "monto": 77053,
+      "id": 24
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Clinica Miraflores",
+      "kilos": 8.24,
+      "monto": 20902,
+      "id": 25
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Ami",
+      "kilos": 20.24,
+      "monto": 38851,
+      "id": 26
+    },
+    {
+      "fecha": "2025-12-02",
+      "cliente": "Local",
+      "kilos": 669.59,
+      "monto": 903403,
+      "id": 27
+    }
+  ],
+  "payments": [],
+  "rendimientos": [
+    {
+      "fecha": "2025-12-01",
+      "kilosProducidos": 2090.27,
+      "sacos": 71,
+      "rinde": 58.88,
+      "barrido": 27.1,
+      "merma": 40.7,
+      "id": 1
+    },
+    {
+      "fecha": "2025-12-02",
+      "kilosProducidos": 2102.48,
+      "sacos": 67,
+      "rinde": 62.76,
+      "barrido": 31,
+      "merma": 57.9,
+      "id": 2
+    }
+  ],
+  "insumoTransactions": [
+    {
+      "fecha": "2025-12-04",
+      "insumo": "Harina",
+      "cantidadEntrada": 150,
+      "cantidadSalida": 0,
+      "proveedor": "Molino San Cristobal",
+      "fechaCompra": "2025-12-04",
+      "fechaPago": "2026-01-04",
+      "factura": "916579",
+      "estadoPago": "pendiente",
+      "precioUnitario": 10800,
+      "id": 1
+    },
+    {
+      "fecha": "2025-12-03",
+      "insumo": "Harina",
+      "cantidadEntrada": 400,
+      "cantidadSalida": 0,
+      "proveedor": "Molinos Cunaco",
+      "fechaCompra": "2025-12-03",
+      "fechaPago": "2026-01-17",
+      "factura": "324765",
+      "estadoPago": "pendiente",
+      "precioUnitario": 10400,
+      "id": 2
+    },
+    {
+      "fecha": "2025-11-30",
+      "insumo": "Harina",
+      "cantidadEntrada": 692,
+      "cantidadSalida": 0,
+      "proveedor": "Molino La Estampa",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 10800,
+      "id": 3
+    },
+    {
+      "fecha": "2025-11-30",
+      "insumo": "Grasa",
+      "cantidadEntrada": 1172,
+      "cantidadSalida": 0,
+      "proveedor": "Molino La Estampa",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pagada",
+      "precioUnitario": 1411,
+      "id": 4
+    },
+    {
+      "fecha": "2025-11-01",
+      "insumo": "Levadura",
+      "cantidadEntrada": 243,
+      "cantidadSalida": 0,
+      "proveedor": "Molino San Cristobal",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pagada",
+      "precioUnitario": 1511,
+      "id": 5
+    },
+    {
+      "fecha": "2025-11-30",
+      "insumo": "Sal",
+      "cantidadEntrada": 16,
+      "cantidadSalida": 0,
+      "proveedor": "Sal Caribe",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pagada",
+      "precioUnitario": 4613,
+      "id": 6
+    },
+    {
+      "fecha": "2025-11-30",
+      "insumo": "Mejorador Hallulla",
+      "cantidadEntrada": 538,
+      "cantidadSalida": 0,
+      "proveedor": "Distribuidora Patricio Aguirre ",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pagada",
+      "precioUnitario": 1186,
+      "id": 7
+    },
+    {
+      "fecha": "2025-11-30",
+      "insumo": "Aceite",
+      "cantidadEntrada": 71,
+      "cantidadSalida": 0,
+      "proveedor": "Juan Galvez",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pagada",
+      "precioUnitario": 1135,
+      "id": 8
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Harina",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 71,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 9
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Grasa",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 56,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 10
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Levadura",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 28,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 11
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Sal",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 1.5,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 12
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Mejorador Hallulla",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 22,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 13
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Aceite",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 3,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 14
+    },
+    {
+      "fecha": "2025-12-02",
+      "insumo": "Aceite",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 4,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 15
+    },
+    {
+      "fecha": "2025-12-02",
+      "insumo": "Grasa",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 57,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 16
+    },
+    {
+      "fecha": "2025-12-02",
+      "insumo": "Harina",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 67,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 17
+    },
+    {
+      "fecha": "2025-12-02",
+      "insumo": "Levadura",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 25,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 18
+    },
+    {
+      "fecha": "2025-12-02",
+      "insumo": "Mejorador Hallulla",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 21,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 19
+    },
+    {
+      "fecha": "2025-12-02",
+      "insumo": "Sal",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 1.5,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "precioUnitario": 0,
+      "id": 20
+    }
+  ],
+  "bankTransactions": [],
+  "cajaChica": [
+    {
+      "fecha": "2025-12-02",
+      "area": "Panificadores",
+      "monto": 118000,
+      "descripcion": "noche\n",
+      "id": 7
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Panificadores",
+      "monto": 199600,
+      "descripcion": "dia",
+      "id": 8
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Combustible",
+      "monto": 40000,
+      "descripcion": "combustible\n",
+      "id": 9
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Ventas",
+      "monto": 6278,
+      "descripcion": "Ciabatta basf\n",
+      "id": 10
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Ventas",
+      "monto": 37430,
+      "descripcion": "Te para medlog",
+      "id": 11
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Otros",
+      "monto": 175000,
+      "descripcion": "Marcus\n",
+      "id": 12
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Otros",
+      "monto": 120000,
+      "descripcion": "Marcus",
+      "id": 13
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Otros",
+      "monto": 35000,
+      "descripcion": "Godoy\n",
+      "id": 14
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Combustible",
+      "monto": 15000,
+      "descripcion": "Macarena\n",
+      "id": 15
+    },
+    {
+      "fecha": "2025-12-02",
+      "area": "Vehiculos",
+      "monto": 16000,
+      "descripcion": "Tag Ale\n",
+      "id": 16
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Panificadores",
+      "monto": 119000,
+      "descripcion": "Turno Noche\n",
+      "id": 1
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Panificadores",
+      "monto": 208750,
+      "descripcion": "Turno Dia\n",
+      "id": 2
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Combustible",
+      "monto": 85000,
+      "descripcion": "Combustibles",
+      "id": 3
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Insumos",
+      "monto": 112991,
+      "descripcion": "Suero\n",
+      "id": 4
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Ventas",
+      "monto": 1650,
+      "descripcion": "Lechuga CGE\n",
+      "id": 5
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Ventas",
+      "monto": 12990,
+      "descripcion": "Kuchen Sodimac renaca\n",
+      "id": 6
+    }
+  ],
+  "maestroAreas": [
+    {
+      "id": 1,
+      "nombre": "Insumos",
+      "activo": true
+    },
+    {
+      "id": 2,
+      "nombre": "Administración",
+      "activo": true
+    },
+    {
+      "id": 3,
+      "nombre": "Ventas",
+      "activo": true
+    },
+    {
+      "id": 4,
+      "nombre": "Mantenimiento",
+      "activo": true
+    },
+    {
+      "id": 5,
+      "nombre": "Otros",
+      "activo": true
+    },
+    {
+      "id": 6,
+      "nombre": "Panificadores",
+      "activo": true
+    },
+    {
+      "id": 7,
+      "nombre": "Vehiculos",
+      "activo": true
+    },
+    {
+      "id": 8,
+      "nombre": "Bonos",
+      "activo": true
+    },
+    {
+      "nombre": "Envasado",
+      "activo": true,
+      "id": 9
+    },
+    {
+      "nombre": "Combustible",
+      "activo": true,
+      "id": 10
+    }
+  ],
+  "maestroInsumos": [
+    {
+      "id": 1,
+      "nombre": "Harina",
+      "unidad": "sacos_25kg",
+      "activo": true,
+      "costoUnitario": 10660,
+      "tieneImpuestoAdicional": true
+    },
+    {
+      "id": 2,
+      "nombre": "Levadura",
+      "unidad": "kg",
+      "activo": true,
+      "costoUnitario": 1511
+    },
+    {
+      "id": 3,
+      "nombre": "Sal",
+      "unidad": "sacos",
+      "activo": true,
+      "costoUnitario": 4613
+    },
+    {
+      "id": 4,
+      "nombre": "Aceite",
+      "unidad": "unidades",
+      "activo": true,
+      "costoUnitario": 1135
+    },
+    {
+      "id": 6,
+      "nombre": "Mejorador Hallulla",
+      "unidad": "unidades",
+      "activo": true,
+      "costoUnitario": 1186
+    },
+    {
+      "id": 8,
+      "nombre": "Grasa",
+      "unidad": "kg",
+      "activo": true,
+      "costoUnitario": 1411
+    }
+  ],
+  "gastosGenerales": [],
+  "maestroProveedores": [
+    {
+      "rut": "90.060.000-3",
+      "nombre": "Molino San Cristobal",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 1
+    },
+    {
+      "rut": "80.393.200-k",
+      "nombre": "Molinos Cunaco",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 2
+    },
+    {
+      "rut": "90.828.000-5",
+      "nombre": "Molino La Estampa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 3
+    },
+    {
+      "rut": "96.670.840-9",
+      "nombre": "Dimerc",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 4
+    },
+    {
+      "rut": "79.694.980-5",
+      "nombre": "Importadora Caprile",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 5
+    },
+    {
+      "rut": "6.100.895-0",
+      "nombre": "Juan Galvez",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 6
+    },
+    {
+      "rut": "76.360.903-0",
+      "nombre": "Rentokil",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 7
+    },
+    {
+      "rut": "76.192.511-3",
+      "nombre": "Sal Caribe",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 8
+    },
+    {
+      "rut": "76.275.834-2",
+      "nombre": "Distribuidora Patricio Aguirre ",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 9
+    }
+  ],
+  "maestroClientes": [
+    {
+      "rut": "96.550.960-7",
+      "nombre": "Sodexo Servicios",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 1
+    },
+    {
+      "rut": "76.178.360-2",
+      "nombre": "Aramark",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 2
+    },
+    {
+      "rut": "96.872.930-6",
+      "nombre": "Aliservice",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 3
+    },
+    {
+      "rut": "79.589.870-0",
+      "nombre": "Comalin",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 4
+    },
+    {
+      "rut": "76.105.050-8",
+      "nombre": "Salud y Vida",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 5
+    },
+    {
+      "rut": "76.065.612-7",
+      "nombre": "SSCC ",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 6
+    },
+    {
+      "rut": "77.379.000-0",
+      "nombre": "Help",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 7
+    },
+    {
+      "rut": "77.789.880-9",
+      "nombre": "Jif",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 8
+    },
+    {
+      "rut": "77.095.563-7",
+      "nombre": "Tujina",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 9
+    },
+    {
+      "rut": "76.335.857-7",
+      "nombre": "Upla",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 10
+    },
+    {
+      "rut": "76.491.710-3",
+      "nombre": "Clinica Miraflores",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 11
+    },
+    {
+      "rut": "77.683.000-3",
+      "nombre": "Ami",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 12
+    },
+    {
+      "rut": "76.024.739-1",
+      "nombre": "Local",
+      "tipo": "empresa",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "direccion": "",
+      "activo": true,
+      "id": 13
+    }
+  ],
+  "maestroTrabajadores": [
+    {
+      "rut": "95789773",
+      "nombre": "Sebastian Valenzuela",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2008-06-01",
+      "activo": true,
+      "id": 1
+    },
+    {
+      "rut": "16.776.840-7",
+      "nombre": "Alejandra Acuna",
+      "cargo": "Otro",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2025-04-23",
+      "activo": true,
+      "id": 2
+    },
+    {
+      "rut": "16.230.861-0",
+      "nombre": "Johana Acuna",
+      "cargo": "Otro",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2018-05-01",
+      "activo": true,
+      "id": 3
+    },
+    {
+      "rut": "10.461.916-9",
+      "nombre": "Juan Aranda",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2015-11-01",
+      "activo": true,
+      "id": 4
+    },
+    {
+      "rut": "10.001.423-8",
+      "nombre": "Orlando Bazaes",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2008-10-28",
+      "activo": true,
+      "id": 5
+    },
+    {
+      "rut": "44.433.401-0",
+      "nombre": "Carolina Borges",
+      "cargo": "Aseador",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2024-12-01",
+      "activo": true,
+      "id": 6
+    },
+    {
+      "rut": "26.494.429-5",
+      "nombre": "Duglas Castillo",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2024-09-06",
+      "activo": true,
+      "id": 7
+    },
+    {
+      "rut": "28.629.213-5",
+      "nombre": "Maylin Corrales",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2023-10-01",
+      "activo": true,
+      "id": 8
+    },
+    {
+      "rut": "11.548.116-9",
+      "nombre": "Miguel Diaz",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2015-11-01",
+      "activo": true,
+      "id": 9
+    },
+    {
+      "rut": "13.650.806-7",
+      "nombre": "Rodrigo Diaz",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2025-11-01",
+      "activo": true,
+      "id": 10
+    },
+    {
+      "rut": "44.433.397-9",
+      "nombre": "Jeison Espinoza",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2024-12-02",
+      "activo": true,
+      "id": 11
+    },
+    {
+      "rut": "13.025.499-3",
+      "nombre": "Cristian Godoy",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2015-10-25",
+      "activo": true,
+      "id": 12
+    },
+    {
+      "rut": "8.023.578-k",
+      "nombre": "Eduardo Gonzalez",
+      "cargo": "Otro",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2019-04-11",
+      "activo": true,
+      "id": 13
+    },
+    {
+      "rut": "44.489.752-k",
+      "nombre": "Jerdermis Guevara",
+      "cargo": "Otro",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2025-04-25",
+      "activo": true,
+      "id": 14
+    },
+    {
+      "rut": "12.955.055-4",
+      "nombre": "Manuel Gutierrez",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2008-10-28",
+      "activo": true,
+      "id": 15
+    },
+    {
+      "rut": "28.629.221-6",
+      "nombre": "Randhy Hernandez",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2023-10-01",
+      "activo": true,
+      "id": 16
+    },
+    {
+      "rut": "15.949.342-3",
+      "nombre": "Jorge Ibanez",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2020-05-01",
+      "activo": true,
+      "id": 17
+    },
+    {
+      "rut": "15.561.089-1",
+      "nombre": "Alex Marcus",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2020-08-15",
+      "activo": true,
+      "id": 18
+    },
+    {
+      "rut": "13.632.561-2",
+      "nombre": "Emilio Marquez",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2019-06-25",
+      "activo": true,
+      "id": 19
+    },
+    {
+      "rut": "44.429.062-5",
+      "nombre": "Neomar Peprez",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2024-12-02",
+      "activo": true,
+      "id": 20
+    },
+    {
+      "rut": "17.162.606-4",
+      "nombre": "Juan Perez",
+      "cargo": "Aseador",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2024-12-02",
+      "activo": true,
+      "id": 21
+    },
+    {
+      "rut": "9.746.524-k",
+      "nombre": "Julio Ponce",
+      "cargo": "Aseador",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2011-03-01",
+      "activo": true,
+      "id": 22
+    },
+    {
+      "rut": "41.540.117-5",
+      "nombre": "Heyder Ramos",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2024-01-02",
+      "activo": true,
+      "id": 23
+    },
+    {
+      "rut": "8.498.958-4",
+      "nombre": "Luis Rojas",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2015-11-01",
+      "activo": true,
+      "id": 24
+    },
+    {
+      "rut": "20.276.938-1",
+      "nombre": "Jose San Cristobal",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2023-07-01",
+      "activo": true,
+      "id": 25
+    },
+    {
+      "rut": "41.648.261-6",
+      "nombre": "Isaac Santaella",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2024-09-26",
+      "activo": true,
+      "id": 26
+    },
+    {
+      "rut": "7.558.875-5",
+      "nombre": "Laura Suarez",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "1976-02-08",
+      "activo": true,
+      "id": 27
+    },
+    {
+      "rut": "9.366.365-9",
+      "nombre": "Macarena Valenzuela",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2015-10-01",
+      "activo": true,
+      "id": 28
+    },
+    {
+      "rut": "5.300.265-k",
+      "nombre": "Osvaldo Ventura",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2022-08-01",
+      "activo": true,
+      "id": 29
+    },
+    {
+      "rut": "76.024.739-1",
+      "nombre": "Panificadora San Sebastian",
+      "cargo": "Otro",
+      "telefono": "",
+      "email": "",
+      "fechaIngreso": "2015-01-01",
+      "activo": true,
+      "id": 30
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@example.com",
+      "password": "$2b$10$Hb4H.zrEaiCuqFQTse.MgujI0s0HB2fgwRrz6zZ0pbDUnra2SO/5S",
+      "role": "manager",
+      "name": "Administrador"
+    },
+    {
+      "id": 2,
+      "email": "macarena@example.com",
+      "password": "$2b$10$gmeGY9Oxd/kbSoX6lMpaF.3WXpQ18/2QYgR3VL43s6k0p6QEeqkZW",
+      "role": "employee",
+      "name": "Macarena"
+    },
+    {
+      "id": 3,
+      "email": "maylin@example.com",
+      "password": "$2b$10$4XTZuyXKeHAzZDnPRZAVqecDKdfywrijp.DU5MIp/PvesHBdztfe2",
+      "role": "employee",
+      "name": "Maylin"
+    }
+  ],
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Marraqueta",
+      "descripcion": "Crujiente y dorada, el clásico pan chileno.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/api/product-images/marraqueta.png",
+      "destacado": true,
+      "activo": true,
+      "orden": 1
+    },
+    {
+      "id": 2,
+      "nombre": "Hallulla",
+      "descripcion": "Suave y esponjosa, perfecta para cualquier hora.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/api/product-images/hallulla.png",
+      "destacado": true,
+      "activo": true,
+      "orden": 2
+    },
+    {
+      "id": 3,
+      "nombre": "Rosita",
+      "descripcion": "Dulce y suave, una delicia tradicional.",
+      "categoria": "Pastelería",
+      "imagen": "/api/product-images/api/product-images/rosita.png",
+      "destacado": true,
+      "activo": true,
+      "orden": 3
+    },
+    {
+      "id": 4,
+      "nombre": "Hallulla Integral",
+      "descripcion": "La versión saludable de nuestro clásico.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/hallulla_integral.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 4
+    },
+    {
+      "id": 5,
+      "nombre": "Bollo",
+      "descripcion": "Pan suave ideal para acompañar tus comidas.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/Bollito.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 5
+    },
+    {
+      "id": 6,
+      "nombre": "Bollo Integral",
+      "descripcion": "Rico en fibra y sabor natural.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/Bollito_integral.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 6
+    },
+    {
+      "id": 7,
+      "nombre": "Coliza",
+      "descripcion": "Pan cuadrado de miga suave y corteza delicada.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/coliza.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 7
+    },
+    {
+      "id": 8,
+      "nombre": "Pan de Molde",
+      "descripcion": "Perfecto para sándwiches y tostadas.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/Molde.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 8
+    },
+    {
+      "id": 9,
+      "nombre": "Frica",
+      "descripcion": "El pan ideal para tus hamburguesas y sándwiches.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/frica.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 9
+    },
+    {
+      "id": 10,
+      "nombre": "Frica Sésamo",
+      "descripcion": "Con semillas de sésamo para un toque especial.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/frica_sesamo.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 10
+    },
+    {
+      "id": 11,
+      "nombre": "Hot Dog",
+      "descripcion": "Pan alargado y suave para completos.",
+      "categoria": "Pan",
+      "imagen": "/api/product-images/hotdog.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 11
+    },
+    {
+      "id": 12,
+      "nombre": "Pizza",
+      "descripcion": "Masa lista para tus preparaciones favoritas.",
+      "categoria": "Masa",
+      "imagen": "/api/product-images/pizza.png",
+      "destacado": false,
+      "activo": true,
+      "orden": 12
+    }
+  ],
+  "equipos": [],
+  "mantenimientos": [],
+  "vehiculos": [],
+  "mantenimientosVehiculos": [],
+  "empresasClientes": [
+    {
+      "id": 1,
+      "rut": "761783602",
+      "nombre": "Central de restaurantes Aramark Ltda",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    }
+  ],
+  "casinosSucursales": [
+    {
+      "id": 1,
+      "empresaId": 1,
+      "nombre": "Easy quilpue",
+      "username": "easy.quilpue",
+      "passwordHash": "$2b$10$cDqgH24nB.I0EpMCqcCCqeekMMLYPLIxPJtqeQq1rjK7EFszgByTS",
+      "direccion": "",
+      "telefono": "",
+      "email": "",
+      "whatsapp": "",
+      "activo": true,
+      "mustChangePassword": false
+    }
+  ],
+  "preciosClientes": [],
+  "pedidosClientes": [
+    {
+      "id": 1,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "Easy quilpue",
+      "empresaNombre": "Central de restaurantes Aramark Ltda",
+      "fechaPedido": "2025-12-21",
+      "fechaEntrega": "2025-12-30",
+      "horaPedido": "22:42",
+      "estado": "pendiente",
+      "total": null,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false
+    },
+    {
+      "id": 2,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "Easy quilpue",
+      "empresaNombre": "Central de restaurantes Aramark Ltda",
+      "fechaPedido": "2025-12-21",
+      "fechaEntrega": "2025-12-24",
+      "horaPedido": "22:44",
+      "estado": "pendiente",
+      "total": null,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false
+    }
+  ],
+  "detallesPedidos": [
+    {
+      "id": 1,
+      "pedidoId": 1,
+      "productoId": 5,
+      "productoNombre": "Bollo",
+      "cantidad": 2,
+      "subtotal": null
+    },
+    {
+      "id": 2,
+      "pedidoId": 1,
+      "productoId": 4,
+      "productoNombre": "Hallulla Integral",
+      "cantidad": 1.5,
+      "subtotal": null
+    },
+    {
+      "id": 3,
+      "pedidoId": 2,
+      "productoId": 5,
+      "productoNombre": "Bollo",
+      "cantidad": 1.5,
+      "subtotal": null
+    }
+  ],
+  "productosCatalogo": [],
+  "favoritos": []
+}

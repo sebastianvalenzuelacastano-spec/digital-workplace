@@ -1,0 +1,179 @@
+/* Sidebar Container */
+.sidebar {
+    width: 250px;
+    background-color: #1A1A1A !important;
+    /* Forced dark background */
+    color: #fff;
+    height: 100vh;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 1000;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Logo Section */
+.logoContainer {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.logoImage {
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.brandName {
+    color: var(--color-secondary);
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-family-serif);
+}
+
+/* Navigation */
+.nav {
+    flex: 1;
+    overflow-y: auto;
+    /* Allow scrolling if menu is tall */
+}
+
+.menuList {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    /* More space between groups */
+    padding: 0;
+    margin: 0;
+}
+
+/* Menu Groups */
+.menuGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.groupTitle {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin-top: 0.5rem;
+    padding-left: 12px;
+}
+
+.groupItems {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* Menu Items */
+.menuLink {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    display: block;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.menuLink:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    transform: translateX(4px);
+}
+
+.menuLinkActive {
+    background-color: rgba(197, 160, 89, 0.15);
+    /* Secondary color transparent */
+    color: var(--color-secondary);
+    border-left: 3px solid var(--color-secondary);
+}
+
+/* Logout Button */
+.logoutButton {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.8);
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: 100%;
+}
+
+.logoutButton:hover {
+    background-color: rgba(212, 93, 93, 0.1);
+    /* Red tint */
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+/* Mobile Toggle Button */
+.toggleButton {
+    display: none;
+    /* Hidden on desktop */
+    position: fixed;
+    top: 1rem;
+    left: 1rem;
+    z-index: 1100;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+}
+
+/* Overlay for Mobile */
+.overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .toggleButton {
+        display: block;
+    }
+
+    .overlay.open {
+        display: block;
+        opacity: 1;
+    }
+}
