@@ -1374,5 +1374,96 @@
   "equipos": [],
   "mantenimientos": [],
   "vehiculos": [],
-  "mantenimientosVehiculos": []
+  "mantenimientosVehiculos": [],
+  "empresasClientes": [
+    {
+      "id": 1,
+      "rut": "761783602",
+      "nombre": "Central de restaurantes Aramark Ltda",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    }
+  ],
+  "casinosSucursales": [
+    {
+      "id": 1,
+      "empresaId": 1,
+      "nombre": "Easy quilpue",
+      "username": "easy.quilpue",
+      "passwordHash": "$2b$10$cDqgH24nB.I0EpMCqcCCqeekMMLYPLIxPJtqeQq1rjK7EFszgByTS",
+      "direccion": "",
+      "telefono": "",
+      "email": "",
+      "whatsapp": "",
+      "activo": true,
+      "mustChangePassword": false
+    }
+  ],
+  "preciosClientes": [],
+  "pedidosClientes": [
+    {
+      "id": 1,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "Easy quilpue",
+      "empresaNombre": "Central de restaurantes Aramark Ltda",
+      "fechaPedido": "2025-12-21",
+      "fechaEntrega": "2025-12-30",
+      "horaPedido": "22:42",
+      "estado": "pendiente",
+      "total": null,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false
+    },
+    {
+      "id": 2,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "Easy quilpue",
+      "empresaNombre": "Central de restaurantes Aramark Ltda",
+      "fechaPedido": "2025-12-21",
+      "fechaEntrega": "2025-12-24",
+      "horaPedido": "22:44",
+      "estado": "pendiente",
+      "total": null,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false
+    }
+  ],
+  "detallesPedidos": [
+    {
+      "id": 1,
+      "pedidoId": 1,
+      "productoId": 5,
+      "productoNombre": "Bollo",
+      "cantidad": 2,
+      "subtotal": null
+    },
+    {
+      "id": 2,
+      "pedidoId": 1,
+      "productoId": 4,
+      "productoNombre": "Hallulla Integral",
+      "cantidad": 1.5,
+      "subtotal": null
+    },
+    {
+      "id": 3,
+      "pedidoId": 2,
+      "productoId": 5,
+      "productoNombre": "Bollo",
+      "cantidad": 1.5,
+      "subtotal": null
+    }
+  ],
+  "productosCatalogo": [],
+  "favoritos": []
 }

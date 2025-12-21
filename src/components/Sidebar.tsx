@@ -103,6 +103,14 @@ export default function Sidebar() {
                                 ]
                             },
                             {
+                                title: 'Clientes B2B',
+                                items: [
+                                    { name: 'Empresas', path: '/dashboard/empresas-clientes', role: 'manager' },
+                                    { name: 'Precios', path: '/dashboard/precios-clientes', role: 'manager' },
+                                    { name: 'Pedidos del Día', path: '/dashboard/pedidos-dia', role: 'manager' },
+                                ]
+                            },
+                            {
                                 title: 'Administración',
                                 items: [
                                     { name: 'Informes', path: '/dashboard/informes', role: 'manager' },

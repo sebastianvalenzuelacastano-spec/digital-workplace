@@ -40,7 +40,8 @@ body {
   font-family: var(--font-family-sans);
   background-color: var(--color-background);
   color: var(--color-text);
-  line-height: 1.6;
+  line-height: 1.4;
+  font-size: 11px;
 }
 
 h1,
@@ -51,7 +52,7 @@ h5,
 h6 {
   font-family: var(--font-family-serif);
   color: var(--color-primary);
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
   font-weight: 700;
 }
 
@@ -71,21 +72,21 @@ button {
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 24px;
+  padding: 0 12px;
 }
 
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 14px 32px;
+  padding: 8px 16px;
   border-radius: 50px;
   /* Pill shape */
   font-weight: 600;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.3px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-transform: uppercase;
-  font-size: 0.9rem;
+  font-size: 0.55rem;
 }
 
 .btn-primary {
@@ -156,43 +157,43 @@ button {
 /* Tablet breakpoint */
 @media (max-width: 1024px) {
   .container {
-    padding: 0 16px;
+    padding: 0 10px;
   }
 
   h1 {
-    font-size: 1.5rem;
+    font-size: 0.85rem;
   }
 
   h2 {
-    font-size: 1.25rem;
+    font-size: 0.7rem;
   }
 
   h3 {
-    font-size: 1.1rem;
+    font-size: 0.6rem;
   }
 }
 
 /* Mobile breakpoint */
 @media (max-width: 768px) {
   :root {
-    --spacing-unit: 6px;
-    --border-radius: 8px;
+    --spacing-unit: 4px;
+    --border-radius: 6px;
   }
 
   body {
-    font-size: 14px;
+    font-size: 9px;
   }
 
   .container {
-    padding: 0 12px;
+    padding: 0 8px;
   }
 
   /* Responsive buttons */
   .btn {
-    padding: 10px 20px;
-    font-size: 0.85rem;
+    padding: 6px 12px;
+    font-size: 0.5rem;
     width: 100%;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   /* Make tables scroll horizontally on mobile */
@@ -205,20 +206,20 @@ button {
 
   table th,
   table td {
-    padding: 8px 10px !important;
-    font-size: 0.85rem;
+    padding: 6px 8px !important;
+    font-size: 0.5rem;
   }
 
   /* Stack form elements */
   form {
-    gap: 0.75rem !important;
+    gap: 0.5rem !important;
   }
 
   form input,
   form select,
   form textarea {
-    padding: 12px !important;
-    font-size: 16px !important;
+    padding: 8px !important;
+    font-size: 11px !important;
     /* Prevents iOS zoom on focus */
   }
 
@@ -238,41 +239,41 @@ button {
   [style*="justify-content: space-between"] {
     flex-direction: column !important;
     align-items: flex-start !important;
-    gap: 0.75rem !important;
+    gap: 0.5rem !important;
   }
 
   /* Touch-friendly action buttons */
   button[title] {
-    min-width: 44px;
-    min-height: 44px;
+    min-width: 36px;
+    min-height: 36px;
   }
 }
 
 /* Small mobile */
 @media (max-width: 480px) {
   h1 {
-    font-size: 1.25rem;
+    font-size: 0.7rem;
   }
 
   h2 {
-    font-size: 1.1rem;
+    font-size: 0.6rem;
   }
 
   h3 {
-    font-size: 1rem;
+    font-size: 0.55rem;
   }
 
   /* Even smaller buttons */
   .btn {
-    padding: 8px 16px;
-    font-size: 0.8rem;
+    padding: 6px 12px;
+    font-size: 0.48rem;
   }
 
   /* Compact table cells */
   table th,
   table td {
-    padding: 6px 8px !important;
-    font-size: 0.8rem;
+    padding: 4px 6px !important;
+    font-size: 0.48rem;
   }
 }
 

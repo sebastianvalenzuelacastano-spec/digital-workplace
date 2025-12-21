@@ -13,7 +13,7 @@ export interface Order {
     cliente: string;
     productos: string;
     total: number;
-    estado: 'pendiente' | 'en_proceso' | 'completado' | 'cancelado';
+    estado: 'pendiente' | 'en_proceso' | 'completado' | 'cancelado' | 'despachado';
     entrega: string;
 }
 
@@ -203,4 +203,86 @@ export interface MantenimientoVehiculo {
     costo: number;
     proximoMantenimientoKm?: number;
     observaciones?: string;
+}
+
+// =============================================
+// MÓDULO DE PEDIDOS PROFESIONAL (B2B)
+// =============================================
+
+// Empresa cliente (ej: Aramark, Compass, Sodexo)
+export interface EmpresaCliente {
+    id: number;
+    rut: string;
+    nombre: string;
+    contacto: string;
+    telefono: string;
+    email: string;
+    activo: boolean;
+}
+
+// Casino/Sucursal bajo una empresa
+export interface CasinoSucursal {
+    id: number;
+    empresaId: number;
+    nombre: string;
+    username: string; // Login único
+    passwordHash: string;
+    direccion: string;
+    telefono: string;
+    email: string;
+    whatsapp?: string;
+    activo: boolean;
+    mustChangePassword?: boolean; // For provisional passwords
+}
+
+// Precio personalizado por empresa
+export interface PrecioCliente {
+    id: number;
+    empresaId: number;
+    productoId: number; // ID del producto del catálogo
+    nombreProducto: string; // Cache del nombre para facilitar consultas
+    precioNeto: number;
+    unidad?: 'unidad' | 'kg'; // Opcional - por defecto se usa la del producto
+}
+
+// Pedido de cliente
+export interface PedidoCliente {
+    id: number;
+    casinoId: number;
+    empresaId: number; // Denormalized for easier queries
+    casinoNombre: string; // Cache
+    empresaNombre: string; // Cache
+    fechaPedido: string;
+    fechaEntrega: string;
+    horaPedido: string;
+    estado: 'pendiente' | 'confirmado' | 'en_produccion' | 'entregado' | 'cancelado' | 'despachado';
+    total: number;
+    observaciones?: string;
+    esRecurrente: boolean;
+    diasRecurrencia?: string[]; // ['lunes', 'miercoles', 'viernes']
+    notificadoEmail: boolean;
+    notificadoWhatsapp: boolean;
+}
+
+// Detalle del pedido
+export interface DetallePedido {
+    id: number;
+    pedidoId: number;
+    productoId: number;
+    productoNombre: string; // Cache
+    cantidad: number;
+    precioUnitario: number;
+    subtotal: number;
+}
+
+// Producto del catálogo (para pedidos)
+export interface ProductoCatalogo {
+    id: number;
+    nombre: string;
+    descripcion?: string;
+    unidad: string; // 'unidad', 'kg', 'docena'
+    precioBase: number; // Precio por defecto si no hay precio por cliente
+    categoria: string;
+    imagen?: string;
+    activo: boolean;
 }

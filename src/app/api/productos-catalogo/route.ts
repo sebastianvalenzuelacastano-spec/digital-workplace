@@ -4,7 +4,11 @@ import { readDb, writeDb } from '@/lib/db';
 export async function GET() {
     try {
         const db = readDb();
-        return NextResponse.json(db.productos || []);
+        // Sort alphabetically by name
+        const productos = (db.productos || []).sort((a: any, b: any) =>
+            a.nombre.localeCompare(b.nombre, 'es')
+        );
+        return NextResponse.json(productos);
     } catch (error) {
         return NextResponse.json({ error: 'Failed to fetch products' }, { status: 500 });
     }
