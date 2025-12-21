@@ -2,12 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Modal from './Modal';
+import MaintenanceModal from './MaintenanceModal';
 import { useDashboard } from '@/context/DashboardContext';
 import type { Equipo } from '@/types/dashboard';
-import { formatDate, getTodayString } from '@/lib/dateUtils';
+import { formatDate } from '@/lib/dateUtils';
 
 export default function EquiposTable() {
-    const { equipos, addEquipo, updateEquipo, deleteEquipo } = useDashboard();
+    const {
+        equipos, addEquipo, updateEquipo, deleteEquipo,
+        mantenimientos, addMantenimiento, deleteMantenimiento
+    } = useDashboard();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [role, setRole] = useState<string | null>(null);
@@ -19,15 +24,18 @@ export default function EquiposTable() {
         marca: '',
         modelo: '',
         numeroSerie: '',
-        fechaCompra: '',
+        fechaCompra: '', // Kept in state but hidden in form
         proveedor: '',
         estado: 'Operativo',
         ubicacion: 'Producción',
         garantiaHasta: '',
-        valorCompra: 0,
+        valorCompra: 0, // Kept in state but hidden in form
         observaciones: '',
         activo: true
     });
+
+    const [showMaintenance, setShowMaintenance] = useState(false);
+    const [selectedEquipoForMaintenance, setSelectedEquipoForMaintenance] = useState<Equipo | null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -87,6 +95,11 @@ export default function EquiposTable() {
             observaciones: '',
             activo: true
         });
+    };
+
+    const handleOpenMaintenance = (equipo: Equipo) => {
+        setSelectedEquipoForMaintenance(equipo);
+        setShowMaintenance(true);
     };
 
     const filteredEquipos = filtroEstado
@@ -193,6 +206,13 @@ export default function EquiposTable() {
                             </td>
                             <td style={{ padding: '10px' }}>
                                 <button
+                                    onClick={() => handleOpenMaintenance(equipo)}
+                                    style={{ marginRight: '5px', padding: '4px 8px', cursor: 'pointer', border: '1px solid #ff9800', backgroundColor: '#fff3e0', borderRadius: '4px' }}
+                                    title="Historial de Mantenimientos"
+                                >
+                                    🛠️
+                                </button>
+                                <button
                                     onClick={() => handleEdit(equipo)}
                                     style={{ marginRight: '5px', padding: '4px 8px', cursor: 'pointer', border: '1px solid #2196f3', backgroundColor: '#e3f2fd', borderRadius: '4px' }}
                                     title="Editar"
@@ -279,29 +299,19 @@ export default function EquiposTable() {
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1rem' }}>
                         <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>N° Serie</label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Proveedor</label>
                             <input
                                 type="text"
-                                value={formData.numeroSerie}
-                                onChange={(e) => setFormData({ ...formData, numeroSerie: e.target.value })}
-                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-                            />
-                        </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Fecha Compra *</label>
-                            <input
-                                type="date"
-                                required
-                                value={formData.fechaCompra}
-                                onChange={(e) => setFormData({ ...formData, fechaCompra: e.target.value })}
+                                value={formData.proveedor}
+                                onChange={(e) => setFormData({ ...formData, proveedor: e.target.value })}
                                 style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
                             />
                         </div>
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                         <div>
                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Estado *</label>
                             <select
@@ -328,26 +338,6 @@ export default function EquiposTable() {
                                 <option value="Ventas">Ventas</option>
                             </select>
                         </div>
-                        <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Valor Compra *</label>
-                            <input
-                                type="number"
-                                required
-                                value={formData.valorCompra}
-                                onChange={(e) => setFormData({ ...formData, valorCompra: Number(e.target.value) })}
-                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-                            />
-                        </div>
-                    </div>
-
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Proveedor</label>
-                        <input
-                            type="text"
-                            value={formData.proveedor}
-                            onChange={(e) => setFormData({ ...formData, proveedor: e.target.value })}
-                            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
-                        />
                     </div>
 
                     <div>
@@ -374,6 +364,23 @@ export default function EquiposTable() {
                     </div>
                 </form>
             </Modal>
+
+            {/* Modal de Mantenimiento */}
+            {selectedEquipoForMaintenance && (
+                <MaintenanceModal
+                    isOpen={showMaintenance}
+                    onClose={() => {
+                        setShowMaintenance(false);
+                        setSelectedEquipoForMaintenance(null);
+                    }}
+                    title="Historial de Mantenimientos"
+                    entityInfo={`${selectedEquipoForMaintenance.nombre} (${selectedEquipoForMaintenance.codigo})`}
+                    type="equipo"
+                    records={mantenimientos.filter(m => m.equipoId === selectedEquipoForMaintenance.id)}
+                    onAdd={(record) => addMantenimiento({ ...record, equipoId: selectedEquipoForMaintenance.id })}
+                    onDelete={deleteMantenimiento}
+                />
+            )}
         </div>
     );
 }

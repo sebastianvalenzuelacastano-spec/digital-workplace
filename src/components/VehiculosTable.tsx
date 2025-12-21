@@ -2,12 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import Modal from './Modal';
+import MaintenanceModal from './MaintenanceModal';
 import { useDashboard } from '@/context/DashboardContext';
 import type { Vehiculo } from '@/types/dashboard';
-import { formatDate, getTodayString } from '@/lib/dateUtils';
+import { formatDate } from '@/lib/dateUtils';
 
 export default function VehiculosTable() {
-    const { vehiculos, addVehiculo, updateVehiculo, deleteVehiculo } = useDashboard();
+    const {
+        vehiculos, addVehiculo, updateVehiculo, deleteVehiculo,
+        mantenimientosVehiculos, addMantenimientoVehiculo, deleteMantenimientoVehiculo
+    } = useDashboard();
+
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [role, setRole] = useState<string | null>(null);
@@ -27,6 +32,9 @@ export default function VehiculosTable() {
         observaciones: '',
         activo: true
     });
+
+    const [showMaintenance, setShowMaintenance] = useState(false);
+    const [selectedVehiculoForMaintenance, setSelectedVehiculoForMaintenance] = useState<Vehiculo | null>(null);
 
     useEffect(() => {
         if (typeof window !== 'undefined') {
@@ -85,6 +93,11 @@ export default function VehiculosTable() {
             observaciones: '',
             activo: true
         });
+    };
+
+    const handleOpenMaintenance = (vehiculo: Vehiculo) => {
+        setSelectedVehiculoForMaintenance(vehiculo);
+        setShowMaintenance(true);
     };
 
     const filteredVehiculos = filtroEstado
@@ -218,6 +231,13 @@ export default function VehiculosTable() {
                                         </span>
                                     </td>
                                     <td style={{ padding: '10px' }}>
+                                        <button
+                                            onClick={() => handleOpenMaintenance(vehiculo)}
+                                            style={{ marginRight: '5px', padding: '4px 8px', cursor: 'pointer', border: '1px solid #ff9800', backgroundColor: '#fff3e0', borderRadius: '4px' }}
+                                            title="Historial de Mantenimientos"
+                                        >
+                                            🛠️
+                                        </button>
                                         <button
                                             onClick={() => handleEdit(vehiculo)}
                                             style={{ marginRight: '5px', padding: '4px 8px', cursor: 'pointer', border: '1px solid #2196f3', backgroundColor: '#e3f2fd', borderRadius: '4px' }}
@@ -400,6 +420,23 @@ export default function VehiculosTable() {
                     </div>
                 </form>
             </Modal>
+
+            {/* Modal de Mantenimiento */}
+            {selectedVehiculoForMaintenance && (
+                <MaintenanceModal
+                    isOpen={showMaintenance}
+                    onClose={() => {
+                        setShowMaintenance(false);
+                        setSelectedVehiculoForMaintenance(null);
+                    }}
+                    title="Historial de Mantenimientos"
+                    entityInfo={`${selectedVehiculoForMaintenance.marca} ${selectedVehiculoForMaintenance.modelo} (${selectedVehiculoForMaintenance.patente})`}
+                    type="vehiculo"
+                    records={mantenimientosVehiculos.filter(m => m.vehiculoId === selectedVehiculoForMaintenance.id)}
+                    onAdd={(record) => addMantenimientoVehiculo({ ...record, vehiculoId: selectedVehiculoForMaintenance.id })}
+                    onDelete={deleteMantenimientoVehiculo}
+                />
+            )}
         </div>
     );
 }

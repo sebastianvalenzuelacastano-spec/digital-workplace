@@ -167,6 +167,7 @@ export interface Mantenimiento {
     descripcion: string;
     tecnico: string;
     empresaExterna?: string;
+    repuestos?: string; // spare parts used
     costo: number;
     proximoMantenimiento?: string;
     observaciones?: string;
@@ -197,6 +198,7 @@ export interface MantenimientoVehiculo {
     fecha: string;
     kilometraje: number;
     descripcion: string;
+    repuestos?: string; // spare parts used
     taller: string;
     costo: number;
     proximoMantenimientoKm?: number;
