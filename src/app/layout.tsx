@@ -10,6 +10,10 @@ export const metadata: Metadata = {
   description: "Tradición y sabor en cada bocado.",
 };
 
+// Force dynamic rendering - prevent caching issues
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default function RootLayout({
   children,
 }: Readonly<{
