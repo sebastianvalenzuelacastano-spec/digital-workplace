@@ -22,6 +22,8 @@ export default function PedidosDiaPage() {
     const [loading, setLoading] = useState(false);
     const [selectedPedido, setSelectedPedido] = useState<PedidoConDetalles | null>(null);
     const [viewMode, setViewMode] = useState<'pedidos' | 'produccion'>('pedidos');
+    const [selectedRepartidor, setSelectedRepartidor] = useState<string>(''); // For filtering by driver
+    const [printMode, setPrintMode] = useState<'none' | 'produccion' | 'repartidor'>('none'); // What to print
 
     useEffect(() => {
         loadData();
@@ -120,8 +122,27 @@ export default function PedidosDiaPage() {
     };
 
     const handlePrint = () => {
-        window.print();
+        // Set print mode based on current view
+        if (viewMode === 'produccion') {
+            setPrintMode('produccion');
+        } else if (selectedRepartidor) {
+            setPrintMode('repartidor');
+        }
+
+        setTimeout(() => {
+            window.print();
+            // Reset print mode after printing
+            setTimeout(() => setPrintMode('none'), 500);
+        }, 100);
     };
+
+    // Get unique repartidores
+    const repartidores = Array.from(new Set(pedidos.map(p => p.repartidor).filter(Boolean))) as string[];
+
+    // Filter pedidos by repartidor if selected
+    const filteredPorRepartidor = selectedRepartidor
+        ? pedidos.filter(p => p.repartidor === selectedRepartidor)
+        : pedidos;
 
     return (
         <div>
@@ -147,7 +168,24 @@ export default function PedidosDiaPage() {
                             fontSize: '1rem',
                             fontWeight: 'bold'
                         }}
+                        className="no-print"
                     />
+                    <select
+                        value={selectedRepartidor}
+                        onChange={(e) => setSelectedRepartidor(e.target.value)}
+                        style={{
+                            padding: '10px 15px',
+                            border: '2px solid #2196f3',
+                            borderRadius: '8px',
+                            fontSize: '0.9rem'
+                        }}
+                        className="no-print"
+                    >
+                        <option value="">Todos los repartidores</option>
+                        {repartidores.map(rep => (
+                            <option key={rep} value={rep}>{rep}</option>
+                        ))}
+                    </select>
                     <button
                         onClick={handlePrint}
                         style={{
@@ -158,6 +196,7 @@ export default function PedidosDiaPage() {
                             borderRadius: '8px',
                             cursor: 'pointer'
                         }}
+                        className="no-print"
                     >
                         🖨️ Imprimir
                     </button>
@@ -271,9 +310,9 @@ export default function PedidosDiaPage() {
             ) : viewMode === 'pedidos' ? (
                 /* Orders by Casino */
                 <div style={{ backgroundColor: '#fff', borderRadius: '12px', overflow: 'hidden' }}>
-                    {pedidos.length === 0 ? (
+                    {filteredPorRepartidor.length === 0 ? (
                         <div style={{ padding: '50px', textAlign: 'center', color: '#888' }}>
-                            No hay pedidos para esta fecha.
+                            No hay pedidos para esta fecha{selectedRepartidor ? ` para el repartidor ${selectedRepartidor}` : ''}.
                         </div>
                     ) : (
                         <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -291,7 +330,7 @@ export default function PedidosDiaPage() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {pedidos.map(pedido => (
+                                {filteredPorRepartidor.map(pedido => (
                                     <tr key={pedido.id} style={{ borderBottom: '1px solid #eee' }}>
                                         <td style={{ padding: '15px', fontWeight: 'bold' }}>
                                             #{pedido.id.toString().padStart(4, '0')}
@@ -510,6 +549,54 @@ export default function PedidosDiaPage() {
                     </div>
                 </div>
             )}
+
+            {/* Print CSS */}
+            <style jsx global>{`
+                @media print {
+                    .no-print {
+                        display: none !important;
+                    }
+                    
+                    /* Hide sidebar and general UI */
+                    aside, .sidebar, nav, header, footer {
+                        display: none !important;
+                    }
+                    
+                    /* Reset margins for print */
+                    body {
+                        margin: 0;
+                        padding: 20px;
+                    }
+                    
+                    /* Optimize table for print */
+                    table {
+                        page-break-inside: avoid;
+                        font-size: 10pt;
+                    }
+                    
+                    th, td {
+                        padding: 8px 10px !important;
+                    }
+                    
+                    /* Hide action columns when printing */
+                    ${printMode !== 'none' ? `
+                        th:last-child, td:last-child {
+                            display: none;
+                        }
+                    ` : ''}
+                    
+                    /* Add header for print */
+                    @page {
+                        margin: 1cm;
+                    }
+                    
+                    /* Print title */
+                    h2 {
+                        text-align: center;
+                        margin-bottom: 20px;
+                    }
+                }
+            `}</style>
         </div>
     );
 }

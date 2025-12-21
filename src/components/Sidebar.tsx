@@ -89,7 +89,6 @@ export default function Sidebar() {
                                 title: 'Operaciones',
                                 items: [
                                     { name: 'Ventas', path: '/dashboard/ventas' },
-                                    { name: 'Pedidos', path: '/dashboard/pedidos' },
                                     { name: 'Rendimiento', path: '/dashboard/rendimiento' },
                                     { name: 'Insumos', path: '/dashboard/inventario' },
                                 ]
