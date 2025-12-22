@@ -71,11 +71,14 @@ export default function ProductosCatalogoTable() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        console.log('handleSubmit called', formData);
 
         try {
             const url = '/api/productos-catalogo';
             const method = editingId ? 'PUT' : 'POST';
             const payload = editingId ? { ...formData, id: editingId } : formData;
+
+            console.log('Sending request:', { method, url, payload });
 
             const res = await fetch(url, {
                 method,
@@ -83,12 +86,21 @@ export default function ProductosCatalogoTable() {
                 body: JSON.stringify(payload)
             });
 
+            console.log('Response status:', res.status);
+
             if (res.ok) {
-                fetchProductos();
+                const data = await res.json();
+                console.log('Product saved:', data);
+                await fetchProductos();
                 closeModal();
+            } else {
+                const error = await res.json();
+                console.error('Server error:', error);
+                alert(`Error: ${error.error || 'Failed to save product'}`);
             }
         } catch (error) {
-            alert('Error saving product');
+            console.error('Submit error:', error);
+            alert('Error saving product: ' + error);
         }
     };
 
