@@ -1,10 +1,7 @@
-import { createClient } from '@vercel/kv';
+import Redis from 'ioredis';
 
-// Create KV client using REDIS_URL
-const kv = createClient({
-    url: process.env.REDIS_URL || process.env.KV_REST_API_URL || '',
-    token: process.env.KV_REST_API_TOKEN || '',
-});
+// Create Redis client using REDIS_URL
+const redis = new Redis(process.env.REDIS_URL || '');
 
 // Database key
 const DB_KEY = 'panificadora:db';
@@ -39,27 +36,28 @@ export interface Database {
 }
 
 /**
- * Read the entire database from KV
+ * Read the entire database from Redis
  */
 export async function readDb(): Promise<Database | null> {
     try {
-        const data = await kv.get<Database>(DB_KEY);
-        return data || null;
+        const data = await redis.get(DB_KEY);
+        if (!data) return null;
+        return JSON.parse(data);
     } catch (error) {
-        console.error('Error reading from KV:', error);
+        console.error('Error reading from Redis:', error);
         return null;
     }
 }
 
 /**
- * Write the entire database to KV
+ * Write the entire database to Redis
  */
 export async function writeDb(data: Database): Promise<boolean> {
     try {
-        await kv.set(DB_KEY, data);
+        await redis.set(DB_KEY, JSON.stringify(data));
         return true;
     } catch (error) {
-        console.error('Error writing to KV:', error);
+        console.error('Error writing to Redis:', error);
         return false;
     }
 }
