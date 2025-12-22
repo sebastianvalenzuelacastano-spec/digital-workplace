@@ -43,21 +43,11 @@ export default function NuevoPedidoModal({ isOpen, onClose, onSuccess, fechaEntr
                 return;
             }
 
-            // Load casinos
-            const dbRes = await fetch('/api/db', {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (dbRes.status === 401) {
-                console.error('Authentication error: Token expired or invalid');
-                localStorage.removeItem('token');
-                window.location.href = '/auth/login';
-                return;
-            }
-            const db = await dbRes.json();
-            setCasinos(db.casinosSucursales?.filter((c: any) => c.activo) || []);
+            // Load casinos using dedicated endpoint
+            const casinosRes = await fetch('/api/casinos');
+            const casinosData = await casinosRes.json();
+            console.log('Casinos cargados:', casinosData);
+            setCasinos(Array.isArray(casinosData) ? casinosData.filter((c: any) => c.activo) : []);
 
             // Load productos
             const prodRes = await fetch('/api/productos-catalogo');
