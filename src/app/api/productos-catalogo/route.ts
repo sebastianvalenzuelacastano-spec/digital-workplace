@@ -8,7 +8,7 @@ export async function GET() {
             return NextResponse.json([]);
         }
         // Sort alphabetically by name
-        const productos = (db.productos || []).sort((a: any, b: any) =>
+        const productos = (db.productosCatalogo || []).sort((a: any, b: any) =>
             a.nombre.localeCompare(b.nombre, 'es')
         );
         return NextResponse.json(productos);
@@ -19,15 +19,30 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
     try {
-        const db = await readDb();
+        let db = await readDb();
         const body = await request.json();
 
-        if (!db || !db.productos) {
-            return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });
+        // Initialize database if it doesn't exist
+        if (!db) {
+            console.log('Database not found, initializing...');
+            const { initializeDb } = await import('@/lib/db');
+            await initializeDb();
+            db = await readDb();
+
+            if (!db) {
+                return NextResponse.json({ error: 'Failed to initialize database' }, { status: 500 });
+            }
         }
 
-        const newId = db.productos.length > 0
-            ? Math.max(...db.productos.map((p: any) => p.id)) + 1
+        // Ensure productosCatalogo collection exists
+        if (!db.productosCatalogo) {
+            console.log('productosCatalogo collection not found, creating...');
+            db.productosCatalogo = [];
+            await writeDb(db);
+        }
+
+        const newId = db.productosCatalogo.length > 0
+            ? Math.max(...db.productosCatalogo.map((p: any) => p.id)) + 1
             : 1;
 
         const newProduct = {
@@ -41,7 +56,7 @@ export async function POST(request: NextRequest) {
             orden: body.orden || newId
         };
 
-        db.productos.push(newProduct);
+        db.productosCatalogo.push(newProduct);
         await writeDb(db);
 
         return NextResponse.json(newProduct, { status: 201 });
@@ -53,26 +68,40 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
     try {
-        const db = await readDb();
+        let db = await readDb();
         const body = await request.json();
         const { id } = body;
 
-        if (!db || !db.productos) {
-            return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });
+        // Initialize database if it doesn't exist
+        if (!db) {
+            console.log('Database not found, initializing...');
+            const { initializeDb } = await import('@/lib/db');
+            await initializeDb();
+            db = await readDb();
+
+            if (!db) {
+                return NextResponse.json({ error: 'Failed to initialize database' }, { status: 500 });
+            }
         }
 
-        const index = db.productos.findIndex((p: any) => p.id === id);
+        // Ensure productosCatalogo collection exists
+        if (!db.productosCatalogo) {
+            db.productosCatalogo = [];
+            await writeDb(db);
+        }
+
+        const index = db.productosCatalogo.findIndex((p: any) => p.id === id);
         if (index === -1) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404 });
         }
 
-        db.productos[index] = {
-            ...db.productos[index],
+        db.productosCatalogo[index] = {
+            ...db.productosCatalogo[index],
             ...body
         };
 
         await writeDb(db);
-        return NextResponse.json(db.productos[index]);
+        return NextResponse.json(db.productosCatalogo[index]);
     } catch (error) {
         console.error('PUT productos error:', error);
         return NextResponse.json({ error: 'Failed to update product' }, { status: 500 });
@@ -85,16 +114,16 @@ export async function DELETE(request: NextRequest) {
         const { searchParams } = new URL(request.url);
         const id = parseInt(searchParams.get('id') || '');
 
-        if (!db || !db.productos) {
+        if (!db || !db.productosCatalogo) {
             return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });
         }
 
-        const index = db.productos.findIndex((p: any) => p.id === id);
+        const index = db.productosCatalogo.findIndex((p: any) => p.id === id);
         if (index === -1) {
             return NextResponse.json({ error: 'Product not found' }, { status: 404 });
         }
 
-        db.productos.splice(index, 1);
+        db.productosCatalogo.splice(index, 1);
         await writeDb(db);
 
         return NextResponse.json({ success: true });

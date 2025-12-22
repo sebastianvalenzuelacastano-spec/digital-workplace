@@ -5,10 +5,10 @@ import { readDb } from "@/lib/db";
 export const dynamic = 'force-dynamic';
 
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
     // Fetch products from database (server-side)
-    const db = readDb();
-    const products = db.productos
+    const db = await readDb();
+    const products = (db?.productosCatalogo || [])
         .filter((p: any) => p.activo) // Only show active products
         .sort((a: any, b: any) => a.orden - b.orden); // Sort by orden
 
