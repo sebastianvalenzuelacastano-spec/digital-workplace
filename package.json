@@ -34,10 +34,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.0.5",
-    "typescript": "^5"
+    "typescript": "^5",
+    "tsx": "^4.7.0"
   }
 }
-,
-  "scripts": {
-    "migrate-kv": "tsx scripts/migrate-to-kv.ts"
-  }
