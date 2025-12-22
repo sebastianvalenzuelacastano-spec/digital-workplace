@@ -37,8 +37,19 @@ export default function NuevoPedidoModal({ isOpen, onClose, onSuccess, fechaEntr
 
     const loadData = async () => {
         try {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                window.location.href = '/auth/login';
+                return;
+            }
+
             // Load casinos
-            const dbRes = await fetch('/api/db');
+            const dbRes = await fetch('/api/db', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
             if (dbRes.status === 401) {
                 console.error('Authentication error: Token expired or invalid');
                 localStorage.removeItem('token');
