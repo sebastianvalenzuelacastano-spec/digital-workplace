@@ -207,7 +207,7 @@ export default function PedidosDiaPage() {
                 flexWrap: 'wrap',
                 gap: '15px'
             }}>
-                <h2>📋 Pedidos del Día</h2>
+                <h2>📋 Pedidos del Día (v2.1)</h2>
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
                     <input
