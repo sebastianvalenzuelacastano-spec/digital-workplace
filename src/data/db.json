@@ -474,7 +474,19 @@
       "id": 20
     }
   ],
-  "bankTransactions": [],
+  "bankTransactions": [
+    {
+      "fecha": "2025-12-19",
+      "entrada": 76677,
+      "salida": 0,
+      "descripcion": "ddede",
+      "documento": "",
+      "observacion": "",
+      "cliente": "Local",
+      "id": 1,
+      "saldo": 76677
+    }
+  ],
   "cajaChica": [
     {
       "fecha": "2025-12-02",
@@ -1239,231 +1251,60 @@
       "email": "macarena@example.com",
       "password": "$2b$10$gmeGY9Oxd/kbSoX6lMpaF.3WXpQ18/2QYgR3VL43s6k0p6QEeqkZW",
       "role": "employee",
-      "name": "Macarena"
+      "name": "Macarena",
+      "username": "mailyn",
+      "nombre": "Mailyn",
+      "permissions": [
+        "/dashboard/caja-chica",
+        "/dashboard/inventario",
+        "/dashboard/pedidos",
+        "/dashboard/ventas",
+        "/dashboard/pagos",
+        "/dashboard/rendimiento",
+        "/dashboard/vehiculos",
+        "/dashboard/equipos"
+      ]
     },
     {
       "id": 3,
       "email": "maylin@example.com",
       "password": "$2b$10$4XTZuyXKeHAzZDnPRZAVqecDKdfywrijp.DU5MIp/PvesHBdztfe2",
       "role": "employee",
-      "name": "Maylin"
-    }
-  ],
-  "productos": [
-    {
-      "id": 1,
-      "nombre": "Marraqueta",
-      "descripcion": "Crujiente y dorada, el clásico pan chileno.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/api/product-images/marraqueta.png",
-      "destacado": true,
-      "activo": true,
-      "orden": 1
-    },
-    {
-      "id": 2,
-      "nombre": "Hallulla",
-      "descripcion": "Suave y esponjosa, perfecta para cualquier hora.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/api/product-images/hallulla.png",
-      "destacado": true,
-      "activo": true,
-      "orden": 2
-    },
-    {
-      "id": 3,
-      "nombre": "Rosita",
-      "descripcion": "Dulce y suave, una delicia tradicional.",
-      "categoria": "Pastelería",
-      "imagen": "/api/product-images/api/product-images/rosita.png",
-      "destacado": true,
-      "activo": true,
-      "orden": 3
+      "name": "Maylin",
+      "username": "maca",
+      "nombre": "Maca",
+      "permissions": [
+        "/dashboard/caja-chica",
+        "/dashboard/inventario",
+        "/dashboard/pedidos",
+        "/dashboard/ventas",
+        "/dashboard/rendimiento",
+        "/dashboard/pagos",
+        "/dashboard/vehiculos",
+        "/dashboard/equipos"
+      ]
     },
     {
       "id": 4,
-      "nombre": "Hallulla Integral",
-      "descripcion": "La versión saludable de nuestro clásico.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/hallulla_integral.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 4
+      "email": "gerencia",
+      "password": "$2b$10$8Zo9WD78FoaUX8anRyjeref49Q2kDY0iJVBCCFfvq08NFCPvO1rf.",
+      "role": "manager",
+      "name": "Gerencia",
+      "username": "gerencia",
+      "nombre": "Sebastian",
+      "permissions": []
     },
     {
-      "id": 5,
-      "nombre": "Bollo",
-      "descripcion": "Pan suave ideal para acompañar tus comidas.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/Bollito.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 5
-    },
-    {
-      "id": 6,
-      "nombre": "Bollo Integral",
-      "descripcion": "Rico en fibra y sabor natural.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/Bollito_integral.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 6
-    },
-    {
-      "id": 7,
-      "nombre": "Coliza",
-      "descripcion": "Pan cuadrado de miga suave y corteza delicada.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/coliza.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 7
-    },
-    {
-      "id": 8,
-      "nombre": "Pan de Molde",
-      "descripcion": "Perfecto para sándwiches y tostadas.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/Molde.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 8
-    },
-    {
-      "id": 9,
-      "nombre": "Frica",
-      "descripcion": "El pan ideal para tus hamburguesas y sándwiches.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/frica.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 9
-    },
-    {
-      "id": 10,
-      "nombre": "Frica Sésamo",
-      "descripcion": "Con semillas de sésamo para un toque especial.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/frica_sesamo.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 10
-    },
-    {
-      "id": 11,
-      "nombre": "Hot Dog",
-      "descripcion": "Pan alargado y suave para completos.",
-      "categoria": "Pan",
-      "imagen": "/api/product-images/hotdog.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 11
-    },
-    {
-      "id": 12,
-      "nombre": "Pizza",
-      "descripcion": "Masa lista para tus preparaciones favoritas.",
-      "categoria": "Masa",
-      "imagen": "/api/product-images/pizza.png",
-      "destacado": false,
-      "activo": true,
-      "orden": 12
+      "id": 1766151528375,
+      "username": "seba",
+      "nombre": "Seba",
+      "role": "employee",
+      "permissions": [
+        "/dashboard/balance"
+      ],
+      "password": "$2b$10$2D/e7ghBFkd84yeOGzA8leIq9Pkjm5hR.wpZxjtKqyg8lySVQvqRu",
+      "mustChangePassword": true
     }
   ],
-  "equipos": [],
-  "mantenimientos": [],
-  "vehiculos": [],
-  "mantenimientosVehiculos": [],
-  "empresasClientes": [
-    {
-      "id": 1,
-      "rut": "761783602",
-      "nombre": "Central de restaurantes Aramark Ltda",
-      "contacto": "",
-      "telefono": "",
-      "email": "",
-      "activo": true
-    }
-  ],
-  "casinosSucursales": [
-    {
-      "id": 1,
-      "empresaId": 1,
-      "nombre": "Easy quilpue",
-      "username": "easy.quilpue",
-      "passwordHash": "$2b$10$cDqgH24nB.I0EpMCqcCCqeekMMLYPLIxPJtqeQq1rjK7EFszgByTS",
-      "direccion": "",
-      "telefono": "",
-      "email": "",
-      "whatsapp": "",
-      "activo": true,
-      "mustChangePassword": false
-    }
-  ],
-  "preciosClientes": [],
-  "pedidosClientes": [
-    {
-      "id": 1,
-      "casinoId": 1,
-      "empresaId": 1,
-      "casinoNombre": "Easy quilpue",
-      "empresaNombre": "Central de restaurantes Aramark Ltda",
-      "fechaPedido": "2025-12-21",
-      "fechaEntrega": "2025-12-30",
-      "horaPedido": "22:42",
-      "estado": "pendiente",
-      "total": null,
-      "observaciones": "",
-      "esRecurrente": false,
-      "diasRecurrencia": [],
-      "notificadoEmail": false,
-      "notificadoWhatsapp": false
-    },
-    {
-      "id": 2,
-      "casinoId": 1,
-      "empresaId": 1,
-      "casinoNombre": "Easy quilpue",
-      "empresaNombre": "Central de restaurantes Aramark Ltda",
-      "fechaPedido": "2025-12-21",
-      "fechaEntrega": "2025-12-24",
-      "horaPedido": "22:44",
-      "estado": "pendiente",
-      "total": null,
-      "observaciones": "",
-      "esRecurrente": false,
-      "diasRecurrencia": [],
-      "notificadoEmail": false,
-      "notificadoWhatsapp": false
-    }
-  ],
-  "detallesPedidos": [
-    {
-      "id": 1,
-      "pedidoId": 1,
-      "productoId": 5,
-      "productoNombre": "Bollo",
-      "cantidad": 2,
-      "subtotal": null
-    },
-    {
-      "id": 2,
-      "pedidoId": 1,
-      "productoId": 4,
-      "productoNombre": "Hallulla Integral",
-      "cantidad": 1.5,
-      "subtotal": null
-    },
-    {
-      "id": 3,
-      "pedidoId": 2,
-      "productoId": 5,
-      "productoNombre": "Bollo",
-      "cantidad": 1.5,
-      "subtotal": null
-    }
-  ],
-  "productosCatalogo": [],
-  "favoritos": []
+  "productos": []
 }
