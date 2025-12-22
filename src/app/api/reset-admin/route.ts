@@ -1,21 +1,42 @@
 import { NextResponse } from 'next/server';
-import { readDb, writeDb } from '@/lib/db';
+import { readDb, writeDb, initializeDb } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 
 export async function GET() {
     try {
-        const db = await readDb();
+        let db = await readDb();
 
-        if (!db || !db.users) {
-            return NextResponse.json({ error: 'Database not initialized' }, { status: 500 });
+        console.log('Reset-admin: readDb result:', db ? 'Data exists' : 'null');
+
+        // If database is empty, initialize it first
+        if (!db) {
+            console.log('Reset-admin: Initializing database...');
+            await initializeDb();
+            db = await readDb();
+
+            if (!db) {
+                return NextResponse.json({
+                    error: 'Failed to initialize database',
+                    debug: 'readDb returned null after initializeDb'
+                }, { status: 500 });
+            }
         }
 
+        // Ensure users array exists
+        if (!db.users) {
+            db.users = [];
+        }
+
+        console.log('Reset-admin: Current users count:', db.users.length);
+
         // Find admin user
-        const adminIndex = db.users.findIndex((u: any) => u.email === 'admin@example.com' || u.username === 'admin');
+        const adminIndex = db.users.findIndex((u: any) => u.email === 'admin@example.com' || u.email === 'admin@pansansebastian.cl' || u.username === 'admin');
+
+        const hashedPassword = await bcrypt.hash('admin123', 10);
 
         if (adminIndex === -1) {
             // Create new admin user
-            const hashedPassword = await bcrypt.hash('admin123', 10);
+            console.log('Reset-admin: Creating new admin user');
             db.users.push({
                 id: 1,
                 username: 'admin',
@@ -26,12 +47,19 @@ export async function GET() {
             });
         } else {
             // Update existing admin password
-            const hashedPassword = await bcrypt.hash('admin123', 10);
+            console.log('Reset-admin: Updating existing admin');
             db.users[adminIndex].password = hashedPassword;
             db.users[adminIndex].email = 'admin@pansansebastian.cl';
         }
 
-        await writeDb(db);
+        const writeSuccess = await writeDb(db);
+        console.log('Reset-admin: Write result:', writeSuccess);
+
+        if (!writeSuccess) {
+            return NextResponse.json({
+                error: 'Failed to write to database'
+            }, { status: 500 });
+        }
 
         return NextResponse.json({
             success: true,
@@ -39,9 +67,17 @@ export async function GET() {
             credentials: {
                 email: 'admin@pansansebastian.cl',
                 password: 'admin123'
+            },
+            debug: {
+                usersCount: db.users.length,
+                adminWasCreated: adminIndex === -1
             }
         });
     } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        console.error('Reset-admin error:', error);
+        return NextResponse.json({
+            error: error.message,
+            stack: error.stack
+        }, { status: 500 });
     }
 }
