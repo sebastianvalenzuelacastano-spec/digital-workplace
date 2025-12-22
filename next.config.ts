@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+// Trigger rebuild 2024-12-21 v2
+
 const nextConfig: NextConfig = {
 
   typescript: {
