@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 
 export async function GET() {
     try {
-        const db = readDb();
+        const db = await readDb();
         if (!db) {
             return NextResponse.json({ error: 'Database not found' }, { status: 500 });
         }

@@ -6,7 +6,7 @@ import type { PrecioCliente } from '@/types/dashboard';
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const empresaId = searchParams.get('empresaId');
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.preciosClientes) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -26,7 +26,7 @@ export async function GET(request: Request) {
 // POST - Create or update prices for a company (bulk)
 export async function POST(request: Request) {
     const data = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -78,7 +78,7 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get('id') || '0');
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.preciosClientes) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });

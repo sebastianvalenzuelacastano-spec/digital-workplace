@@ -6,7 +6,7 @@ import type { PedidoCliente, DetallePedido } from '@/types/dashboard';
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const fecha = searchParams.get('fecha');
-    const db = readDb();
+    const db = await readDb();
 
     if (!fecha) {
         return NextResponse.json({ error: 'Fecha requerida' }, { status: 400 });

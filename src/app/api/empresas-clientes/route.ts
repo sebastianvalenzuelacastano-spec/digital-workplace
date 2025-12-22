@@ -4,7 +4,7 @@ import type { EmpresaCliente } from '@/types/dashboard';
 
 // GET - List all client companies
 export async function GET() {
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.empresasClientes) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -16,7 +16,7 @@ export async function GET() {
 // POST - Create new client company
 export async function POST(request: Request) {
     const data = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
 // PUT - Update client company
 export async function PUT(request: Request) {
     const data = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.empresasClientes) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -87,7 +87,7 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get('id') || '0');
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.empresasClientes) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });

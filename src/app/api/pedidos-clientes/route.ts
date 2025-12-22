@@ -9,7 +9,7 @@ export async function GET(request: Request) {
     const casinoId = searchParams.get('casinoId');
     const empresaId = searchParams.get('empresaId');
     const estado = searchParams.get('estado');
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.pedidosClientes) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -92,7 +92,7 @@ export async function GET(request: Request) {
 // POST - Create new order
 export async function POST(request: Request) {
     const data = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -198,7 +198,7 @@ export async function POST(request: Request) {
 // PUT - Update order status
 export async function PUT(request: Request) {
     const data = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.pedidosClientes) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -222,7 +222,7 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get('id') || '0');
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.pedidosClientes) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });

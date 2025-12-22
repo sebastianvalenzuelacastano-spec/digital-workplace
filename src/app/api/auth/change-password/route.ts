@@ -4,7 +4,7 @@ import { hashPassword } from '@/lib/auth';
 
 export async function POST(request: Request) {
     const { username, newPassword } = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.users) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });

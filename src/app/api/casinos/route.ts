@@ -7,7 +7,7 @@ import type { CasinoSucursal } from '@/types/dashboard';
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const empresaId = searchParams.get('empresaId');
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.casinosSucursales) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -31,7 +31,7 @@ export async function GET(request: Request) {
 // POST - Create new casino
 export async function POST(request: Request) {
     const data = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -87,7 +87,7 @@ export async function POST(request: Request) {
 // PUT - Update casino
 export async function PUT(request: Request) {
     const data = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.casinosSucursales) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
@@ -129,7 +129,7 @@ export async function PUT(request: Request) {
 export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get('id') || '0');
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.casinosSucursales) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });

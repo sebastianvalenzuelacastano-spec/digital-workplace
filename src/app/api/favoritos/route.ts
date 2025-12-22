@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Client ID required' }, { status: 400 });
         }
 
-        const db = readDb();
+        const db = await readDb();
         const favoritos = db.favoritos || [];
 
         // Filter favorites for this client
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const db = readDb();
+        const db = await readDb();
         const favoritos = db.favoritos || [];
 
         const existingIndex = favoritos.findIndex(

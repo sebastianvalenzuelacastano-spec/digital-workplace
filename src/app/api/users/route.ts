@@ -15,7 +15,7 @@ export async function GET() {
     if (!await isAuthenticatedManager()) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const db = readDb();
+    const db = await readDb();
     if (!db || !db.users) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
     }
@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const { username, nombre, role, password, permissions } = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (db.users.find((u: any) => u.username === username)) {
         return NextResponse.json({ error: 'Username already exists' }, { status: 400 });
@@ -57,7 +57,7 @@ export async function PUT(request: Request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const { id, username, nombre, role, permissions } = await request.json();
-    const db = readDb();
+    const db = await readDb();
     const index = db.users.findIndex((u: any) => u.id === id);
 
     if (index === -1) {
@@ -84,7 +84,7 @@ export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = Number(searchParams.get('id'));
 
-    const db = readDb();
+    const db = await readDb();
     const index = db.users.findIndex((u: any) => u.id === id);
 
     if (index === -1) {
@@ -109,7 +109,7 @@ export async function PATCH(request: Request) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const { id, newPassword } = await request.json();
-    const db = readDb();
+    const db = await readDb();
     const index = db.users.findIndex((u: any) => u.id === id);
 
     if (index === -1) {

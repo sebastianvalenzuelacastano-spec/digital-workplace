@@ -3,7 +3,7 @@ import { readDb, writeDb } from '@/lib/db';
 
 export async function GET() {
     try {
-        const db = readDb();
+        const db = await readDb();
         // Sort alphabetically by name
         const productos = (db.productos || []).sort((a: any, b: any) =>
             a.nombre.localeCompare(b.nombre, 'es')
@@ -16,7 +16,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
     try {
-        const db = readDb();
+        const db = await readDb();
         const body = await request.json();
 
         const newId = db.productos.length > 0
@@ -45,7 +45,7 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
     try {
-        const db = readDb();
+        const db = await readDb();
         const body = await request.json();
         const { id } = body;
 
@@ -68,7 +68,7 @@ export async function PUT(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
     try {
-        const db = readDb();
+        const db = await readDb();
         const { searchParams } = new URL(request.url);
         const id = parseInt(searchParams.get('id') || '');
 

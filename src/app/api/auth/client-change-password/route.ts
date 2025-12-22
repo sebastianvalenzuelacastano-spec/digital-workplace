@@ -5,7 +5,7 @@ import type { CasinoSucursal } from '@/types/dashboard';
 
 export async function POST(request: Request) {
     const { casinoId, currentPassword, newPassword } = await request.json();
-    const db = readDb();
+    const db = await readDb();
 
     if (!db || !db.casinosSucursales) {
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
