@@ -7,7 +7,7 @@ export async function GET() {
     const db = await readDb();
 
     if (!db || !db.empresasClientes) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+        return NextResponse.json([]);
     }
 
     return NextResponse.json(db.empresasClientes);
