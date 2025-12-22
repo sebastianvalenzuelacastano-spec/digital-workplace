@@ -3,19 +3,16 @@ import Redis from 'ioredis';
 // Database key
 const DB_KEY = 'panificadora:db';
 
-// Lazy Redis client - only create when needed
-let redisClient: Redis | null = null;
-
-function getRedisClient(): Redis {
-    if (!redisClient) {
-        redisClient = new Redis(process.env.REDIS_URL || '', {
-            maxRetriesPerRequest: 3,
-            enableReadyCheck: false,
-            lazyConnect: true,
-        });
-    }
-    return redisClient;
-}
+// Single Redis client instance
+const redis = new Redis(process.env.REDIS_URL || '', {
+    maxRetriesPerRequest: 3,
+    retryStrategy: (times) => {
+        if (times > 3) return null;
+        return Math.min(times * 50, 2000);
+    },
+    lazyConnect: false, // Connect immediately
+    enableReadyCheck: true,
+});
 
 // Type for the entire database
 export interface Database {
@@ -51,8 +48,6 @@ export interface Database {
  */
 export async function readDb(): Promise<Database | null> {
     try {
-        const redis = getRedisClient();
-        await redis.connect().catch(() => { }); // Connect if not already connected
         const data = await redis.get(DB_KEY);
         if (!data) return null;
         return JSON.parse(data);
@@ -67,8 +62,6 @@ export async function readDb(): Promise<Database | null> {
  */
 export async function writeDb(data: Database): Promise<boolean> {
     try {
-        const redis = getRedisClient();
-        await redis.connect().catch(() => { }); // Connect if not already connected
         await redis.set(DB_KEY, JSON.stringify(data));
         return true;
     } catch (error) {
