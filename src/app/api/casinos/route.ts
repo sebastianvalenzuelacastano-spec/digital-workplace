@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const db = await readDb();
 
     if (!db || !db.casinosSucursales) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+        return NextResponse.json([]);
     }
 
     let casinos = db.casinosSucursales;
