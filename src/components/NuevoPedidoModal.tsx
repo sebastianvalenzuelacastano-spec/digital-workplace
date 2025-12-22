@@ -39,13 +39,19 @@ export default function NuevoPedidoModal({ isOpen, onClose, onSuccess, fechaEntr
         try {
             // Load casinos
             const dbRes = await fetch('/api/db');
+            if (dbRes.status === 401) {
+                console.error('Authentication error: Token expired or invalid');
+                localStorage.removeItem('token');
+                window.location.href = '/auth/login';
+                return;
+            }
             const db = await dbRes.json();
             setCasinos(db.casinosSucursales?.filter((c: any) => c.activo) || []);
 
             // Load productos
             const prodRes = await fetch('/api/productos-catalogo');
             const prods = await prodRes.json();
-            setProductos(prods.filter((p: any) => p.activo) || []);
+            setProductos(Array.isArray(prods) ? prods.filter((p: any) => p.activo) : []);
         } catch (error) {
             console.error('Error loading data:', error);
         }
@@ -205,7 +211,7 @@ export default function NuevoPedidoModal({ isOpen, onClose, onSuccess, fechaEntr
                             fontSize: '1.2rem',
                             fontWeight: 'bold'
                         }}>
-                            Total: ${calculateTotal().toLocaleString()}
+                            Total: ${(calculateTotal() || 0).toLocaleString()}
                         </div>
                     </div>
                 )}
@@ -240,7 +246,7 @@ export default function NuevoPedidoModal({ isOpen, onClose, onSuccess, fechaEntr
                                     {producto.nombre}
                                 </div>
                                 <div style={{ color: '#2e7d32', fontWeight: 'bold' }}>
-                                    ${producto.precio.toLocaleString()}
+                                    ${(producto.precio || 0).toLocaleString()}
                                 </div>
                             </div>
                         ))}
