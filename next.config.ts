@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 // Trigger rebuild 2024-12-21 v2
 
-const nextConfig: NextConfig = {
+const nextConfig: any = {
 
   typescript: {
     // Also ignore typescript errors for now to ensure we can build what we have running in dev
