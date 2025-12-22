@@ -82,7 +82,7 @@ export async function GET(request: Request) {
 
     // Also return orders by casino for the detailed view
     const pedidosPorCasino = pedidosDelDia.map((pedido: PedidoCliente) => {
-        const detallesPedido = db.detallesPedidos.filter(
+        const detallesPedido = (db.detallesPedidos || []).filter(
             (d: DetallePedido) => d.pedidoId === pedido.id
         );
         return {
