@@ -1,4 +1,10 @@
-import { kv } from '@vercel/kv';
+import { createClient } from '@vercel/kv';
+
+// Create KV client using REDIS_URL
+const kv = createClient({
+    url: process.env.REDIS_URL || process.env.KV_REST_API_URL || '',
+    token: process.env.KV_REST_API_TOKEN || '',
+});
 
 // Database key
 const DB_KEY = 'panificadora:db';
