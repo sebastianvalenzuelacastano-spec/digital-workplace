@@ -4,6 +4,9 @@ import { readDb, writeDb } from '@/lib/db';
 export async function GET() {
     try {
         const db = await readDb();
+        if (!db) {
+            return NextResponse.json([]);
+        }
         // Sort alphabetically by name
         const productos = (db.productos || []).sort((a: any, b: any) =>
             a.nombre.localeCompare(b.nombre, 'es')
