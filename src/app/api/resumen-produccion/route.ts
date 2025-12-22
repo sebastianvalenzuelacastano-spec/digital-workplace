@@ -6,14 +6,23 @@ import type { PedidoCliente, DetallePedido } from '@/types/dashboard';
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const fecha = searchParams.get('fecha');
-    const db = await readDb();
 
     if (!fecha) {
         return NextResponse.json({ error: 'Fecha requerida' }, { status: 400 });
     }
 
+    let db = await readDb();
+
+    // Initialize database if it doesn't exist
     if (!db) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+        console.log('Database not found in resumen-produccion, initializing...');
+        const { initializeDb } = await import('@/lib/db');
+        await initializeDb();
+        db = await readDb();
+
+        if (!db) {
+            return NextResponse.json({ error: 'Failed to initialize database' }, { status: 500 });
+        }
     }
 
     // Initialize collections if they don't exist
