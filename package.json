@@ -37,3 +37,7 @@
     "typescript": "^5"
   }
 }
+,
+  "scripts": {
+    "migrate-kv": "tsx scripts/migrate-to-kv.ts"
+  }
