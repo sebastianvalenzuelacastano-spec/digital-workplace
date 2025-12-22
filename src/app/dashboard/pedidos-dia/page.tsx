@@ -44,6 +44,16 @@ export default function PedidosDiaPage() {
                 })
             ]);
 
+            // Check for authentication errors
+            if (dbRes.status === 401) {
+                console.error('Authentication error: Token expired or invalid');
+                localStorage.removeItem('token');
+                localStorage.removeItem('role');
+                alert('Tu sesión ha expirado. Por favor, inicia sesión nuevamente.');
+                window.location.href = '/auth/login';
+                return;
+            }
+
             if (resumenRes.ok) {
                 const data = await resumenRes.json();
                 setPedidos(Array.isArray(data.pedidosPorCasino) ? data.pedidosPorCasino : []);
@@ -73,7 +83,7 @@ export default function PedidosDiaPage() {
                         t.activo && t.cargo && t.cargo.toLowerCase().includes('repartidor')
                     ));
                 }
-            } else {
+            } else if (dbRes.status !== 401) {
                 console.error('Error loading db:', dbRes.status);
                 setRepartidores([]);
             }
@@ -311,7 +321,7 @@ export default function PedidosDiaPage() {
                 }}>
                     <p style={{ color: '#888', fontSize: '0.9rem' }}>Unidades Totales</p>
                     <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4caf50' }}>
-                        {totales.totalUnidades.toLocaleString()}
+                        {(totales.totalUnidades || 0).toLocaleString()}
                     </p>
                 </div>
                 <div style={{
@@ -322,7 +332,7 @@ export default function PedidosDiaPage() {
                 }}>
                     <p style={{ color: '#888', fontSize: '0.9rem' }}>Monto Total</p>
                     <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2e7d32' }}>
-                        ${totales.totalMonto.toLocaleString()}
+                        ${(totales.totalMonto || 0).toLocaleString()}
                     </p>
                 </div>
             </div>
@@ -398,7 +408,7 @@ export default function PedidosDiaPage() {
                                         <td style={{ padding: '15px' }}>{pedido.horaPedido}</td>
                                         <td style={{ padding: '15px' }}>{pedido.detalles.length}</td>
                                         <td style={{ padding: '15px', fontWeight: 'bold', color: '#2e7d32' }}>
-                                            ${pedido.total.toLocaleString()}
+                                            ${(pedido.total || 0).toLocaleString()}
                                         </td>
                                         <td style={{ padding: '15px' }}>
                                             <select
@@ -487,10 +497,10 @@ export default function PedidosDiaPage() {
                                                 {item.productoNombre}
                                             </td>
                                             <td style={{ padding: '15px', textAlign: 'right', fontSize: '1.2rem', fontWeight: 'bold', color: '#1565c0' }}>
-                                                {item.cantidadTotal.toLocaleString()}
+                                                {(item.cantidadTotal || 0).toLocaleString()}
                                             </td>
                                             <td style={{ padding: '15px', textAlign: 'right', color: '#2e7d32' }}>
-                                                ${item.subtotalTotal.toLocaleString()}
+                                                ${(item.subtotalTotal || 0).toLocaleString()}
                                             </td>
                                         </tr>
                                     ))}
@@ -499,10 +509,10 @@ export default function PedidosDiaPage() {
                                     <tr style={{ backgroundColor: '#f5f5f5', fontWeight: 'bold' }}>
                                         <td style={{ padding: '15px' }}>TOTAL</td>
                                         <td style={{ padding: '15px', textAlign: 'right', fontSize: '1.3rem', color: '#1565c0' }}>
-                                            {totales.totalUnidades.toLocaleString()} unidades
+                                            {(totales.totalUnidades || 0).toLocaleString()} unidades
                                         </td>
                                         <td style={{ padding: '15px', textAlign: 'right', fontSize: '1.3rem', color: '#2e7d32' }}>
-                                            ${totales.totalMonto.toLocaleString()}
+                                            ${(totales.totalMonto || 0).toLocaleString()}
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -590,10 +600,10 @@ export default function PedidosDiaPage() {
                                             {detalle.cantidad}
                                         </td>
                                         <td style={{ padding: '10px', textAlign: 'right' }}>
-                                            ${detalle.precioUnitario.toLocaleString()}
+                                            ${(detalle.precioUnitario || 0).toLocaleString()}
                                         </td>
                                         <td style={{ padding: '10px', textAlign: 'right', fontWeight: '600' }}>
-                                            ${detalle.subtotal.toLocaleString()}
+                                            ${(detalle.subtotal || 0).toLocaleString()}
                                         </td>
                                     </tr>
                                 ))}
@@ -604,7 +614,7 @@ export default function PedidosDiaPage() {
                                         TOTAL:
                                     </td>
                                     <td style={{ padding: '15px', fontWeight: 'bold', color: '#2e7d32', fontSize: '1.2rem', textAlign: 'right' }}>
-                                        ${selectedPedido.total.toLocaleString()}
+                                        ${(selectedPedido.total || 0).toLocaleString()}
                                     </td>
                                 </tr>
                             </tfoot>
