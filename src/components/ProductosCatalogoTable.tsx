@@ -258,7 +258,7 @@ export default function ProductosCatalogoTable() {
                     </div>
 
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Imagen del Producto *</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Imagen del Producto (Opcional)</label>
                         <input
                             type="file"
                             accept="image/png,image/jpeg,image/jpg,image/webp"
@@ -296,7 +296,7 @@ export default function ProductosCatalogoTable() {
                     </div>
 
                     <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
-                        <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={uploading || !formData.imagen}>
+                        <button type="submit" className="btn btn-primary" style={{ flex: 1 }} disabled={uploading}>
                             Guardar
                         </button>
                         <button
