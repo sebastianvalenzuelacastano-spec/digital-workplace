@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { kv } from '@vercel/kv';
 import bcrypt from 'bcryptjs';
 
+// Database key - MUST match the one in src/lib/kv.ts
+const DB_KEY = 'panificadora:db';
+
 // GET endpoint to reset/initialize admin user in production
 // Access via: /api/auth/init-admin?key=RESET_2426
 export async function GET(request: Request) {
@@ -28,8 +31,8 @@ export async function GET(request: Request) {
             permissions: ['all']
         };
 
-        // Get current database
-        let db = await kv.get('panificadora_db');
+        // Get current database using correct key
+        let db = await kv.get(DB_KEY);
 
         if (!db || typeof db !== 'object') {
             // Initialize fresh database
@@ -81,14 +84,15 @@ export async function GET(request: Request) {
             db = dbObj;
         }
 
-        // Save to Vercel KV
-        await kv.set('panificadora_db', db);
+        // Save to Vercel KV with correct key
+        await kv.set(DB_KEY, db);
 
         return NextResponse.json({
             success: true,
-            message: 'Admin user initialized/reset successfully',
+            message: 'Admin user initialized/reset successfully with correct DB key',
             username: 'gerencia',
-            password: '2426Seba'
+            password: '2426Seba',
+            dbKey: DB_KEY
         });
 
     } catch (error) {
