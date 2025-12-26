@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readDb, writeDb } from '@/lib/db';
+import { createServerClient } from '@/lib/supabase';
 import { verifyToken } from '@/lib/auth';
 import { headers } from 'next/headers';
 
@@ -18,11 +18,80 @@ export async function GET() {
     if (!await isAuthenticated()) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const data = await readDb();
-    if (!data) {
-        return NextResponse.json({ error: 'Database not found' }, { status: 404 });
+
+    try {
+        const supabase = createServerClient();
+
+        // Load all necessary data from Supabase
+        const [
+            trabajadoresRes,
+            areasRes,
+            proveedoresRes,
+            insumosRes,
+            clientesRes
+        ] = await Promise.all([
+            supabase.from('trabajadores').select('*').order('nombre'),
+            supabase.from('areas').select('*').order('nombre'),
+            supabase.from('proveedores').select('*').order('nombre'),
+            supabase.from('insumos').select('*').order('nombre'),
+            supabase.from('clientes').select('*').order('nombre')
+        ]);
+
+        // Map to camelCase format expected by frontend
+        const data = {
+            maestroTrabajadores: (trabajadoresRes.data || []).map((t: any) => ({
+                id: t.id,
+                rut: t.rut || '',
+                nombre: t.nombre,
+                cargo: t.cargo || '',
+                telefono: t.telefono || '',
+                email: t.email || '',
+                fechaIngreso: t.fecha_ingreso,
+                activo: t.activo !== false
+            })),
+            maestroAreas: (areasRes.data || []).map((a: any) => ({
+                id: a.id,
+                nombre: a.nombre,
+                activo: a.activo !== false
+            })),
+            maestroProveedores: (proveedoresRes.data || []).map((p: any) => ({
+                id: p.id,
+                rut: p.rut || '',
+                nombre: p.nombre,
+                contacto: p.contacto || '',
+                telefono: p.telefono || '',
+                email: p.email || '',
+                direccion: p.direccion || '',
+                activo: p.activo !== false
+            })),
+            maestroInsumos: (insumosRes.data || []).map((i: any) => ({
+                id: i.id,
+                nombre: i.nombre,
+                unidad: i.unidad || 'kg',
+                costoUnitario: i.costo_unitario || 0,
+                tieneImpuestoAdicional: i.tiene_impuesto_adicional || false,
+                stockMinimo: i.stock_minimo || 0,
+                activo: i.activo !== false
+            })),
+            maestroClientes: (clientesRes.data || []).map((c: any) => ({
+                id: c.id,
+                rut: c.rut || '',
+                nombre: c.nombre,
+                tipo: c.tipo || 'empresa',
+                contacto: c.contacto || '',
+                telefono: c.telefono || '',
+                email: c.email || '',
+                direccion: c.direccion || '',
+                activo: c.activo !== false
+            }))
+        };
+
+        return NextResponse.json(data);
+
+    } catch (error) {
+        console.error('Error in /api/db GET:', error);
+        return NextResponse.json({ error: 'Database error' }, { status: 500 });
     }
-    return NextResponse.json(data);
 }
 
 export async function POST(request: Request) {
@@ -35,63 +104,12 @@ export async function POST(request: Request) {
 
     const decoded = verifyToken(token) as any;
     if (!decoded) {
-        console.log('Invalid token');
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    console.log('User:', decoded.username, 'Role:', decoded.role);
-
-    const body = await request.json();
-
-    // If user is not manager, check for deletions
-    if (decoded.role !== 'manager') {
-        const currentDb = await readDb();
-        if (currentDb) {
-            // Check each collection for deletions
-            const collections = [
-                'orders', 'ventas', 'payments', 'rendimientos',
-                'insumoTransactions', 'bankTransactions', 'cajaChica',
-                'maestroAreas', 'maestroInsumos', 'gastosGenerales'
-            ];
-
-            for (const collection of collections) {
-                // Skip checks if collection is not being updated
-                if (!body[collection]) continue;
-
-                const currentItems = currentDb[collection] || [];
-                const newItems = body[collection] || [];
-
-                // If new list is shorter, something was deleted
-                if (newItems.length < currentItems.length) {
-                    return NextResponse.json({
-                        error: 'Forbidden: Only managers can delete items',
-                        details: `Deletion detected in ${collection}`
-                    }, { status: 403 });
-                }
-
-                // Also check if any specific ID is missing (in case length is same but items swapped)
-                const newIds = new Set(newItems.map((i: any) => i.id));
-                for (const item of currentItems) {
-                    if (!newIds.has(item.id)) {
-                        return NextResponse.json({
-                            error: 'Forbidden: Only managers can delete items',
-                            details: `Item ${item.id} missing from ${collection}`
-                        }, { status: 403 });
-                    }
-                }
-            }
-        }
-    }
-
-    // CRITICAL: Always preserve the users array from the original database
-    // The frontend should never modify users
-    const currentDb = await readDb() || {};
-    const finalDb = { ...currentDb, ...body };
-
-    if (currentDb.users) {
-        finalDb.users = currentDb.users;
-    }
-
-    await writeDb(finalDb);
-    return NextResponse.json({ success: true });
+    // POST is deprecated - use individual APIs instead
+    return NextResponse.json({
+        error: 'POST to /api/db is deprecated. Use individual APIs instead.',
+        message: 'Data should be saved via specific endpoints like /api/supabase-db'
+    }, { status: 400 });
 }
