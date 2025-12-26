@@ -1,43 +1,56 @@
 import { NextResponse } from 'next/server';
-import { readDb } from '@/lib/db';
+import { createServerClient } from '@/lib/supabase';
 import { comparePassword, signToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
-    const { username, password } = await request.json();
-    const db = await readDb();
+    try {
+        const { username, password } = await request.json();
+        const supabase = createServerClient();
 
-    if (!db || !db.users) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
-    }
+        // Find user by email or username
+        const { data: users, error } = await supabase
+            .from('admin_users')
+            .select('*')
+            .or(`email.eq.${username},username.eq.${username}`)
+            .eq('activo', true);
 
-    // Support both email and username for backward compatibility
-    const user = db.users.find((u: any) => u.email === username || u.username === username);
+        if (error) {
+            console.error('Login query error:', error);
+            return NextResponse.json({ error: 'Error de base de datos' }, { status: 500 });
+        }
 
-    if (user) {
-        const isValid = await comparePassword(password, user.password);
+        const user = users?.[0];
 
-        if (isValid) {
-            const token = signToken({
-                id: user.id,
-                username: user.email || user.username,
-                role: user.role,
-                permissions: user.permissions || []
-            });
+        if (user) {
+            const isValid = await comparePassword(password, user.password_hash);
 
-            return NextResponse.json({
-                success: true,
-                token,
-                user: {
+            if (isValid) {
+                const token = signToken({
                     id: user.id,
                     username: user.email || user.username,
                     role: user.role,
-                    permissions: user.permissions || [],
-                    name: user.name,
-                    mustChangePassword: user.mustChangePassword
-                }
-            });
-        }
-    }
+                    permissions: user.permissions || []
+                });
 
-    return NextResponse.json({ error: 'Credenciales inválidas' }, { status: 401 });
+                return NextResponse.json({
+                    success: true,
+                    token,
+                    user: {
+                        id: user.id,
+                        username: user.email || user.username,
+                        role: user.role,
+                        permissions: user.permissions || [],
+                        name: user.nombre,
+                        mustChangePassword: user.must_change_password
+                    }
+                });
+            }
+        }
+
+        return NextResponse.json({ error: 'Credenciales inválidas' }, { status: 401 });
+
+    } catch (error) {
+        console.error('Login error:', error);
+        return NextResponse.json({ error: 'Error de autenticación' }, { status: 500 });
+    }
 }

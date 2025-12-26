@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readDb, writeDb } from '@/lib/db';
+import { createServerClient } from '@/lib/supabase';
 
 export async function GET(request: NextRequest) {
     try {
@@ -10,16 +10,23 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Client ID required' }, { status: 400 });
         }
 
-        const db = await readDb();
-        const favoritos = db.favoritos || [];
+        const supabase = createServerClient();
 
-        // Filter favorites for this client
-        const clientFavorites = favoritos
-            .filter((f: any) => f.clientId === Number(clientId))
-            .map((f: any) => f.productoId);
+        const { data, error } = await supabase
+            .from('favoritos')
+            .select('producto_id')
+            .eq('client_id', parseInt(clientId));
 
-        return NextResponse.json(clientFavorites);
+        if (error) {
+            console.error('Error fetching favoritos:', error);
+            return NextResponse.json([]);
+        }
+
+        const productoIds = (data || []).map((f: any) => f.producto_id);
+        return NextResponse.json(productoIds);
+
     } catch (error) {
+        console.error('Error in favoritos GET:', error);
         return NextResponse.json({ error: 'Failed to fetch favorites' }, { status: 500 });
     }
 }
@@ -33,34 +40,40 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
         }
 
-        const db = await readDb();
-        const favoritos = db.favoritos || [];
+        const supabase = createServerClient();
 
-        const existingIndex = favoritos.findIndex(
-            (f: any) => f.clientId === Number(clientId) && f.productoId === Number(productoId)
-        );
+        // Check if exists
+        const { data: existing } = await supabase
+            .from('favoritos')
+            .select('id')
+            .eq('client_id', clientId)
+            .eq('producto_id', productoId)
+            .single();
 
         let isFavorite = false;
 
-        if (existingIndex >= 0) {
+        if (existing) {
             // Remove
-            favoritos.splice(existingIndex, 1);
+            await supabase
+                .from('favoritos')
+                .delete()
+                .eq('id', existing.id);
             isFavorite = false;
         } else {
             // Add
-            favoritos.push({
-                clientId: Number(clientId),
-                productoId: Number(productoId),
-                createdAt: new Date().toISOString()
-            });
+            await supabase
+                .from('favoritos')
+                .insert({
+                    client_id: clientId,
+                    producto_id: productoId
+                });
             isFavorite = true;
         }
 
-        db.favoritos = favoritos;
-        writeDb(db);
-
         return NextResponse.json({ isFavorite });
+
     } catch (error) {
+        console.error('Error in favoritos POST:', error);
         return NextResponse.json({ error: 'Failed to toggle favorite' }, { status: 500 });
     }
 }

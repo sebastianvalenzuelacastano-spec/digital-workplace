@@ -365,6 +365,15 @@ CREATE TABLE IF NOT EXISTS registros_colegios (
   fecha_creacion TIMESTAMPTZ DEFAULT now()
 );
 
+-- Favoritos de Clientes
+CREATE TABLE IF NOT EXISTS favoritos (
+  id SERIAL PRIMARY KEY,
+  client_id INTEGER NOT NULL,
+  producto_id INTEGER REFERENCES productos_catalogo(id) ON DELETE CASCADE,
+  created_at TIMESTAMPTZ DEFAULT now(),
+  UNIQUE(client_id, producto_id)
+);
+
 -- =============================================
 -- ÍNDICES PARA PERFORMANCE
 -- =============================================
@@ -375,6 +384,7 @@ CREATE INDEX IF NOT EXISTS idx_bank_trans_fecha ON bank_transactions(fecha);
 CREATE INDEX IF NOT EXISTS idx_pedidos_fecha ON pedidos(fecha_entrega);
 CREATE INDEX IF NOT EXISTS idx_pedidos_casino ON pedidos(casino_id);
 CREATE INDEX IF NOT EXISTS idx_ventas_fecha ON ventas(fecha);
+CREATE INDEX IF NOT EXISTS idx_favoritos_client ON favoritos(client_id);
 
 -- =============================================
 -- RLS (Row Level Security) - Optional
