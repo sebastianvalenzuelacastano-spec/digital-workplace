@@ -1220,18 +1220,24 @@ export default function ConfiguracionTable() {
                                     try {
                                         const res = await fetch('/api/backup');
                                         const data = await res.json();
-                                        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                                        const url = URL.createObjectURL(blob);
+                                        const jsonStr = JSON.stringify(data, null, 2);
+                                        const blob = new Blob([jsonStr], { type: 'application/json' });
+                                        const url = window.URL.createObjectURL(blob);
                                         const a = document.createElement('a');
                                         const dateStr = new Date().toISOString().split('T')[0];
                                         a.href = url;
                                         a.download = `backup_panificadora_${dateStr}.json`;
+                                        a.style.display = 'none';
                                         document.body.appendChild(a);
                                         a.click();
-                                        document.body.removeChild(a);
-                                        URL.revokeObjectURL(url);
-                                        alert('✅ Respaldo descargado correctamente');
+                                        // Delay cleanup to allow download to complete
+                                        setTimeout(() => {
+                                            window.URL.revokeObjectURL(url);
+                                            document.body.removeChild(a);
+                                        }, 1000);
+                                        alert('✅ Respaldo descargado: backup_panificadora_' + dateStr + '.json');
                                     } catch (error) {
+                                        console.error('Backup error:', error);
                                         alert('Error al descargar respaldo: ' + error);
                                     }
                                 }}
