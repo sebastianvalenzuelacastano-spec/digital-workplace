@@ -536,7 +536,8 @@ export async function getCajaChica() {
         monto: c.monto,
         descripcion: c.descripcion,
         proveedor: c.proveedor_nombre,
-        trabajador: c.trabajador_nombre
+        trabajador: c.trabajador_nombre,
+        metodoPago: c.metodo_pago || 'efectivo'
     }));
 }
 
@@ -549,13 +550,14 @@ export async function addCajaChica(item: any) {
             monto: item.monto,
             descripcion: item.descripcion,
             proveedor_nombre: item.proveedor,
-            trabajador_nombre: item.trabajador
+            trabajador_nombre: item.trabajador,
+            metodo_pago: item.metodoPago || 'efectivo'
         })
         .select()
         .single();
 
     if (error) throw error;
-    return { ...data, area: data.area_nombre, proveedor: data.proveedor_nombre, trabajador: data.trabajador_nombre };
+    return { ...data, area: data.area_nombre, proveedor: data.proveedor_nombre, trabajador: data.trabajador_nombre, metodoPago: data.metodo_pago };
 }
 
 export async function updateCajaChica(id: number, updates: any) {
@@ -567,7 +569,8 @@ export async function updateCajaChica(id: number, updates: any) {
             monto: updates.monto,
             descripcion: updates.descripcion,
             proveedor_nombre: updates.proveedor,
-            trabajador_nombre: updates.trabajador
+            trabajador_nombre: updates.trabajador,
+            metodo_pago: updates.metodoPago
         })
         .eq('id', id);
 

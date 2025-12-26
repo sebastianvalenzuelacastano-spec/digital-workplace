@@ -17,9 +17,13 @@ interface PedidoMasivo {
 
 export async function POST(request: Request) {
     try {
-        const { casinoId, empresaId, casinoNombre, empresaNombre, pedidos } = await request.json();
+        const body = await request.json();
+        const { casinoId, empresaId, casinoNombre, empresaNombre, pedidos } = body;
 
-        if (!casinoId || !empresaId || !Array.isArray(pedidos) || pedidos.length === 0) {
+        console.log('Bulk orders request:', { casinoId, empresaId, pedidosCount: pedidos?.length });
+
+        if (!casinoId || !Array.isArray(pedidos) || pedidos.length === 0) {
+            console.error('Validation failed:', { casinoId, hasPedidos: Array.isArray(pedidos), count: pedidos?.length });
             return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 });
         }
 
@@ -29,7 +33,12 @@ export async function POST(request: Request) {
         let createdCount = 0;
 
         for (const pedido of pedidos as PedidoMasivo[]) {
-            if (pedido.productos.length === 0) continue;
+            console.log('Processing pedido:', { fecha: pedido.fecha, productosCount: pedido.productos?.length });
+
+            if (!pedido.productos || pedido.productos.length === 0) {
+                console.log('Skipping pedido with no productos');
+                continue;
+            }
 
             const total = pedido.productos.reduce((sum, p) => sum + (p.cantidad * p.precio), 0);
 
@@ -39,7 +48,7 @@ export async function POST(request: Request) {
                 .insert({
                     casino_id: parseInt(String(casinoId)),
                     casino_nombre: casinoNombre || null,
-                    empresa_id: parseInt(String(empresaId)),
+                    empresa_id: empresaId ? parseInt(String(empresaId)) : 1,
                     empresa_nombre: empresaNombre || null,
                     fecha_pedido: fechaHoy,
                     hora_pedido: horaHoy,
@@ -62,6 +71,7 @@ export async function POST(request: Request) {
                 continue;
             }
 
+            console.log('Created pedido:', newPedido.id);
             createdCount++;
 
             // Create details in Supabase

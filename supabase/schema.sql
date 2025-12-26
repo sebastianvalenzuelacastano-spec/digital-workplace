@@ -123,6 +123,7 @@ CREATE TABLE IF NOT EXISTS caja_chica (
   proveedor_nombre TEXT,
   trabajador_id INTEGER REFERENCES trabajadores(id) ON DELETE SET NULL,
   trabajador_nombre TEXT,
+  metodo_pago TEXT CHECK (metodo_pago IN ('efectivo', 'tarjeta', 'cheque')) DEFAULT 'efectivo',
   created_at TIMESTAMPTZ DEFAULT now()
 );
 

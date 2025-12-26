@@ -115,6 +115,7 @@ export interface CajaChica {
     descripcion: string;
     proveedor?: string; // Link to maestroProveedores
     trabajador?: string; // Link to maestroTrabajadores
+    metodoPago?: 'efectivo' | 'tarjeta' | 'cheque'; // Payment method for bank integration
 }
 
 // Master Data

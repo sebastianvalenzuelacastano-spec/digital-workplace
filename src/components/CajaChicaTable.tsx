@@ -9,7 +9,7 @@ import DateFilter from './DateFilter';
 import ExportButtons from './ExportButtons';
 
 export default function CajaChicaTable() {
-    const { cajaChica, addCajaChica, updateCajaChica, deleteCajaChica, maestroAreas, maestroProveedores, maestroTrabajadores } = useDashboard();
+    const { cajaChica, addCajaChica, updateCajaChica, deleteCajaChica, maestroAreas, maestroProveedores, maestroTrabajadores, addBankTransaction } = useDashboard();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [role, setRole] = useState<string | null>(null);
@@ -26,11 +26,14 @@ export default function CajaChicaTable() {
         monto: 0,
         descripcion: '',
         proveedor: '',
-        trabajador: ''
+        trabajador: '',
+        metodoPago: 'efectivo'
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        const metodoPago = formData.metodoPago || 'efectivo';
+
         if (editingId) {
             updateCajaChica(editingId, {
                 fecha: formData.fecha || '',
@@ -38,21 +41,38 @@ export default function CajaChicaTable() {
                 monto: Number(formData.monto) || 0,
                 descripcion: formData.descripcion || '',
                 proveedor: beneficiaryType === 'proveedor' ? formData.proveedor : undefined,
-                trabajador: beneficiaryType === 'trabajador' ? formData.trabajador : undefined
+                trabajador: beneficiaryType === 'trabajador' ? formData.trabajador : undefined,
+                metodoPago: metodoPago
             });
         } else {
+            // Create caja chica entry
             addCajaChica({
                 fecha: formData.fecha || '',
                 area: formData.area || '',
                 monto: Number(formData.monto) || 0,
                 descripcion: formData.descripcion || '',
                 proveedor: beneficiaryType === 'proveedor' ? formData.proveedor : undefined,
-                trabajador: beneficiaryType === 'trabajador' ? formData.trabajador : undefined
+                trabajador: beneficiaryType === 'trabajador' ? formData.trabajador : undefined,
+                metodoPago: metodoPago
             });
+
+            // If paid with card or check, also create bank transaction
+            if (metodoPago === 'tarjeta' || metodoPago === 'cheque') {
+                const descripcionBanco = `[Caja Chica] ${formData.descripcion} - ${formData.area}`;
+                await addBankTransaction({
+                    fecha: formData.fecha || '',
+                    entrada: 0,
+                    salida: Number(formData.monto) || 0,
+                    documento: metodoPago === 'cheque' ? 'Cheque' : 'Tarjeta',
+                    descripcion: descripcionBanco,
+                    observacion: '',
+                    areaPago: 'Caja Chica'
+                });
+            }
         }
         setIsModalOpen(false);
         setEditingId(null);
-        setFormData({ fecha: '', area: '', monto: 0, descripcion: '', proveedor: '', trabajador: '' });
+        setFormData({ fecha: '', area: '', monto: 0, descripcion: '', proveedor: '', trabajador: '', metodoPago: 'efectivo' });
         setBeneficiaryType('otro');
     };
 
@@ -68,7 +88,8 @@ export default function CajaChicaTable() {
             monto: item.monto,
             descripcion: item.descripcion,
             proveedor: item.proveedor || '',
-            trabajador: item.trabajador || ''
+            trabajador: item.trabajador || '',
+            metodoPago: item.metodoPago || 'efectivo'
         });
         setIsModalOpen(true);
     };
@@ -82,7 +103,7 @@ export default function CajaChicaTable() {
     const handleCloseModal = () => {
         setIsModalOpen(false);
         setEditingId(null);
-        setFormData({ fecha: '', area: '', monto: 0, descripcion: '', proveedor: '', trabajador: '' });
+        setFormData({ fecha: '', area: '', monto: 0, descripcion: '', proveedor: '', trabajador: '', metodoPago: 'efectivo' });
         setBeneficiaryType('otro');
     };
 
@@ -259,6 +280,50 @@ export default function CajaChicaTable() {
                         </div>
 
                         <div>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Método de Pago *</label>
+                            <div style={{ display: 'flex', gap: '1rem', marginBottom: '0.5rem' }}>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="metodoPago"
+                                        checked={formData.metodoPago === 'efectivo'}
+                                        onChange={() => setFormData({ ...formData, metodoPago: 'efectivo' })}
+                                    />
+                                    <span>💵 Efectivo</span>
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="metodoPago"
+                                        checked={formData.metodoPago === 'tarjeta'}
+                                        onChange={() => setFormData({ ...formData, metodoPago: 'tarjeta' })}
+                                    />
+                                    <span>💳 Tarjeta</span>
+                                </label>
+                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer' }}>
+                                    <input
+                                        type="radio"
+                                        name="metodoPago"
+                                        checked={formData.metodoPago === 'cheque'}
+                                        onChange={() => setFormData({ ...formData, metodoPago: 'cheque' })}
+                                    />
+                                    <span>📝 Cheque</span>
+                                </label>
+                            </div>
+                            {(formData.metodoPago === 'tarjeta' || formData.metodoPago === 'cheque') && !editingId && (
+                                <div style={{
+                                    backgroundColor: '#e3f2fd',
+                                    padding: '8px 12px',
+                                    borderRadius: '6px',
+                                    fontSize: '0.85rem',
+                                    color: '#1565c0'
+                                }}>
+                                    ℹ️ Este gasto también se registrará en Conciliación Bancaria
+                                </div>
+                            )}
+                        </div>
+
+                        <div>
                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Monto *</label>
                             <input
                                 type="number"
@@ -341,6 +406,7 @@ export default function CajaChicaTable() {
                             <th style={{ padding: '10px' }}>Fecha</th>
                             <th style={{ padding: '10px' }}>Área</th>
                             <th style={{ padding: '10px' }}>Monto</th>
+                            <th style={{ padding: '10px' }}>Pago</th>
                             <th style={{ padding: '10px' }}>Descripción</th>
                             <th style={{ padding: '10px' }}>Acciones</th>
                         </tr>
@@ -363,6 +429,17 @@ export default function CajaChicaTable() {
                                         </span>
                                     </td>
                                     <td style={{ padding: '10px', fontWeight: 'bold', color: '#f44336' }}>${item.monto.toLocaleString()}</td>
+                                    <td style={{ padding: '10px' }}>
+                                        <span style={{
+                                            padding: '4px 8px',
+                                            borderRadius: '12px',
+                                            fontSize: '0.85rem',
+                                            backgroundColor: item.metodoPago === 'tarjeta' ? '#e3f2fd' : item.metodoPago === 'cheque' ? '#fff3e0' : '#f5f5f5',
+                                            color: item.metodoPago === 'tarjeta' ? '#1565c0' : item.metodoPago === 'cheque' ? '#e65100' : '#666'
+                                        }}>
+                                            {item.metodoPago === 'tarjeta' ? '💳' : item.metodoPago === 'cheque' ? '📝' : '💵'} {item.metodoPago || 'efectivo'}
+                                        </span>
+                                    </td>
                                     <td style={{ padding: '10px', color: '#666' }}>{item.descripcion}</td>
                                     <td style={{ padding: '10px' }}>
                                         <button
