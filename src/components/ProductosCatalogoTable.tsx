@@ -12,6 +12,7 @@ interface Producto {
     destacado: boolean;
     activo: boolean;
     orden: number;
+    mostrarEnWeb?: boolean;
 }
 
 export default function ProductosCatalogoTable() {
@@ -144,6 +145,19 @@ export default function ProductosCatalogoTable() {
         }
     };
 
+    const handleToggleWeb = async (producto: Producto) => {
+        try {
+            await fetch('/api/productos-catalogo', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...producto, mostrarEnWeb: !producto.mostrarEnWeb })
+            });
+            fetchProductos();
+        } catch (error) {
+            alert('Error updating web visibility');
+        }
+    };
+
     const closeModal = () => {
         setIsModalOpen(false);
         setEditingId(null);
@@ -177,6 +191,7 @@ export default function ProductosCatalogoTable() {
                         <th style={{ padding: '10px' }}>Nombre</th>
                         <th style={{ padding: '10px' }}>Categoría</th>
                         <th style={{ padding: '10px' }}>Destacado</th>
+                        <th style={{ padding: '10px' }}>En Web</th>
                         <th style={{ padding: '10px' }}>Estado</th>
                         <th style={{ padding: '10px' }}>Acciones</th>
                     </tr>
@@ -195,6 +210,22 @@ export default function ProductosCatalogoTable() {
                             </td>
                             <td style={{ padding: '10px' }}>
                                 {producto.destacado ? '⭐ Sí' : 'No'}
+                            </td>
+                            <td style={{ padding: '10px' }}>
+                                <button
+                                    onClick={() => handleToggleWeb(producto)}
+                                    style={{
+                                        padding: '4px 12px',
+                                        borderRadius: '12px',
+                                        fontSize: '0.85rem',
+                                        cursor: 'pointer',
+                                        border: 'none',
+                                        backgroundColor: producto.mostrarEnWeb ? '#e8f5e9' : '#f5f5f5',
+                                        color: producto.mostrarEnWeb ? '#2e7d32' : '#666'
+                                    }}
+                                >
+                                    {producto.mostrarEnWeb ? '🌐 Visible' : '⊘ Oculto'}
+                                </button>
                             </td>
                             <td style={{ padding: '10px' }}>
                                 <span style={{

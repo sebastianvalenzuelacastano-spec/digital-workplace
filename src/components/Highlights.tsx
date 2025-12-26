@@ -11,7 +11,7 @@ export default async function Highlights() {
         const productsWithUniqueImages: any[] = [];
 
         for (const p of allProducts) {
-            if (p.activo && p.imagenUrl) {
+            if (p.activo && p.mostrarEnWeb && p.imagenUrl) {
                 // Only add if image hasn't been seen
                 if (!seenImages.has(p.imagenUrl)) {
                     seenImages.add(p.imagenUrl);
