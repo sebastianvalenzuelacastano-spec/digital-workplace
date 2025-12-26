@@ -18,7 +18,7 @@ interface PedidoMasivo {
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { casinoId, empresaId, casinoNombre, empresaNombre, pedidos } = body;
+        let { casinoId, empresaId, casinoNombre, empresaNombre, pedidos } = body;
 
         console.log('Bulk orders request:', { casinoId, empresaId, pedidosCount: pedidos?.length });
 
@@ -28,6 +28,22 @@ export async function POST(request: Request) {
         }
 
         const supabase = createServerClient();
+
+        // Fetch casino and empresa names if not provided
+        if (!casinoNombre || !empresaNombre || !empresaId) {
+            const { data: casinoData } = await supabase
+                .from('casinos_sucursales')
+                .select('nombre, empresa_id, empresa_nombre')
+                .eq('id', casinoId)
+                .single();
+
+            if (casinoData) {
+                casinoNombre = casinoNombre || casinoData.nombre;
+                empresaId = empresaId || casinoData.empresa_id;
+                empresaNombre = empresaNombre || casinoData.empresa_nombre;
+            }
+        }
+
         const fechaHoy = new Date().toISOString().split('T')[0];
         const horaHoy = new Date().toTimeString().split(' ')[0].substring(0, 5);
         let createdCount = 0;
