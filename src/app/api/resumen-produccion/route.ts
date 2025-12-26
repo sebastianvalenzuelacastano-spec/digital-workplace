@@ -94,28 +94,28 @@ export async function GET(request: Request) {
                     id: d.id,
                     pedidoId: d.pedido_id,
                     productoId: d.producto_id,
-                    productoNombre: d.producto_nombre,
-                    cantidad: d.cantidad,
-                    precioUnitario: d.precio_unitario,
-                    subtotal: d.subtotal,
-                    unidad: d.unidad
+                    productoNombre: d.producto_nombre || 'Sin nombre',
+                    cantidad: d.cantidad || 0,
+                    precioUnitario: d.precio_unitario || 0,
+                    subtotal: d.subtotal || 0,
+                    unidad: d.unidad || 'Un'
                 }));
 
             return {
                 id: pedido.id,
                 casinoId: pedido.casino_id,
-                casinoNombre: pedido.casino_nombre,
+                casinoNombre: pedido.casino_nombre || 'Sin asignar',
                 empresaId: pedido.empresa_id,
-                empresaNombre: pedido.empresa_nombre,
+                empresaNombre: pedido.empresa_nombre || '',
                 fechaPedido: pedido.fecha_pedido,
                 fechaEntrega: pedido.fecha_entrega,
-                horaPedido: pedido.hora_pedido,
-                horaEntrega: pedido.hora_entrega,
-                estado: pedido.estado,
-                total: pedido.total,
-                observaciones: pedido.observaciones,
-                repartidor: pedido.repartidor,
-                origenPedido: pedido.origen_pedido,
+                horaPedido: pedido.hora_pedido || '',
+                horaEntrega: pedido.hora_entrega || '',
+                estado: pedido.estado || 'pendiente',
+                total: pedido.total || 0,
+                observaciones: pedido.observaciones || '',
+                repartidor: pedido.repartidor || '',
+                origenPedido: pedido.origen_pedido || 'web',
                 detalles: detallesPedido
             };
         });
