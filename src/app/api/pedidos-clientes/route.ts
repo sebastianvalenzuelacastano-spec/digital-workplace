@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readDb, writeDb } from '@/lib/db';
-import type { PedidoCliente, DetallePedido } from '@/types/dashboard';
+import { createServerClient } from '@/lib/supabase';
 
 // GET - List orders with filters
 export async function GET(request: Request) {
@@ -9,82 +8,72 @@ export async function GET(request: Request) {
     const casinoId = searchParams.get('casinoId');
     const empresaId = searchParams.get('empresaId');
     const estado = searchParams.get('estado');
-    const db = await readDb();
 
-    if (!db || !db.pedidosClientes) {
+    const supabase = createServerClient();
+
+    // Build query
+    let query = supabase.from('pedidos').select('*');
+
+    if (fecha) {
+        query = query.eq('fecha_entrega', fecha);
+    }
+    if (casinoId) {
+        query = query.eq('casino_id', parseInt(casinoId));
+    }
+    if (empresaId) {
+        query = query.eq('empresa_id', parseInt(empresaId));
+    }
+    if (estado) {
+        query = query.eq('estado', estado);
+    }
+
+    const { data: pedidos, error } = await query.order('fecha_entrega', { ascending: false });
+
+    if (error) {
+        console.error('Error fetching pedidos:', error);
         return NextResponse.json({ error: 'Database error' }, { status: 500 });
     }
 
-    let pedidos = db.pedidosClientes;
+    // Get all details for these orders
+    const pedidoIds = pedidos.map(p => p.id);
+    const { data: detalles } = await supabase
+        .from('detalle_pedidos')
+        .select('*')
+        .in('pedido_id', pedidoIds.length > 0 ? pedidoIds : [-1]);
 
-    // Apply filters
-    if (fecha) {
-        pedidos = pedidos.filter((p: PedidoCliente) => p.fechaEntrega === fecha);
-    }
-    if (casinoId) {
-        pedidos = pedidos.filter((p: PedidoCliente) => p.casinoId === parseInt(casinoId));
-    }
-    if (empresaId) {
-        pedidos = pedidos.filter((p: PedidoCliente) => p.empresaId === parseInt(empresaId));
-    }
-    if (estado) {
-        pedidos = pedidos.filter((p: PedidoCliente) => p.estado === estado);
-    }
-
-    // Include order details and update status if needed
-    let hasUpdates = false;
-
-    // Safe Chile Time calculation
-    let currentHour = 0;
-    let todayStr = "";
-
-    try {
-        const formatter = new Intl.DateTimeFormat('en-US', {
-            timeZone: 'America/Santiago',
-            hour12: false,
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit'
-        });
-
-        const parts = formatter.formatToParts(new Date());
-        const getPart = (type: string) => parts.find(p => p.type === type)?.value;
-
-        // Construct YYYY-MM-DD
-        todayStr = `${getPart('year')}-${getPart('month')}-${getPart('day')}`;
-        currentHour = parseInt(getPart('hour') || '0', 10);
-    } catch (e) {
-        console.error("Error calculating Chile time:", e);
-        // Fallback to UTC or server local if needed, or just skip update
-    }
-
-    const pedidosWithDetails = pedidos.map((pedido: PedidoCliente) => {
-        // Auto-update to 'despachado' logic
-        if (todayStr &&
-            pedido.fechaEntrega === todayStr &&
-            currentHour >= 15 &&
-            ['pendiente', 'confirmado', 'en_produccion'].includes(pedido.estado)) {
-
-            pedido.estado = 'despachado';
-
-            // Update in the main array reference for persistence
-            const dbIndex = db.pedidosClientes.findIndex((p: PedidoCliente) => p.id === pedido.id);
-            if (dbIndex !== -1) {
-                db.pedidosClientes[dbIndex].estado = 'despachado';
-                hasUpdates = true;
-            }
-        }
-
-        const detalles = (db.detallesPedidos || []).filter(
-            (d: DetallePedido) => d.pedidoId === pedido.id
-        );
-        return { ...pedido, detalles };
-    });
-
-    if (hasUpdates) {
-        writeDb(db);
-    }
+    // Map to frontend format with detalles
+    const pedidosWithDetails = pedidos.map(p => ({
+        id: p.id,
+        casinoId: p.casino_id,
+        empresaId: p.empresa_id,
+        casinoNombre: p.casino_nombre,
+        empresaNombre: p.empresa_nombre,
+        fechaPedido: p.fecha_pedido,
+        fechaEntrega: p.fecha_entrega,
+        horaPedido: p.hora_pedido,
+        horaEntrega: p.hora_entrega,
+        estado: p.estado,
+        total: p.total,
+        observaciones: p.observaciones,
+        esRecurrente: p.es_recurrente,
+        diasRecurrencia: p.dias_recurrencia,
+        repartidor: p.repartidor,
+        origenPedido: p.origen_pedido,
+        notificadoEmail: p.notificado_email,
+        notificadoWhatsapp: p.notificado_whatsapp,
+        detalles: (detalles || [])
+            .filter(d => d.pedido_id === p.id)
+            .map(d => ({
+                id: d.id,
+                pedidoId: d.pedido_id,
+                productoId: d.producto_id,
+                productoNombre: d.producto_nombre,
+                cantidad: d.cantidad,
+                unidad: d.unidad,
+                precioUnitario: d.precio_unitario,
+                subtotal: d.subtotal
+            }))
+    }));
 
     return NextResponse.json(pedidosWithDetails);
 }
@@ -92,40 +81,39 @@ export async function GET(request: Request) {
 // POST - Create new order
 export async function POST(request: Request) {
     const data = await request.json();
-    const db = await readDb();
+    const supabase = createServerClient();
 
-    if (!db) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
-    }
+    // Get casino info
+    const { data: casino } = await supabase
+        .from('casinos_sucursales')
+        .select('*')
+        .eq('id', data.casinoId)
+        .single();
 
-    if (!db.pedidosClientes) db.pedidosClientes = [];
-    if (!db.detallesPedidos) db.detallesPedidos = [];
-
-    // Validate casino exists
-    const casino = db.casinosSucursales?.find((c: any) => c.id === data.casinoId);
     if (!casino) {
         return NextResponse.json({ error: 'Casino no encontrado' }, { status: 400 });
     }
 
     // Get empresa info
-    const empresa = db.empresasClientes?.find((e: any) => e.id === casino.empresaId);
+    const { data: empresa } = await supabase
+        .from('empresas_clientes')
+        .select('*')
+        .eq('id', casino.empresa_id)
+        .single();
 
     // Check order deadline (18:00)
     const now = new Date();
     const currentHour = now.getHours();
     const orderDate = now.toISOString().split('T')[0];
 
-    // Parse delivery date as LOCAL midnight to avoid UTC offsets making it the previous day
     const [y, m, d] = data.fechaEntrega.split('-').map(Number);
-    const deliveryDate = new Date(y, m - 1, d); // Local midnight
+    const deliveryDate = new Date(y, m - 1, d);
 
-    // Calculate thresholds (Local midnight)
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
 
     if (currentHour >= 18) {
-        // After 18:00, minimum delivery is day after tomorrow
         const minDelivery = new Date(now);
         minDelivery.setDate(minDelivery.getDate() + 2);
         minDelivery.setHours(0, 0, 0, 0);
@@ -136,7 +124,6 @@ export async function POST(request: Request) {
             }, { status: 400 });
         }
     } else {
-        // Before 18:00, minimum delivery is tomorrow
         if (deliveryDate < tomorrow) {
             return NextResponse.json({
                 error: 'La fecha de entrega debe ser al menos mañana'
@@ -145,146 +132,172 @@ export async function POST(request: Request) {
     }
 
     // Create order
-    const newOrderId = db.pedidosClientes.length > 0
-        ? Math.max(...db.pedidosClientes.map((p: PedidoCliente) => p.id)) + 1
-        : 1;
+    const { data: newOrder, error: orderError } = await supabase
+        .from('pedidos')
+        .insert({
+            casino_id: data.casinoId,
+            casino_nombre: casino.nombre,
+            empresa_id: casino.empresa_id,
+            empresa_nombre: empresa?.nombre || '',
+            fecha_pedido: orderDate,
+            fecha_entrega: data.fechaEntrega,
+            hora_pedido: now.toTimeString().slice(0, 5),
+            hora_entrega: data.horaEntrega || null,
+            estado: 'pendiente',
+            total: 0,
+            observaciones: data.observaciones || '',
+            es_recurrente: data.esRecurrente || false,
+            dias_recurrencia: data.diasRecurrencia || null,
+            notificado_email: false,
+            notificado_whatsapp: false,
+            origen_pedido: data.origenPedido || 'web',
+            repartidor: data.repartidor || null
+        })
+        .select()
+        .single();
 
-    const newOrder: PedidoCliente = {
-        id: newOrderId,
-        casinoId: data.casinoId,
-        empresaId: casino.empresaId,
-        casinoNombre: casino.nombre,
-        empresaNombre: empresa?.nombre || '',
-        fechaPedido: orderDate,
-        fechaEntrega: data.fechaEntrega,
-        horaPedido: now.toTimeString().slice(0, 5),
-        horaEntrega: data.horaEntrega || '', // Include delivery time
-        estado: 'pendiente',
-        total: 0,
-        observaciones: data.observaciones || '',
-        esRecurrente: data.esRecurrente || false,
-        diasRecurrencia: data.diasRecurrencia || [],
-        notificadoEmail: false,
-        notificadoWhatsapp: false,
-        origenPedido: data.origenPedido || 'manual',
-        repartidor: data.repartidor || ''
-    };
+    if (orderError) {
+        console.error('Error creating order:', orderError);
+        return NextResponse.json({ error: 'Error al crear el pedido' }, { status: 500 });
+    }
 
     // Create order items
     let total = 0;
-    const detalles: DetallePedido[] = [];
-    const baseDetailId = db.detallesPedidos.length > 0
-        ? Math.max(...db.detallesPedidos.map((d: DetallePedido) => d.id)) + 1
-        : 1;
-
-    for (let i = 0; i < data.items.length; i++) {
-        const item = data.items[i];
+    const detallesData = data.items.map((item: any) => {
         const subtotal = item.cantidad * item.precioUnitario;
         total += subtotal;
-
-        const detalle: DetallePedido = {
-            id: baseDetailId + i,
-            pedidoId: newOrderId,
-            productoId: item.productoId,
-            productoNombre: item.productoNombre,
+        return {
+            pedido_id: newOrder.id,
+            producto_id: item.productoId,
+            producto_nombre: item.productoNombre,
             cantidad: item.cantidad,
             unidad: item.unidad,
-            precioUnitario: item.precioUnitario,
+            precio_unitario: item.precioUnitario,
             subtotal
         };
-        detalles.push(detalle);
-        db.detallesPedidos.push(detalle);
+    });
+
+    const { data: newDetalles, error: detError } = await supabase
+        .from('detalle_pedidos')
+        .insert(detallesData)
+        .select();
+
+    if (detError) {
+        console.error('Error creating detalles:', detError);
     }
 
-    newOrder.total = total;
-    db.pedidosClientes.push(newOrder);
-    writeDb(db);
+    // Update order total
+    await supabase.from('pedidos').update({ total }).eq('id', newOrder.id);
 
-    // TODO: Send notifications (email & WhatsApp)
-    // sendEmailNotification(newOrder, detalles, casino, empresa);
-    // sendWhatsAppNotification(newOrder, casino);
+    // Map response
+    const response = {
+        id: newOrder.id,
+        casinoId: newOrder.casino_id,
+        empresaId: newOrder.empresa_id,
+        casinoNombre: newOrder.casino_nombre,
+        empresaNombre: newOrder.empresa_nombre,
+        fechaPedido: newOrder.fecha_pedido,
+        fechaEntrega: newOrder.fecha_entrega,
+        horaPedido: newOrder.hora_pedido,
+        horaEntrega: newOrder.hora_entrega,
+        estado: newOrder.estado,
+        total: total,
+        observaciones: newOrder.observaciones,
+        detalles: (newDetalles || []).map(d => ({
+            id: d.id,
+            pedidoId: d.pedido_id,
+            productoId: d.producto_id,
+            productoNombre: d.producto_nombre,
+            cantidad: d.cantidad,
+            unidad: d.unidad,
+            precioUnitario: d.precio_unitario,
+            subtotal: d.subtotal
+        }))
+    };
 
-    return NextResponse.json({ ...newOrder, detalles }, { status: 201 });
+    return NextResponse.json(response, { status: 201 });
 }
 
 // PUT - Update order status and details
 export async function PUT(request: Request) {
     const data = await request.json();
-    const db = await readDb();
+    const supabase = createServerClient();
 
-    if (!db || !db.pedidosClientes) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    // Update pedido
+    const updateData: any = {};
+    if (data.estado !== undefined) updateData.estado = data.estado;
+    if (data.repartidor !== undefined) updateData.repartidor = data.repartidor;
+    if (data.horaEntrega !== undefined) updateData.hora_entrega = data.horaEntrega;
+    if (data.observaciones !== undefined) updateData.observaciones = data.observaciones;
+    if (data.notificadoEmail !== undefined) updateData.notificado_email = data.notificadoEmail;
+    if (data.notificadoWhatsapp !== undefined) updateData.notificado_whatsapp = data.notificadoWhatsapp;
+
+    const { error: updateError } = await supabase
+        .from('pedidos')
+        .update(updateData)
+        .eq('id', data.id);
+
+    if (updateError) {
+        console.error('Error updating pedido:', updateError);
+        return NextResponse.json({ error: 'Error al actualizar el pedido' }, { status: 500 });
     }
-
-    const index = db.pedidosClientes.findIndex((p: PedidoCliente) => p.id === data.id);
-    if (index === -1) {
-        return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 });
-    }
-
-    // Update pedido fields (excluding detalles which we handle separately)
-    const { detalles, ...pedidoData } = data;
-    db.pedidosClientes[index] = {
-        ...db.pedidosClientes[index],
-        ...pedidoData
-    };
 
     // Handle detalles update if provided
-    if (detalles && Array.isArray(detalles)) {
-        if (!db.detallesPedidos) db.detallesPedidos = [];
+    if (data.detalles && Array.isArray(data.detalles)) {
+        // Delete old detalles
+        await supabase.from('detalle_pedidos').delete().eq('pedido_id', data.id);
 
-        // Remove old detalles for this pedido
-        db.detallesPedidos = db.detallesPedidos.filter(
-            (d: DetallePedido) => d.pedidoId !== data.id
-        );
-
-        // Add new/updated detalles
+        // Insert new detalles
         let total = 0;
-        const baseId = db.detallesPedidos.length > 0
-            ? Math.max(...db.detallesPedidos.map((d: DetallePedido) => d.id)) + 1
-            : 1;
-
-        detalles.forEach((det: DetallePedido, i: number) => {
+        const newDetalles = data.detalles.map((det: any) => {
             const subtotal = (det.cantidad || 0) * (det.precioUnitario || 0);
             total += subtotal;
-
-            db.detallesPedidos.push({
-                id: baseId + i,
-                pedidoId: data.id,
-                productoId: det.productoId,
-                productoNombre: det.productoNombre,
+            return {
+                pedido_id: data.id,
+                producto_id: det.productoId,
+                producto_nombre: det.productoNombre,
                 cantidad: det.cantidad,
                 unidad: det.unidad || 'Kg',
-                precioUnitario: det.precioUnitario || 0,
+                precio_unitario: det.precioUnitario || 0,
                 subtotal
-            });
+            };
         });
 
-        // Update order total
-        db.pedidosClientes[index].total = total;
+        await supabase.from('detalle_pedidos').insert(newDetalles);
+        await supabase.from('pedidos').update({ total }).eq('id', data.id);
     }
 
-    await writeDb(db);
-    return NextResponse.json(db.pedidosClientes[index]);
+    // Get updated order
+    const { data: updatedPedido } = await supabase
+        .from('pedidos')
+        .select('*')
+        .eq('id', data.id)
+        .single();
+
+    return NextResponse.json(updatedPedido ? {
+        id: updatedPedido.id,
+        casinoId: updatedPedido.casino_id,
+        empresaId: updatedPedido.empresa_id,
+        estado: updatedPedido.estado,
+        total: updatedPedido.total
+    } : { success: true });
 }
 
 // DELETE - Cancel order
 export async function DELETE(request: Request) {
     const { searchParams } = new URL(request.url);
     const id = parseInt(searchParams.get('id') || '0');
-    const db = await readDb();
+    const supabase = createServerClient();
 
-    if (!db || !db.pedidosClientes) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    const { error } = await supabase
+        .from('pedidos')
+        .update({ estado: 'cancelado' })
+        .eq('id', id);
+
+    if (error) {
+        console.error('Error canceling pedido:', error);
+        return NextResponse.json({ error: 'Error al cancelar el pedido' }, { status: 500 });
     }
-
-    const index = db.pedidosClientes.findIndex((p: PedidoCliente) => p.id === id);
-    if (index === -1) {
-        return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 });
-    }
-
-    // Don't delete, just cancel
-    db.pedidosClientes[index].estado = 'cancelado';
-    writeDb(db);
 
     return NextResponse.json({ success: true });
 }

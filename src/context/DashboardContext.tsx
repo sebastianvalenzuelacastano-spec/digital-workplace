@@ -164,14 +164,15 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     const [mantenimientosVehiculos, setMantenimientosVehiculos] = useState<MantenimientoVehiculo[]>([]);
 
     // Orders Functions
-    // Load initial data from API
+    // Load initial data from API (now using Supabase)
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem('token');
                 if (!token) return; // Wait for login
 
-                const response = await fetch('/api/db', {
+                // Use new Supabase-based API
+                const response = await fetch('/api/supabase-db', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -211,7 +212,33 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         fetchData();
     }, []);
 
-    // Helper to save data to API
+    // Helper to perform CRUD operations via Supabase API
+    const supabaseCrud = async (action: 'add' | 'update' | 'delete', table: string, data?: any, id?: number) => {
+        try {
+            const response = await fetch('/api/supabase-db', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ action, table, id, data }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Supabase CRUD error:', errorData);
+                alert(`Error al guardar: ${errorData.details || errorData.error}`);
+                return null;
+            }
+
+            const result = await response.json();
+            return result.data || result;
+        } catch (error) {
+            console.error('Error in supabaseCrud:', error);
+            alert('Error de conexión. Por favor, intenta de nuevo.');
+            return null;
+        }
+    };
+
+    // Legacy saveData - still used for some complex operations
+    // TODO: Migrate remaining uses to supabaseCrud
     const saveData = async (newData: any) => {
         try {
             const token = localStorage.getItem('token');
@@ -220,8 +247,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            console.log('saveData: Saving data...', { insumoTransactionsCount: newData.insumoTransactions?.length });
-
+            // For now, use the old API for complex batch operations
+            // Individual CRUD should use supabaseCrud instead
             const response = await fetch('/api/db', {
                 method: 'POST',
                 headers: {
@@ -231,8 +258,6 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
                 body: JSON.stringify(newData),
             });
 
-            console.log('saveData: Response status:', response.status);
-
             if (response.status === 401) {
                 localStorage.removeItem('token');
                 localStorage.removeItem('role');
@@ -240,24 +265,14 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
                 return;
             }
 
-            if (response.status === 403) {
-                const errorData = await response.json();
-                alert(`❌ Error: ${errorData.error}\n\n${errorData.details || 'No tienes permisos para realizar esta acción.'}`);
-                // Reload the page to reset state
-                window.location.reload();
-                return;
-            }
-
             if (!response.ok) {
                 const errorData = await response.json();
                 console.error('Error saving data:', errorData);
-                alert(`Error al guardar los cambios: ${errorData.error || 'Error desconocido'}`);
-                // Reload the page to reset state
-                window.location.reload();
+                alert(`Error al guardar: ${errorData.error || 'Error desconocido'}`);
             }
         } catch (error) {
             console.error('Error saving data:', error);
-            alert('Error de conexión al guardar los cambios. Por favor, intenta de nuevo.');
+            alert('Error de conexión al guardar los cambios.');
         }
     };
 
@@ -321,46 +336,21 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     };
 
     // Sales Functions
-    const addVenta = (venta: Omit<Venta, 'id'>) => {
-        const newVenta = { ...venta, id: Math.max(...ventas.map(v => v.id), 0) + 1 };
-        const newVentas = [...ventas, newVenta];
-        setVentas(newVentas);
-
-        // Sync Rendimiento
-        const updatedRendimientos = syncRendimiento(venta.fecha, newVentas, insumoTransactions, rendimientos);
-        if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
-
-        saveData({ ventas: newVentas, rendimientos: updatedRendimientos });
+    const addVenta = async (venta: Omit<Venta, 'id'>) => {
+        const result = await supabaseCrud('add', 'ventas', venta);
+        if (result) {
+            setVentas(prev => [...prev, result]);
+        }
     };
 
-    const updateVenta = (id: number, venta: Partial<Venta>) => {
-        const oldVenta = ventas.find(v => v.id === id);
-        const newVentas = ventas.map(v => v.id === id ? { ...v, ...venta } : v);
-        setVentas(newVentas);
-
-        // Sync Rendimiento (check both old and new date if date changed)
-        let updatedRendimientos = syncRendimiento(venta.fecha || oldVenta?.fecha || '', newVentas, insumoTransactions, rendimientos);
-        if (oldVenta && venta.fecha && oldVenta.fecha !== venta.fecha) {
-            updatedRendimientos = syncRendimiento(oldVenta.fecha, newVentas, insumoTransactions, updatedRendimientos);
-        }
-        if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
-
-        saveData({ ventas: newVentas, rendimientos: updatedRendimientos });
+    const updateVenta = async (id: number, venta: Partial<Venta>) => {
+        await supabaseCrud('update', 'ventas', venta, id);
+        setVentas(prev => prev.map(v => v.id === id ? { ...v, ...venta } : v));
     };
 
-    const deleteVenta = (id: number) => {
-        const ventaToDelete = ventas.find(v => v.id === id);
-        const newVentas = ventas.filter(v => v.id !== id);
-        setVentas(newVentas);
-
-        // Sync Rendimiento
-        let updatedRendimientos = rendimientos;
-        if (ventaToDelete) {
-            updatedRendimientos = syncRendimiento(ventaToDelete.fecha, newVentas, insumoTransactions, rendimientos);
-            if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
-        }
-
-        saveData({ ventas: newVentas, rendimientos: updatedRendimientos });
+    const deleteVenta = async (id: number) => {
+        await supabaseCrud('delete', 'ventas', undefined, id);
+        setVentas(prev => prev.filter(v => v.id !== id));
     };
 
     // Payments Functions
@@ -384,98 +374,60 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
     };
 
     // Performance Functions
-    const addRendimiento = (rendimiento: Omit<Rendimiento, 'id'>) => {
-        const newRendimiento = { ...rendimiento, id: Math.max(...rendimientos.map(r => r.id), 0) + 1 };
-        const newRendimientos = [...rendimientos, newRendimiento];
-        setRendimientos(newRendimientos);
-        saveData({ rendimientos: newRendimientos });
+    const addRendimiento = async (rendimiento: Omit<Rendimiento, 'id'>) => {
+        const result = await supabaseCrud('add', 'rendimientos', rendimiento);
+        if (result) {
+            setRendimientos(prev => [...prev, result]);
+        }
     };
 
-    const updateRendimiento = (id: number, rendimiento: Partial<Rendimiento>) => {
-        const newRendimientos = rendimientos.map(r => r.id === id ? { ...r, ...rendimiento } : r);
-        setRendimientos(newRendimientos);
-        saveData({ rendimientos: newRendimientos });
+    const updateRendimiento = async (id: number, rendimiento: Partial<Rendimiento>) => {
+        await supabaseCrud('update', 'rendimientos', rendimiento, id);
+        setRendimientos(prev => prev.map(r => r.id === id ? { ...r, ...rendimiento } : r));
     };
 
-    const deleteRendimiento = (id: number) => {
-        const newRendimientos = rendimientos.filter(r => r.id !== id);
-        setRendimientos(newRendimientos);
-        saveData({ rendimientos: newRendimientos });
+    const deleteRendimiento = async (id: number) => {
+        await supabaseCrud('delete', 'rendimientos', undefined, id);
+        setRendimientos(prev => prev.filter(r => r.id !== id));
     };
 
     // Inventory Functions
-    const addInsumoTransaction = (transaction: Omit<InsumoTransaction, 'id'>) => {
-        const newTransaction = { ...transaction, id: Math.max(...insumoTransactions.map(t => t.id), 0) + 1 };
-        const newTransactions = [...insumoTransactions, newTransaction];
-        setInsumoTransactions(newTransactions);
-
-        // Sync Rendimiento if it's Harina output
-        let updatedRendimientos = rendimientos;
-        if (transaction.insumo === 'Harina' && transaction.cantidadSalida > 0) {
-            updatedRendimientos = syncRendimiento(transaction.fecha, ventas, newTransactions, rendimientos);
-            if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
+    const addInsumoTransaction = async (transaction: Omit<InsumoTransaction, 'id'>) => {
+        const result = await supabaseCrud('add', 'insumoTransactions', transaction);
+        if (result) {
+            setInsumoTransactions(prev => [...prev, result]);
         }
-
-        saveData({ rendimientos: updatedRendimientos, insumoTransactions: newTransactions });
     };
 
-    const updateInsumoTransaction = (id: number, transaction: Partial<InsumoTransaction>) => {
-        const oldTransaction = insumoTransactions.find(t => t.id === id);
-        const newTransactions = insumoTransactions.map(t => t.id === id ? { ...t, ...transaction } : t);
-        setInsumoTransactions(newTransactions);
-
-        // Sync Rendimiento
-        let updatedRendimientos = rendimientos;
-        const isHarina = (transaction.insumo === 'Harina') || (oldTransaction?.insumo === 'Harina');
-        if (isHarina) {
-            updatedRendimientos = syncRendimiento(transaction.fecha || oldTransaction?.fecha || '', ventas, newTransactions, rendimientos);
-            if (oldTransaction && transaction.fecha && oldTransaction.fecha !== transaction.fecha) {
-                updatedRendimientos = syncRendimiento(oldTransaction.fecha, ventas, newTransactions, updatedRendimientos);
-            }
-            if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
-        }
-
-        saveData({ rendimientos: updatedRendimientos, insumoTransactions: newTransactions });
+    const updateInsumoTransaction = async (id: number, transaction: Partial<InsumoTransaction>) => {
+        await supabaseCrud('update', 'insumoTransactions', transaction, id);
+        setInsumoTransactions(prev => prev.map(t => t.id === id ? { ...t, ...transaction } : t));
     };
 
-    const deleteInsumoTransaction = (id: number) => {
-        const transactionToDelete = insumoTransactions.find(t => t.id === id);
-        const newTransactions = insumoTransactions.filter(t => t.id !== id);
-        setInsumoTransactions(newTransactions);
-
-        // Sync Rendimiento
-        let updatedRendimientos = rendimientos;
-        if (transactionToDelete && transactionToDelete.insumo === 'Harina' && transactionToDelete.cantidadSalida > 0) {
-            updatedRendimientos = syncRendimiento(transactionToDelete.fecha, ventas, newTransactions, rendimientos);
-            if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
-        }
-
-        saveData({ rendimientos: updatedRendimientos, insumoTransactions: newTransactions });
+    const deleteInsumoTransaction = async (id: number) => {
+        await supabaseCrud('delete', 'insumoTransactions', undefined, id);
+        setInsumoTransactions(prev => prev.filter(t => t.id !== id));
     };
 
     /**
      * Registers a new purchase and updates the item's average cost atomically
-     * This prevents race conditions where saving one overwrites the other
      */
-    const registerInsumoPurchase = (transaction: Omit<InsumoTransaction, 'id'>, newPrice: number) => {
-        // 1. Prepare new transaction list
-        const newTransaction = { ...transaction, id: Math.max(...insumoTransactions.map(t => t.id), 0) + 1 };
-        const newTransactions = [...insumoTransactions, newTransaction];
-        setInsumoTransactions(newTransactions);
+    const registerInsumoPurchase = async (transaction: Omit<InsumoTransaction, 'id'>, newPrice: number) => {
+        // 1. Add transaction to Supabase
+        const result = await supabaseCrud('add', 'insumoTransactions', transaction);
+        if (!result) return;
+
+        setInsumoTransactions(prev => [...prev, result]);
 
         // 2. Calculate and update average cost
-        let newMaestroInsumos = maestroInsumos;
         if (transaction.cantidadEntrada > 0 && newPrice > 0) {
             const insumoMaster = maestroInsumos.find(i => i.nombre === transaction.insumo);
             if (insumoMaster) {
-                // Calculate current stock (before this transaction)
                 const currentStock = insumoTransactions
                     .filter(t => t.insumo === transaction.insumo)
                     .reduce((acc, t) => acc + t.cantidadEntrada - t.cantidadSalida, 0);
 
                 const currentCost = insumoMaster.costoUnitario || 0;
-
-                // Weighted Average Cost Formula
                 const currentValue = currentStock * currentCost;
                 const newPurchaseValue = transaction.cantidadEntrada * newPrice;
                 const totalQuantity = currentStock + transaction.cantidadEntrada;
@@ -484,278 +436,207 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
                     ? Math.round((currentValue + newPurchaseValue) / totalQuantity)
                     : newPrice;
 
-                newMaestroInsumos = maestroInsumos.map(i =>
+                await supabaseCrud('update', 'maestroInsumos', { costoUnitario: newAverageCost }, insumoMaster.id);
+                setMaestroInsumos(prev => prev.map(i =>
                     i.id === insumoMaster.id ? { ...i, costoUnitario: newAverageCost } : i
-                );
-                setMaestroInsumos(newMaestroInsumos);
+                ));
             }
         }
-
-        // 3. Save everything once
-        saveData({
-            insumoTransactions: newTransactions,
-            maestroInsumos: newMaestroInsumos
-        });
     };
 
     /**
      * Updates an existing purchase and updates the item's average cost atomically
      */
-    const updateInsumoPurchase = (id: number, transaction: Partial<InsumoTransaction>, newPrice: number) => {
-        // 1. Prepare new transaction list
-        const oldTransaction = insumoTransactions.find(t => t.id === id);
-        const newTransactions = insumoTransactions.map(t => t.id === id ? { ...t, ...transaction } : t);
-        setInsumoTransactions(newTransactions);
-
-        // Sync Rendimiento (logic copied from updateInsumoTransaction)
-        let updatedRendimientos = rendimientos;
-        const isHarina = (transaction.insumo === 'Harina') || (oldTransaction?.insumo === 'Harina');
-        if (isHarina) {
-            updatedRendimientos = syncRendimiento(transaction.fecha || oldTransaction?.fecha || '', ventas, newTransactions, rendimientos);
-            if (oldTransaction && transaction.fecha && oldTransaction.fecha !== transaction.fecha) {
-                updatedRendimientos = syncRendimiento(oldTransaction.fecha, ventas, newTransactions, updatedRendimientos);
-            }
-            if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
-        }
+    const updateInsumoPurchase = async (id: number, transaction: Partial<InsumoTransaction>, newPrice: number) => {
+        // 1. Update transaction in Supabase
+        await supabaseCrud('update', 'insumoTransactions', transaction, id);
+        setInsumoTransactions(prev => prev.map(t => t.id === id ? { ...t, ...transaction } : t));
 
         // 2. Calculate and update average cost
-        let newMaestroInsumos = maestroInsumos;
+        const oldTransaction = insumoTransactions.find(t => t.id === id);
         const insumoName = transaction.insumo || oldTransaction?.insumo;
         const cantidadEntrada = transaction.cantidadEntrada ?? oldTransaction?.cantidadEntrada ?? 0;
 
         if (insumoName && cantidadEntrada > 0 && newPrice > 0) {
             const insumoMaster = maestroInsumos.find(i => i.nombre === insumoName);
             if (insumoMaster) {
-                // Determine transaction quantity for calc (using the NEW value)
                 const currentStock = insumoTransactions
-                    .filter(t => t.insumo === insumoName && t.id !== id) // Exclude current transaction from "current stock" for recalc? 
-                    // Actually, the weighted avg logic in the original code was weird. It added the current transaction ON TOP of existing stock.
-                    // We will replicate the original logic: (CurrentStock * CurrentCost + NewTx * NewPrice) / Total
-                    // Where CurrentStock is calculated from ALL transactions.
-                    // Wait, if I'm UPDATING, the "CurrentStock" should logically NOT include the old version of this transaction if we are re-averaging?
-                    // But the original code just grabbed "calculateStock" which sums everything.
-                    // Let's stick to the atomic behavior of "Save Tx + Save Cost".
-                    // The original "calculateStock" includes the transaction IF it was saved?
-                    // In the original code, `updateInsumoTransaction` was called FIRST. So `insumoTransactions` state wouldn't have updated yet in the `calculateStock` call?
-                    // `calculateStock` uses `insumoTransactions` from scope.
-                    // So in original code, `calculateStock` used the OLD list (before update).
-                    // So it calculated weighted average based on (Old Stock * Old Cost + Modifed Tx * New Price).
-                    // This effectively "double counts" the transaction (once in old stock, once in new addition) for the weighting?
-                    // That seems like a bug in the original logic too, but I should probably just ensure persistence first.
-                    // I will stick to the same logic sequence: Update List -> Calculate Cost -> Save All.
-
-                    // So: 
+                    .filter(t => t.insumo === insumoName)
                     .reduce((acc, t) => acc + t.cantidadEntrada - t.cantidadSalida, 0);
-                // Note: `insumoTransactions` here is the OLD list (closure).
-                // So `currentStock` is the stock BEFORE the update.
 
                 const currentCost = insumoMaster.costoUnitario || 0;
-
                 const currentValue = currentStock * currentCost;
                 const newPurchaseValue = cantidadEntrada * newPrice;
-                const totalQuantity = currentStock + cantidadEntrada; // This adds the modified quantity to the OLD stock count.
+                const totalQuantity = currentStock + cantidadEntrada;
 
                 const newAverageCost = totalQuantity > 0
                     ? Math.round((currentValue + newPurchaseValue) / totalQuantity)
                     : newPrice;
 
-                newMaestroInsumos = maestroInsumos.map(i =>
+                await supabaseCrud('update', 'maestroInsumos', { costoUnitario: newAverageCost }, insumoMaster.id);
+                setMaestroInsumos(prev => prev.map(i =>
                     i.id === insumoMaster.id ? { ...i, costoUnitario: newAverageCost } : i
-                );
-                setMaestroInsumos(newMaestroInsumos);
+                ));
             }
         }
-
-        // 3. Save everything once
-        saveData({
-            rendimientos: updatedRendimientos,
-            insumoTransactions: newTransactions,
-            maestroInsumos: newMaestroInsumos
-        });
     };
 
     // Bank Functions
-    const addBankTransaction = (transaction: Omit<BankTransaction, 'id' | 'saldo'>) => {
-        const lastSaldo = bankTransactions.length > 0 ? bankTransactions[bankTransactions.length - 1].saldo : 0;
-        const saldo = lastSaldo + transaction.entrada - transaction.salida;
-        const newTransaction = {
-            ...transaction,
-            id: Math.max(...bankTransactions.map(t => t.id), 0) + 1,
-            saldo
-        };
-        const newBankTransactions = [...bankTransactions, newTransaction];
-        setBankTransactions(newBankTransactions);
+    const addBankTransaction = async (transaction: Omit<BankTransaction, 'id' | 'saldo'>) => {
+        // Add to Supabase (saldo calculated in API)
+        const result = await supabaseCrud('add', 'bankTransactions', transaction);
+        if (result) {
+            setBankTransactions(prev => [...prev, result]);
 
-        // Auto-update invoice payment status
-        let updatedInsumoTransactions = insumoTransactions;
-        if (transaction.salida > 0 && transaction.documento && transaction.documento !== '-') {
-            const matchingInvoice = insumoTransactions.find(
-                inv => inv.factura === transaction.documento && inv.estadoPago !== 'pagada'
-            );
-
-            if (matchingInvoice) {
-                updatedInsumoTransactions = insumoTransactions.map(inv =>
-                    inv.factura === transaction.documento
-                        ? { ...inv, estadoPago: 'pagada' as const }
-                        : inv
+            // Auto-update invoice payment status in Supabase
+            if (transaction.salida > 0 && transaction.documento && transaction.documento !== '-') {
+                const matchingInvoice = insumoTransactions.find(
+                    inv => inv.factura === transaction.documento && inv.estadoPago !== 'pagada'
                 );
-                setInsumoTransactions(updatedInsumoTransactions);
+                if (matchingInvoice) {
+                    await supabaseCrud('update', 'insumoTransactions', { estadoPago: 'pagada' }, matchingInvoice.id);
+                    setInsumoTransactions(prev => prev.map(inv =>
+                        inv.factura === transaction.documento ? { ...inv, estadoPago: 'pagada' as const } : inv
+                    ));
+                }
             }
         }
-
-        saveData({ insumoTransactions: updatedInsumoTransactions, bankTransactions: newBankTransactions });
     };
 
-    const updateBankTransaction = (id: number, transaction: Partial<BankTransaction>) => {
-        const newBankTransactions = bankTransactions.map(t => t.id === id ? { ...t, ...transaction } : t);
-        setBankTransactions(newBankTransactions);
-        saveData({ bankTransactions: newBankTransactions });
+    const updateBankTransaction = async (id: number, transaction: Partial<BankTransaction>) => {
+        await supabaseCrud('update', 'bankTransactions', transaction, id);
+        setBankTransactions(prev => prev.map(t => t.id === id ? { ...t, ...transaction } : t));
     };
 
-    const deleteBankTransaction = (id: number) => {
-        const newBankTransactions = bankTransactions.filter(t => t.id !== id);
-        setBankTransactions(newBankTransactions);
-        saveData({ bankTransactions: newBankTransactions });
+    const deleteBankTransaction = async (id: number) => {
+        await supabaseCrud('delete', 'bankTransactions', undefined, id);
+        setBankTransactions(prev => prev.filter(t => t.id !== id));
     };
 
     // Caja Chica Functions
-    const addCajaChica = (item: Omit<CajaChica, 'id'>) => {
-        const newItem = { ...item, id: Math.max(...cajaChica.map(c => c.id), 0) + 1 };
-        const newCajaChica = [...cajaChica, newItem];
-        setCajaChica(newCajaChica);
-        saveData({ cajaChica: newCajaChica });
+    const addCajaChica = async (item: Omit<CajaChica, 'id'>) => {
+        const result = await supabaseCrud('add', 'cajaChica', item);
+        if (result) {
+            setCajaChica(prev => [...prev, result]);
+        }
     };
 
-    const updateCajaChica = (id: number, item: Partial<CajaChica>) => {
-        const newCajaChica = cajaChica.map(c => c.id === id ? { ...c, ...item } : c);
-        setCajaChica(newCajaChica);
-        saveData({ cajaChica: newCajaChica });
+    const updateCajaChica = async (id: number, item: Partial<CajaChica>) => {
+        await supabaseCrud('update', 'cajaChica', item, id);
+        setCajaChica(prev => prev.map(c => c.id === id ? { ...c, ...item } : c));
     };
 
-    const deleteCajaChica = (id: number) => {
-        const newCajaChica = cajaChica.filter(c => c.id !== id);
-        setCajaChica(newCajaChica);
-        saveData({ cajaChica: newCajaChica });
+    const deleteCajaChica = async (id: number) => {
+        await supabaseCrud('delete', 'cajaChica', undefined, id);
+        setCajaChica(prev => prev.filter(c => c.id !== id));
     };
 
     // Master Data Functions - Areas
-    const addMaestroArea = (area: Omit<MaestroArea, 'id'>) => {
-        const newArea = { ...area, id: Math.max(...maestroAreas.map(a => a.id), 0) + 1 };
-        const newMaestroAreas = [...maestroAreas, newArea];
-        setMaestroAreas(newMaestroAreas);
-        saveData({ maestroAreas: newMaestroAreas });
+    const addMaestroArea = async (area: Omit<MaestroArea, 'id'>) => {
+        const result = await supabaseCrud('add', 'maestroAreas', area);
+        if (result) {
+            setMaestroAreas(prev => [...prev, result]);
+        }
     };
 
-    const updateMaestroArea = (id: number, area: Partial<MaestroArea>) => {
-        const newMaestroAreas = maestroAreas.map(a => a.id === id ? { ...a, ...area } : a);
-        setMaestroAreas(newMaestroAreas);
-        saveData({ maestroAreas: newMaestroAreas });
+    const updateMaestroArea = async (id: number, area: Partial<MaestroArea>) => {
+        await supabaseCrud('update', 'maestroAreas', area, id);
+        setMaestroAreas(prev => prev.map(a => a.id === id ? { ...a, ...area } : a));
     };
 
-    const deleteMaestroArea = (id: number) => {
-        const newMaestroAreas = maestroAreas.filter(a => a.id !== id);
-        setMaestroAreas(newMaestroAreas);
-        saveData({ maestroAreas: newMaestroAreas });
+    const deleteMaestroArea = async (id: number) => {
+        await supabaseCrud('delete', 'maestroAreas', undefined, id);
+        setMaestroAreas(prev => prev.filter(a => a.id !== id));
     };
 
     // Master Data Functions - Insumos
-    const addMaestroInsumo = (insumo: Omit<Insumo, 'id'>) => {
-        const newInsumo = { ...insumo, id: Math.max(...maestroInsumos.map(i => i.id), 0) + 1 };
-        const newMaestroInsumos = [...maestroInsumos, newInsumo];
-        setMaestroInsumos(newMaestroInsumos);
-        saveData({ maestroInsumos: newMaestroInsumos });
+    const addMaestroInsumo = async (insumo: Omit<Insumo, 'id'>) => {
+        const result = await supabaseCrud('add', 'maestroInsumos', insumo);
+        if (result) {
+            setMaestroInsumos(prev => [...prev, result]);
+        }
     };
 
-    const updateMaestroInsumo = (id: number, insumo: Partial<Insumo>) => {
-        const newMaestroInsumos = maestroInsumos.map(i => i.id === id ? { ...i, ...insumo } : i);
-        setMaestroInsumos(newMaestroInsumos);
-        saveData({ maestroInsumos: newMaestroInsumos });
+    const updateMaestroInsumo = async (id: number, insumo: Partial<Insumo>) => {
+        await supabaseCrud('update', 'maestroInsumos', insumo, id);
+        setMaestroInsumos(prev => prev.map(i => i.id === id ? { ...i, ...insumo } : i));
     };
 
-    const deleteMaestroInsumo = (id: number) => {
-        const newMaestroInsumos = maestroInsumos.filter(i => i.id !== id);
-        setMaestroInsumos(newMaestroInsumos);
-        saveData({ maestroInsumos: newMaestroInsumos });
+    const deleteMaestroInsumo = async (id: number) => {
+        await supabaseCrud('delete', 'maestroInsumos', undefined, id);
+        setMaestroInsumos(prev => prev.filter(i => i.id !== id));
     };
 
     // Gastos Generales Functions
-    const addGastoGeneral = (gasto: Omit<GastoGeneral, 'id'>) => {
-        const newGasto = { ...gasto, id: Math.max(...gastosGenerales.map(g => g.id), 0) + 1 };
-        const newGastosGenerales = [...gastosGenerales, newGasto];
-        setGastosGenerales(newGastosGenerales);
-        saveData({ gastosGenerales: newGastosGenerales });
+    const addGastoGeneral = async (gasto: Omit<GastoGeneral, 'id'>) => {
+        const result = await supabaseCrud('add', 'gastosGenerales', gasto);
+        if (result) {
+            setGastosGenerales(prev => [...prev, result]);
+        }
     };
 
-    const updateGastoGeneral = (id: number, gasto: Partial<GastoGeneral>) => {
-        const newGastosGenerales = gastosGenerales.map(g => g.id === id ? { ...g, ...gasto } : g);
-        setGastosGenerales(newGastosGenerales);
-        saveData({ gastosGenerales: newGastosGenerales });
+    const updateGastoGeneral = async (id: number, gasto: Partial<GastoGeneral>) => {
+        await supabaseCrud('update', 'gastosGenerales', gasto, id);
+        setGastosGenerales(prev => prev.map(g => g.id === id ? { ...g, ...gasto } : g));
     };
 
-    const deleteGastoGeneral = (id: number) => {
-        const newGastosGenerales = gastosGenerales.filter(g => g.id !== id);
-        setGastosGenerales(newGastosGenerales);
-        saveData({ gastosGenerales: newGastosGenerales });
+    const deleteGastoGeneral = async (id: number) => {
+        await supabaseCrud('delete', 'gastosGenerales', undefined, id);
+        setGastosGenerales(prev => prev.filter(g => g.id !== id));
     };
 
     // Master Data Functions - Proveedores
-    const addMaestroProveedor = (proveedor: Omit<Proveedor, 'id'>) => {
-        const newProveedor = { ...proveedor, id: Math.max(...maestroProveedores.map(p => p.id), 0) + 1 };
-        const newMaestroProveedores = [...maestroProveedores, newProveedor];
-        setMaestroProveedores(newMaestroProveedores);
-        saveData({ maestroProveedores: newMaestroProveedores });
+    const addMaestroProveedor = async (proveedor: Omit<Proveedor, 'id'>) => {
+        const result = await supabaseCrud('add', 'maestroProveedores', proveedor);
+        if (result) {
+            setMaestroProveedores(prev => [...prev, result]);
+        }
     };
 
-    const updateMaestroProveedor = (id: number, proveedor: Partial<Proveedor>) => {
-        const newMaestroProveedores = maestroProveedores.map(p => p.id === id ? { ...p, ...proveedor } : p);
-        setMaestroProveedores(newMaestroProveedores);
-        saveData({ maestroProveedores: newMaestroProveedores });
+    const updateMaestroProveedor = async (id: number, proveedor: Partial<Proveedor>) => {
+        await supabaseCrud('update', 'maestroProveedores', proveedor, id);
+        setMaestroProveedores(prev => prev.map(p => p.id === id ? { ...p, ...proveedor } : p));
     };
 
-    const deleteMaestroProveedor = (id: number) => {
-        const newMaestroProveedores = maestroProveedores.filter(p => p.id !== id);
-        setMaestroProveedores(newMaestroProveedores);
-        saveData({ maestroProveedores: newMaestroProveedores });
+    const deleteMaestroProveedor = async (id: number) => {
+        await supabaseCrud('delete', 'maestroProveedores', undefined, id);
+        setMaestroProveedores(prev => prev.filter(p => p.id !== id));
     };
 
     // Master Data Functions - Clientes
-    const addMaestroCliente = (cliente: Omit<Cliente, 'id'>) => {
-        const newCliente = { ...cliente, id: Math.max(...maestroClientes.map(c => c.id), 0) + 1 };
-        const newMaestroClientes = [...maestroClientes, newCliente];
-        setMaestroClientes(newMaestroClientes);
-        saveData({ maestroClientes: newMaestroClientes });
+    const addMaestroCliente = async (cliente: Omit<Cliente, 'id'>) => {
+        const result = await supabaseCrud('add', 'maestroClientes', cliente);
+        if (result) {
+            setMaestroClientes(prev => [...prev, result]);
+        }
     };
 
-    const updateMaestroCliente = (id: number, cliente: Partial<Cliente>) => {
-        const newMaestroClientes = maestroClientes.map(c => c.id === id ? { ...c, ...cliente } : c);
-        setMaestroClientes(newMaestroClientes);
-        saveData({ maestroClientes: newMaestroClientes });
+    const updateMaestroCliente = async (id: number, cliente: Partial<Cliente>) => {
+        await supabaseCrud('update', 'maestroClientes', cliente, id);
+        setMaestroClientes(prev => prev.map(c => c.id === id ? { ...c, ...cliente } : c));
     };
 
-    const deleteMaestroCliente = (id: number) => {
-        const newMaestroClientes = maestroClientes.filter(c => c.id !== id);
-        setMaestroClientes(newMaestroClientes);
-        saveData({ maestroClientes: newMaestroClientes });
+    const deleteMaestroCliente = async (id: number) => {
+        await supabaseCrud('delete', 'maestroClientes', undefined, id);
+        setMaestroClientes(prev => prev.filter(c => c.id !== id));
     };
 
     // Master Data Functions - Trabajadores
-    const addMaestroTrabajador = (trabajador: Omit<Trabajador, 'id'>) => {
-        const newTrabajador = { ...trabajador, id: Math.max(...maestroTrabajadores.map(t => t.id), 0) + 1 };
-        const newMaestroTrabajadores = [...maestroTrabajadores, newTrabajador];
-        setMaestroTrabajadores(newMaestroTrabajadores);
-        saveData({ maestroTrabajadores: newMaestroTrabajadores });
+    const addMaestroTrabajador = async (trabajador: Omit<Trabajador, 'id'>) => {
+        const result = await supabaseCrud('add', 'maestroTrabajadores', trabajador);
+        if (result) {
+            setMaestroTrabajadores(prev => [...prev, result]);
+        }
     };
 
-    const updateMaestroTrabajador = (id: number, trabajador: Partial<Trabajador>) => {
-        const newMaestroTrabajadores = maestroTrabajadores.map(t => t.id === id ? { ...t, ...trabajador } : t);
-        setMaestroTrabajadores(newMaestroTrabajadores);
-        saveData({ maestroTrabajadores: newMaestroTrabajadores });
+    const updateMaestroTrabajador = async (id: number, trabajador: Partial<Trabajador>) => {
+        await supabaseCrud('update', 'maestroTrabajadores', trabajador, id);
+        setMaestroTrabajadores(prev => prev.map(t => t.id === id ? { ...t, ...trabajador } : t));
     };
 
-    const deleteMaestroTrabajador = (id: number) => {
-        const newMaestroTrabajadores = maestroTrabajadores.filter(t => t.id !== id);
-        setMaestroTrabajadores(newMaestroTrabajadores);
-        saveData({ maestroTrabajadores: newMaestroTrabajadores });
+    const deleteMaestroTrabajador = async (id: number) => {
+        await supabaseCrud('delete', 'maestroTrabajadores', undefined, id);
+        setMaestroTrabajadores(prev => prev.filter(t => t.id !== id));
     };
 
     // Equipos Functions

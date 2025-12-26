@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readDb, writeDb } from '@/lib/db';
+import { createServerClient } from '@/lib/supabase';
 
 interface ProductoEnPedido {
     productoId: number;
@@ -17,81 +17,72 @@ interface PedidoMasivo {
 
 export async function POST(request: Request) {
     try {
-        const { casinoId, empresaId, pedidos } = await request.json();
+        const { casinoId, empresaId, casinoNombre, empresaNombre, pedidos } = await request.json();
 
         if (!casinoId || !empresaId || !Array.isArray(pedidos) || pedidos.length === 0) {
             return NextResponse.json({ error: 'Datos inválidos' }, { status: 400 });
         }
 
-        const db = await readDb();
-        if (!db) {
-            return NextResponse.json({ error: 'Error de base de datos' }, { status: 500 });
-        }
-
-        if (!db.pedidosClientes) db.pedidosClientes = [];
-        if (!db.detallesPedido) db.detallesPedido = [];
-
-        const maxPedidoId = db.pedidosClientes.length > 0
-            ? Math.max(...db.pedidosClientes.map((p: any) => p.id))
-            : 0;
-
-        const maxDetalleId = db.detallesPedido.length > 0
-            ? Math.max(...db.detallesPedido.map((d: any) => d.id))
-            : 0;
-
-        let pedidoId = maxPedidoId;
-        let detalleId = maxDetalleId;
-        let createdCount = 0;
-
+        const supabase = createServerClient();
         const fechaHoy = new Date().toISOString().split('T')[0];
         const horaHoy = new Date().toTimeString().split(' ')[0].substring(0, 5);
+        let createdCount = 0;
 
-        pedidos.forEach((pedido: PedidoMasivo) => {
-            if (pedido.productos.length === 0) return; // Skip if no products
-
-            pedidoId++;
-            createdCount++;
+        for (const pedido of pedidos as PedidoMasivo[]) {
+            if (pedido.productos.length === 0) continue;
 
             const total = pedido.productos.reduce((sum, p) => sum + (p.cantidad * p.precio), 0);
 
-            // Create order - db.pedidosClientes is guaranteed to exist
-            if (db.pedidosClientes) {
-                db.pedidosClientes.push({
-                    id: pedidoId,
-                    casinoId: parseInt(casinoId),
-                    empresaId: parseInt(empresaId),
-                    fechaPedido: fechaHoy,
-                    horaPedido: horaHoy,
-                    fechaEntrega: pedido.fecha,
-                    horaEntrega: pedido.hora,
+            // Create order in Supabase
+            const { data: newPedido, error: pedidoError } = await supabase
+                .from('pedidos')
+                .insert({
+                    casino_id: parseInt(String(casinoId)),
+                    casino_nombre: casinoNombre || null,
+                    empresa_id: parseInt(String(empresaId)),
+                    empresa_nombre: empresaNombre || null,
+                    fecha_pedido: fechaHoy,
+                    hora_pedido: horaHoy,
+                    fecha_entrega: pedido.fecha,
+                    hora_entrega: pedido.hora,
                     total: total,
-                    estado: 'Pendiente',
-                    origenPedido: 'Pedidos Múltiples',
+                    estado: 'pendiente',
+                    origen_pedido: 'web',
                     observaciones: '',
                     repartidor: null,
-                    notificadoEmail: false
-                });
+                    notificado_email: false,
+                    notificado_whatsapp: false,
+                    es_recurrente: false
+                })
+                .select()
+                .single();
+
+            if (pedidoError) {
+                console.error('Error creating pedido:', pedidoError);
+                continue;
             }
 
-            // Create details - db.detallesPedido is guaranteed to exist
-            if (db.detallesPedido) {
-                pedido.productos.forEach((producto) => {
-                    detalleId++;
-                    db.detallesPedido!.push({
-                        id: detalleId,
-                        pedidoId: pedidoId,
-                        productoId: producto.productoId,
-                        nombreProducto: producto.nombre,
-                        cantidad: producto.cantidad,
-                        precioUnitario: producto.precio,
-                        subtotal: producto.cantidad * producto.precio,
-                        unidad: producto.unidad
-                    });
-                });
-            }
-        });
+            createdCount++;
 
-        await writeDb(db);
+            // Create details in Supabase
+            const detalles = pedido.productos.map(producto => ({
+                pedido_id: newPedido.id,
+                producto_id: producto.productoId,
+                producto_nombre: producto.nombre,
+                cantidad: producto.cantidad,
+                precio_unitario: producto.precio,
+                subtotal: producto.cantidad * producto.precio,
+                unidad: producto.unidad
+            }));
+
+            const { error: detalleError } = await supabase
+                .from('detalle_pedidos')
+                .insert(detalles);
+
+            if (detalleError) {
+                console.error('Error creating detalles:', detalleError);
+            }
+        }
 
         return NextResponse.json({ success: true, count: createdCount });
 
