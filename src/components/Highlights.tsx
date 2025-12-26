@@ -1,13 +1,27 @@
 import { readDb } from "@/lib/db";
 
 export default async function Highlights() {
-    // Fetch featured products from database (server-side)
+    // Fetch products from database (server-side)
     try {
         const db = await readDb();
-        const products = (db?.productos || [])
-            .filter((p: any) => p.activo && p.destacado) // Only active and featured
-            .sort((a: any, b: any) => a.orden - b.orden) // Sort by orden
-            .slice(0, 3); // Show max 3
+        const allProducts = db?.productosCatalogo || [];
+
+        // Get products with unique images (no repeated images)
+        const seenImages = new Set<string>();
+        const productsWithUniqueImages: any[] = [];
+
+        for (const p of allProducts) {
+            if (p.activo && p.imagenUrl) {
+                // Only add if image hasn't been seen
+                if (!seenImages.has(p.imagenUrl)) {
+                    seenImages.add(p.imagenUrl);
+                    productsWithUniqueImages.push(p);
+                }
+            }
+        }
+
+        // Take first 6 products with unique images
+        const products = productsWithUniqueImages.slice(0, 6);
 
         if (products.length === 0) {
             return null; // Don't render if no products
@@ -17,18 +31,18 @@ export default async function Highlights() {
             <section className="container" style={{ padding: '6rem 24px' }}>
                 <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
                     <span style={{ color: 'var(--color-secondary)', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px', fontSize: '0.9rem' }}>Nuestra Selección</span>
-                    <h2 style={{ fontSize: '3rem', marginTop: '0.5rem' }}>Favoritos del Mes</h2>
+                    <h2 style={{ fontSize: '3rem', marginTop: '0.5rem' }}>Nuestros Productos</h2>
                 </div>
 
                 <div style={{
                     display: 'grid',
-                    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-                    gap: '2.5rem'
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+                    gap: '2rem'
                 }}>
-                    {products.map((p: any, i: number) => (
+                    {products.map((p: any) => (
                         <div key={p.id} className="product-card" style={{
                             backgroundColor: '#fff',
-                            padding: '2.5rem',
+                            padding: '1.5rem',
                             borderRadius: 'var(--border-radius)',
                             boxShadow: 'var(--box-shadow)',
                             textAlign: 'center',
@@ -36,39 +50,36 @@ export default async function Highlights() {
                             border: '1px solid rgba(0,0,0,0.05)'
                         }}>
                             <div style={{
-                                height: '220px',
-                                backgroundColor: '#fff',
-                                marginBottom: '1.5rem',
+                                height: '180px',
+                                backgroundColor: '#f5f5f5',
+                                marginBottom: '1rem',
                                 borderRadius: '8px',
                                 display: 'flex',
                                 alignItems: 'center',
                                 justifyContent: 'center',
-                                color: '#ccc',
                                 overflow: 'hidden'
                             }}>
                                 <img
-                                    src={p.imagen}
+                                    src={p.imagenUrl}
                                     alt={p.nombre}
                                     style={{
                                         width: '100%',
                                         height: '100%',
-                                        objectFit: 'contain',
-                                        padding: '10px'
+                                        objectFit: 'cover'
                                     }}
                                 />
                             </div>
-                            <h3 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{p.nombre}</h3>
-                            <p style={{ color: 'var(--color-text-light)', marginBottom: '1.5rem', lineHeight: 1.6 }}>{p.descripcion}</p>
-                            <a href="/productos" className="btn btn-outline" style={{
-                                display: 'inline-block',
-                                padding: '8px 24px',
-                                borderRadius: '50px',
-                                fontSize: '0.9rem',
-                                color: 'var(--color-primary)',
-                                borderColor: 'var(--color-primary)'
+                            <h3 style={{ fontSize: '1.2rem', marginBottom: '0.5rem', color: 'var(--color-primary)' }}>{p.nombre}</h3>
+                            {p.descripcion && (
+                                <p style={{ color: 'var(--color-text-light)', marginBottom: '1rem', lineHeight: 1.5, fontSize: '0.9rem' }}>{p.descripcion}</p>
+                            )}
+                            <p style={{
+                                color: 'var(--color-secondary)',
+                                fontWeight: 'bold',
+                                fontSize: '1.1rem'
                             }}>
-                                Ver Más
-                            </a>
+                                ${p.precioVentaKg?.toLocaleString('es-CL') || 'Consultar'} / kg
+                            </p>
                         </div>
                     ))}
                 </div>
