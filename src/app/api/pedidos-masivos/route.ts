@@ -31,6 +31,7 @@ export async function POST(request: Request) {
         const fechaHoy = new Date().toISOString().split('T')[0];
         const horaHoy = new Date().toTimeString().split(' ')[0].substring(0, 5);
         let createdCount = 0;
+        const errors: Array<{ fecha: string; error: string }> = [];
 
         for (const pedido of pedidos as PedidoMasivo[]) {
             console.log('Processing pedido:', { fecha: pedido.fecha, productosCount: pedido.productos?.length });
@@ -68,6 +69,7 @@ export async function POST(request: Request) {
 
             if (pedidoError) {
                 console.error('Error creating pedido:', pedidoError);
+                errors.push({ fecha: pedido.fecha, error: pedidoError.message || pedidoError.code });
                 continue;
             }
 
@@ -94,7 +96,7 @@ export async function POST(request: Request) {
             }
         }
 
-        return NextResponse.json({ success: true, count: createdCount });
+        return NextResponse.json({ success: true, count: createdCount, errors: errors.length > 0 ? errors : undefined });
 
     } catch (error) {
         console.error('Error creating bulk orders:', error);

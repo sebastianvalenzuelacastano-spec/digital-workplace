@@ -335,14 +335,16 @@ export default function CajaChicaTable() {
                         </div>
 
                         <div>
-                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Descripción *</label>
+                            <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>
+                                Descripción {beneficiaryType !== 'trabajador' && '*'}
+                            </label>
                             <textarea
-                                required
+                                required={beneficiaryType !== 'trabajador'}
                                 value={formData.descripcion}
                                 onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                                 rows={3}
                                 style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', resize: 'vertical' }}
-                                placeholder="Describe el gasto realizado..."
+                                placeholder={beneficiaryType === 'trabajador' ? 'Descripción opcional...' : 'Describe el gasto realizado...'}
                             />
                         </div>
 

@@ -47,13 +47,29 @@ export default function PedidosMasivosPage() {
     useEffect(() => {
         const data = localStorage.getItem('clientData');
         if (data) {
-            setClientData(JSON.parse(data));
+            const parsed = JSON.parse(data);
+            setClientData(parsed);
+            loadProductos(parsed.empresaId);
         }
-        loadProductos();
     }, []);
 
-    const loadProductos = async () => {
+    const loadProductos = async (empresaId?: number) => {
         try {
+            // Load client-specific prices (same as normal order page)
+            if (empresaId) {
+                const preciosRes = await fetch(`/api/precios-clientes?empresaId=${empresaId}`);
+                const precios = await preciosRes.json();
+                if (Array.isArray(precios) && precios.length > 0) {
+                    const prods = precios.map((p: any) => ({
+                        id: p.productoId,
+                        nombre: p.productoNombre,
+                        precio: p.precioNeto || 0
+                    }));
+                    setProductos(prods);
+                    return;
+                }
+            }
+            // Fallback: use catalog products
             const response = await fetch('/api/productos-catalogo');
             const prods = await response.json();
             setProductos(Array.isArray(prods) ? prods.filter((p: any) => p.activo) : []);
