@@ -11,6 +11,7 @@ export default function HistorialPedidosPage() {
     const [pedidos, setPedidos] = useState<PedidoConDetalles[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedPedido, setSelectedPedido] = useState<PedidoConDetalles | null>(null);
+    const [showAll, setShowAll] = useState(false); // false = only pending/future, true = all
 
     useEffect(() => {
         loadPedidos();
@@ -34,6 +35,16 @@ export default function HistorialPedidosPage() {
             setLoading(false);
         }
     };
+
+    // Filter: show only future/pending orders or all
+    const filteredPedidos = showAll
+        ? pedidos
+        : pedidos.filter(pedido => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const entrega = new Date(pedido.fechaEntrega + 'T00:00:00');
+            return entrega >= today; // Only future/today orders
+        });
 
     const getEstadoBadge = (estado: string) => {
         const styles: Record<string, { bg: string; color: string }> = {
@@ -93,17 +104,47 @@ export default function HistorialPedidosPage() {
                 padding: '20px',
                 borderRadius: '12px'
             }}>
-                <h2 style={{ marginBottom: '20px' }}>📋 Mis Pedidos</h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <h2>📋 Mis Pedidos</h2>
+                    <button
+                        onClick={() => setShowAll(!showAll)}
+                        style={{
+                            padding: '8px 16px',
+                            backgroundColor: showAll ? '#e3f2fd' : '#fff3e0',
+                            color: showAll ? '#1565c0' : '#e65100',
+                            border: 'none',
+                            borderRadius: '6px',
+                            cursor: 'pointer',
+                            fontWeight: '600',
+                            fontSize: '0.9rem'
+                        }}
+                    >
+                        {showAll ? '📅 Ver Solo Pendientes' : '📚 Ver Historial Completo'}
+                    </button>
+                </div>
 
-                {pedidos.length === 0 ? (
+                {!showAll && (
+                    <div style={{
+                        backgroundColor: '#e8f5e9',
+                        padding: '10px 15px',
+                        borderRadius: '8px',
+                        marginBottom: '15px',
+                        fontSize: '0.9rem',
+                        color: '#2e7d32'
+                    }}>
+                        ℹ️ Mostrando solo pedidos pendientes y futuros. Haz clic en "Ver Historial Completo" para ver pedidos anteriores.
+                    </div>
+                )}
+
+                {filteredPedidos.length === 0 ? (
                     <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                        <p>No tienes pedidos aún.</p>
+                        <p>{showAll ? 'No tienes pedidos aún.' : 'No tienes pedidos pendientes.'}</p>
                         <a href="/pedidos/nuevo" style={{
                             color: '#ff9800',
                             textDecoration: 'none',
                             fontWeight: 'bold'
                         }}>
-                            Hacer primer pedido →
+                            Hacer {pedidos.length === 0 ? 'primer' : 'nuevo'} pedido →
                         </a>
                     </div>
                 ) : (
@@ -120,7 +161,7 @@ export default function HistorialPedidosPage() {
                             </tr>
                         </thead>
                         <tbody>
-                            {pedidos.map(pedido => (
+                            {filteredPedidos.map(pedido => (
                                 <tr
                                     key={pedido.id}
                                     style={{

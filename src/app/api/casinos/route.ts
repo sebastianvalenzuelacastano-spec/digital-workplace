@@ -3,6 +3,8 @@ import { readDb, writeDb } from '@/lib/db';
 import { hashPassword } from '@/lib/auth';
 import type { CasinoSucursal } from '@/types/dashboard';
 
+export const dynamic = 'force-dynamic';
+
 // GET - List casinos (optionally filter by empresaId)
 export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);

@@ -91,8 +91,14 @@ export default function PedidosLayout({ children }: { children: React.ReactNode 
                 boxShadow: '0 2px 10px rgba(0,0,0,0.2)'
             }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                    <img src="/logo.jpg" alt="Pan San Sebastián" style={{
+                        width: '40px',
+                        height: '40px',
+                        borderRadius: '50%',
+                        objectFit: 'cover'
+                    }} />
                     <h1 style={{ fontSize: '1.3rem', fontWeight: 'bold' }}>
-                        🍞 Pan San Sebastián
+                        Pan San Sebastián
                     </h1>
                     <span style={{
                         backgroundColor: '#ff9800',
@@ -166,6 +172,20 @@ export default function PedidosLayout({ children }: { children: React.ReactNode 
                     📋 Mis Pedidos
                 </Link>
                 <Link
+                    href="/pedidos/pedidos-masivos"
+                    style={{
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        textDecoration: 'none',
+                        color: pathname === '/pedidos/pedidos-masivos' ? '#ff9800' : '#333',
+                        fontWeight: pathname === '/pedidos/pedidos-masivos' ? 'bold' : 'normal',
+                        backgroundColor: pathname === '/pedidos/pedidos-masivos' ? '#fff3e0' : 'transparent'
+                    }}
+                >
+                    📅 Pedidos Múltiples
+                </Link>
+                {/* Pedidos Programados - Coming soon
+                <Link
                     href="/pedidos/programados"
                     style={{
                         padding: '8px 16px',
@@ -177,6 +197,33 @@ export default function PedidosLayout({ children }: { children: React.ReactNode 
                     }}
                 >
                     🔄 Pedidos Programados
+                </Link>
+                */}
+                <Link
+                    href="/pedidos/reclamos"
+                    style={{
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        textDecoration: 'none',
+                        color: pathname?.startsWith('/pedidos/reclamos') ? '#ff9800' : '#333',
+                        fontWeight: pathname?.startsWith('/pedidos/reclamos') ? 'bold' : 'normal',
+                        backgroundColor: pathname?.startsWith('/pedidos/reclamos') ? '#fff3e0' : 'transparent'
+                    }}
+                >
+                    📝 Reclamos y Sugerencias
+                </Link>
+                <Link
+                    href="/pedidos/ayuda"
+                    style={{
+                        padding: '8px 16px',
+                        borderRadius: '6px',
+                        textDecoration: 'none',
+                        color: pathname === '/pedidos/ayuda' ? '#ff9800' : '#333',
+                        fontWeight: pathname === '/pedidos/ayuda' ? 'bold' : 'normal',
+                        backgroundColor: pathname === '/pedidos/ayuda' ? '#fff3e0' : 'transparent'
+                    }}
+                >
+                    ❓ Ayuda
                 </Link>
             </nav>
 

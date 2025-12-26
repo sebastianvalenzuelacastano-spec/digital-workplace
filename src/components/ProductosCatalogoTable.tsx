@@ -36,7 +36,12 @@ export default function ProductosCatalogoTable() {
         try {
             const res = await fetch('/api/productos-catalogo');
             const data = await res.json();
-            setProductos(data);
+            // Sort: active first, inactive last
+            const sorted = data.sort((a: Producto, b: Producto) => {
+                if (a.activo === b.activo) return 0;
+                return a.activo ? -1 : 1;
+            });
+            setProductos(sorted);
         } catch (error) {
             console.error('Error fetching productos:', error);
         }
@@ -245,13 +250,12 @@ export default function ProductosCatalogoTable() {
                     </div>
 
                     <div>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Descripción *</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Descripción</label>
                         <textarea
-                            required
                             value={formData.descripcion}
                             onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
                             style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc', minHeight: '80px' }}
-                            placeholder="Breve descripción del producto"
+                            placeholder="Breve descripción del producto (opcional)"
                         />
                     </div>
 

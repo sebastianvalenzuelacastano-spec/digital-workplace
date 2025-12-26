@@ -259,16 +259,16 @@ function PreciosContent() {
                                                     }}
                                                 />
                                             ) : (
-                                                <div style={{
-                                                    width: '40px',
-                                                    height: '40px',
-                                                    backgroundColor: '#f5f5f5',
-                                                    borderRadius: '6px',
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    justifyContent: 'center',
-                                                    fontSize: '1.2rem'
-                                                }}>🍞</div>
+                                                <img
+                                                    src="/logo.jpg"
+                                                    alt="Producto"
+                                                    style={{
+                                                        width: '40px',
+                                                        height: '40px',
+                                                        objectFit: 'cover',
+                                                        borderRadius: '6px'
+                                                    }}
+                                                />
                                             )}
                                         </td>
                                         <td style={{ padding: '12px', fontWeight: '600' }}>

@@ -10,6 +10,11 @@ const playfair = Playfair_Display({ subsets: ["latin"], variable: "--font-playfa
 export const metadata: Metadata = {
   title: "Panificadora San Sebastian",
   description: "Tradición y sabor en cada bocado.",
+  icons: {
+    icon: '/logo.jpg',
+    shortcut: '/logo.jpg',
+    apple: '/logo.jpg',
+  },
 };
 
 // Force dynamic rendering - prevent caching issues

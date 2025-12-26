@@ -4,6 +4,13 @@ import { useState, useEffect } from 'react';
 import type { PedidoCliente, DetallePedido, Trabajador } from '@/types/dashboard';
 import NuevoPedidoModal from '@/components/NuevoPedidoModal';
 
+interface Producto {
+    id: number;
+    nombre: string;
+    precioKilo: number;
+    unidades?: string[];
+}
+
 interface PedidoConDetalles extends PedidoCliente {
     detalles: DetallePedido[];
 }
@@ -11,6 +18,7 @@ interface PedidoConDetalles extends PedidoCliente {
 interface ResumenProduccion {
     productoId: number;
     productoNombre: string;
+    unidad: string;
     cantidadTotal: number;
     subtotalTotal: number;
 }
@@ -26,7 +34,9 @@ export default function PedidosDiaPage() {
     const [selectedRepartidor, setSelectedRepartidor] = useState<string>(''); // For filtering by driver
     const [printMode, setPrintMode] = useState<'none' | 'produccion' | 'repartidor'>('none'); // What to print
     const [isNuevoPedidoOpen, setIsNuevoPedidoOpen] = useState(false);
+    const [editingPedido, setEditingPedido] = useState<PedidoConDetalles | null>(null); // For editing
     const [repartidores, setRepartidores] = useState<Trabajador[]>([]);
+    const [productos, setProductos] = useState<Producto[]>([]); // Products for adding to order
 
     useEffect(() => {
         loadData();
@@ -35,13 +45,14 @@ export default function PedidosDiaPage() {
     const loadData = async () => {
         setLoading(true);
         try {
-            const [resumenRes, dbRes] = await Promise.all([
+            const [resumenRes, dbRes, productosRes] = await Promise.all([
                 fetch(`/api/resumen-produccion?fecha=${fecha}`),
                 fetch('/api/db', {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
                     }
-                })
+                }),
+                fetch('/api/productos-catalogo') // Load products from catalog endpoint
             ]);
 
             // Check for authentication errors
@@ -86,6 +97,15 @@ export default function PedidosDiaPage() {
             } else if (dbRes.status !== 401) {
                 console.error('Error loading db:', dbRes.status);
                 setRepartidores([]);
+            }
+
+            // Load products from productos-catalogo endpoint
+            if (productosRes.ok) {
+                const prods = await productosRes.json();
+                setProductos(Array.isArray(prods) ? prods.filter((p: any) => p.activo) : []);
+            } else {
+                console.error('Error loading productos:', productosRes.status);
+                setProductos([]);
             }
         } catch (error) {
             console.error('Error loading data:', error);
@@ -189,6 +209,74 @@ export default function PedidosDiaPage() {
         }, 100);
     };
 
+    const handleDeletePedido = async (pedido: PedidoConDetalles) => {
+        // Only allow deleting orders in certain states
+        if (!['pendiente', 'confirmado'].includes(pedido.estado)) {
+            alert('Solo se pueden eliminar pedidos en estado Pendiente o Confirmado');
+            return;
+        }
+
+        const confirmed = window.confirm(
+            `¿Estás seguro de que deseas eliminar el pedido #${pedido.id.toString().padStart(4, '0')} de ${pedido.casinoNombre}?`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`/api/pedidos-clientes?id=${pedido.id}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                alert('Pedido eliminado exitosamente');
+                loadData(); // Refresh data
+            } else {
+                const error = await response.json();
+                alert('Error al eliminar: ' + (error.error || 'Error desconocido'));
+            }
+        } catch (error) {
+            console.error('Error deleting pedido:', error);
+            alert('Error al eliminar el pedido');
+        }
+    };
+
+    const handleSaveEdit = async (updatedPedido: PedidoConDetalles) => {
+        try {
+            const token = localStorage.getItem('token');
+            const response = await fetch('/api/pedidos-clientes', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id: updatedPedido.id,
+                    horaEntrega: updatedPedido.horaEntrega,
+                    repartidor: updatedPedido.repartidor,
+                    observaciones: updatedPedido.observaciones,
+                    estado: updatedPedido.estado,
+                    detalles: updatedPedido.detalles // Include product details for update
+                })
+            });
+
+            if (response.ok) {
+                alert('Pedido actualizado exitosamente');
+                setEditingPedido(null);
+                loadData(); // Refresh data
+            } else {
+                const error = await response.json();
+                alert('Error al actualizar: ' + (error.error || 'Error desconocido'));
+            }
+        } catch (error) {
+            console.error('Error updating pedido:', error);
+            alert('Error al actualizar el pedido');
+        }
+    };
+
     // Get unique repartidores from pedidos (for the filter dropdown)
     const repartidoresAsignados = Array.from(new Set(pedidos.map(p => p.repartidor).filter(Boolean))) as string[];
 
@@ -284,58 +372,6 @@ export default function PedidosDiaPage() {
                 </h3>
             </div>
 
-            {/* Summary cards */}
-            <div style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(4, 1fr)',
-                gap: '15px',
-                marginBottom: '20px'
-            }}>
-                <div style={{
-                    backgroundColor: '#fff',
-                    padding: '20px',
-                    borderRadius: '12px',
-                    textAlign: 'center'
-                }}>
-                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Pedidos</p>
-                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#1565c0' }}>
-                        {totales.totalPedidos}
-                    </p>
-                </div>
-                <div style={{
-                    backgroundColor: '#fff',
-                    padding: '20px',
-                    borderRadius: '12px',
-                    textAlign: 'center'
-                }}>
-                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Productos Distintos</p>
-                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#ff9800' }}>
-                        {totales.totalProductos}
-                    </p>
-                </div>
-                <div style={{
-                    backgroundColor: '#fff',
-                    padding: '20px',
-                    borderRadius: '12px',
-                    textAlign: 'center'
-                }}>
-                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Unidades Totales</p>
-                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#4caf50' }}>
-                        {(totales.totalUnidades || 0).toLocaleString()}
-                    </p>
-                </div>
-                <div style={{
-                    backgroundColor: '#fff',
-                    padding: '20px',
-                    borderRadius: '12px',
-                    textAlign: 'center'
-                }}>
-                    <p style={{ color: '#888', fontSize: '0.9rem' }}>Monto Total</p>
-                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: '#2e7d32' }}>
-                        ${(totales.totalMonto || 0).toLocaleString()}
-                    </p>
-                </div>
-            </div>
 
             {/* View toggle */}
             <div style={{
@@ -388,13 +424,13 @@ export default function PedidosDiaPage() {
                                 <tr style={{ borderBottom: '2px solid #eee', textAlign: 'left', backgroundColor: '#f9f9f9' }}>
                                     <th style={{ padding: '15px' }}>N° Pedido</th>
                                     <th style={{ padding: '15px' }}>Casino</th>
-                                    <th style={{ padding: '15px' }}>Empresa</th>
+                                    <th className="no-print" style={{ padding: '15px' }}>Empresa</th>
                                     <th style={{ padding: '15px' }}>Hora</th>
                                     <th style={{ padding: '15px' }}>Productos</th>
-                                    <th style={{ padding: '15px' }}>Total</th>
-                                    <th style={{ padding: '15px' }}>Repartidor</th>
-                                    <th style={{ padding: '15px' }}>Estado</th>
-                                    <th style={{ padding: '15px' }}>Acciones</th>
+                                    <th className="no-print" style={{ padding: '15px' }}>Total</th>
+                                    <th className="no-print" style={{ padding: '15px' }}>Repartidor</th>
+                                    <th className="no-print" style={{ padding: '15px' }}>Estado</th>
+                                    <th className="no-print" style={{ padding: '15px' }}>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -404,13 +440,13 @@ export default function PedidosDiaPage() {
                                             #{pedido.id.toString().padStart(4, '0')}
                                         </td>
                                         <td style={{ padding: '15px' }}>{pedido.casinoNombre}</td>
-                                        <td style={{ padding: '15px', color: '#888' }}>{pedido.empresaNombre}</td>
+                                        <td className="no-print" style={{ padding: '15px', color: '#888' }}>{pedido.empresaNombre}</td>
                                         <td style={{ padding: '15px' }}>{pedido.horaPedido}</td>
                                         <td style={{ padding: '15px' }}>{pedido.detalles.length}</td>
-                                        <td style={{ padding: '15px', fontWeight: 'bold', color: '#2e7d32' }}>
+                                        <td className="no-print" style={{ padding: '15px', fontWeight: 'bold', color: '#2e7d32' }}>
                                             ${(pedido.total || 0).toLocaleString()}
                                         </td>
-                                        <td style={{ padding: '15px' }}>
+                                        <td className="no-print" style={{ padding: '15px' }}>
                                             <select
                                                 value={pedido.repartidor || ''}
                                                 onChange={(e) => updateRepartidor(pedido.id, e.target.value)}
@@ -430,7 +466,7 @@ export default function PedidosDiaPage() {
                                                 ))}
                                             </select>
                                         </td>
-                                        <td style={{ padding: '15px' }}>
+                                        <td className="no-print" style={{ padding: '15px' }}>
                                             <select
                                                 value={pedido.estado}
                                                 onChange={(e) => updateEstado(pedido.id, e.target.value)}
@@ -449,20 +485,54 @@ export default function PedidosDiaPage() {
                                                 <option value="cancelado">Cancelado</option>
                                             </select>
                                         </td>
-                                        <td style={{ padding: '15px' }}>
-                                            <button
-                                                onClick={() => setSelectedPedido(pedido)}
-                                                style={{
-                                                    padding: '6px 12px',
-                                                    backgroundColor: '#e3f2fd',
-                                                    color: '#1565c0',
-                                                    border: 'none',
-                                                    borderRadius: '6px',
-                                                    cursor: 'pointer'
-                                                }}
-                                            >
-                                                Ver Detalle
-                                            </button>
+                                        <td className="no-print" style={{ padding: '15px' }}>
+                                            <div style={{ display: 'flex', gap: '8px' }}>
+                                                <button
+                                                    onClick={() => setEditingPedido(pedido)}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        backgroundColor: '#e8f5e9',
+                                                        color: '#2e7d32',
+                                                        border: 'none',
+                                                        borderRadius: '6px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '0.9rem'
+                                                    }}
+                                                    title="Editar pedido"
+                                                >
+                                                    ✏️ Editar
+                                                </button>
+                                                <button
+                                                    onClick={() => handleDeletePedido(pedido)}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        backgroundColor: '#ffebee',
+                                                        color: '#c62828',
+                                                        border: 'none',
+                                                        borderRadius: '6px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '0.9rem'
+                                                    }}
+                                                    title="Eliminar pedido"
+                                                    disabled={!['pendiente', 'confirmado'].includes(pedido.estado)}
+                                                >
+                                                    🗑️ Eliminar
+                                                </button>
+                                                <button
+                                                    onClick={() => setSelectedPedido(pedido)}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        backgroundColor: '#e3f2fd',
+                                                        color: '#1565c0',
+                                                        border: 'none',
+                                                        borderRadius: '6px',
+                                                        cursor: 'pointer',
+                                                        fontSize: '0.9rem'
+                                                    }}
+                                                >
+                                                    👁️ Ver
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -497,7 +567,7 @@ export default function PedidosDiaPage() {
                                                 {item.productoNombre}
                                             </td>
                                             <td style={{ padding: '15px', textAlign: 'right', fontSize: '1.2rem', fontWeight: 'bold', color: '#1565c0' }}>
-                                                {(item.cantidadTotal || 0).toLocaleString()}
+                                                {(item.cantidadTotal || 0).toLocaleString()} <span style={{ fontSize: '0.85rem', color: '#666' }}>{item.unidad}</span>
                                             </td>
                                             <td style={{ padding: '15px', textAlign: 'right', color: '#2e7d32' }}>
                                                 ${(item.subtotalTotal || 0).toLocaleString()}
@@ -519,6 +589,75 @@ export default function PedidosDiaPage() {
                             </table>
                         </>
                     )}
+                </div>
+            )}
+
+            {/* Print-only: Repartidor Delivery Route - BLOCK FORMAT */}
+            {printMode === 'repartidor' && selectedRepartidor && (
+                <div className="print-only-repartidor" style={{
+                    display: 'none',
+                    backgroundColor: '#fff',
+                    padding: '10px',
+                    fontSize: '9pt',
+                    fontFamily: 'Arial, sans-serif'
+                }}>
+                    {/* Header */}
+                    <div style={{
+                        textAlign: 'center',
+                        borderBottom: '2px solid #000',
+                        paddingBottom: '5px',
+                        marginBottom: '10px'
+                    }}>
+                        <h2 style={{ margin: '0', fontSize: '12pt', fontWeight: 'bold', textTransform: 'uppercase' }}>
+                            {selectedRepartidor} - {formatDate(fecha)}
+                        </h2>
+                    </div>
+
+                    {/* Casinos in multi-column layout */}
+                    <div style={{
+                        columnCount: 2,
+                        columnGap: '15px',
+                        fontSize: '8pt'
+                    }}>
+                        {filteredPorRepartidor.map((pedido) => (
+                            <div key={pedido.id} style={{
+                                border: '1px solid #000',
+                                padding: '8px',
+                                marginBottom: '10px',
+                                breakInside: 'avoid',
+                                pageBreakInside: 'avoid'
+                            }}>
+                                {/* Casino Header */}
+                                <div style={{
+                                    fontWeight: 'bold',
+                                    marginBottom: '5px',
+                                    fontSize: '9pt',
+                                    borderBottom: '1px solid #ccc',
+                                    paddingBottom: '3px'
+                                }}>
+                                    {pedido.casinoNombre.toUpperCase()} {pedido.horaEntrega || ''}
+                                </div>
+
+                                {/* Products List */}
+                                {pedido.detalles.map((detalle) => (
+                                    <div key={detalle.id} style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        padding: '2px 0',
+                                        fontSize: '8pt'
+                                    }}>
+                                        <span style={{ flex: 1 }}>{detalle.productoNombre}</span>
+                                        <span style={{ width: '40px', textAlign: 'right', fontWeight: 'bold' }}>
+                                            {detalle.cantidad}
+                                        </span>
+                                        <span style={{ width: '45px', textAlign: 'right' }}>
+                                            {detalle.unidad || 'UNID'}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        ))}
+                    </div>
                 </div>
             )}
 
@@ -588,37 +727,347 @@ export default function PedidosDiaPage() {
                                 <tr style={{ borderBottom: '2px solid #eee', textAlign: 'left' }}>
                                     <th style={{ padding: '10px' }}>Producto</th>
                                     <th style={{ padding: '10px', textAlign: 'right' }}>Cantidad</th>
-                                    <th style={{ padding: '10px', textAlign: 'right' }}>Precio</th>
-                                    <th style={{ padding: '10px', textAlign: 'right' }}>Subtotal</th>
+                                    <th style={{ padding: '10px', textAlign: 'center' }}>Unidad</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {selectedPedido.detalles.map(detalle => (
                                     <tr key={detalle.id} style={{ borderBottom: '1px solid #eee' }}>
                                         <td style={{ padding: '10px' }}>{detalle.productoNombre}</td>
-                                        <td style={{ padding: '10px', textAlign: 'right', fontWeight: 'bold' }}>
+                                        <td style={{ padding: '10px', textAlign: 'right', fontWeight: 'bold', fontSize: '1.1rem' }}>
                                             {detalle.cantidad}
                                         </td>
-                                        <td style={{ padding: '10px', textAlign: 'right' }}>
-                                            ${(detalle.precioUnitario || 0).toLocaleString()}
-                                        </td>
-                                        <td style={{ padding: '10px', textAlign: 'right', fontWeight: '600' }}>
-                                            ${(detalle.subtotal || 0).toLocaleString()}
+                                        <td style={{ padding: '10px', textAlign: 'center', color: '#666' }}>
+                                            {detalle.unidad || 'Un'}
                                         </td>
                                     </tr>
                                 ))}
                             </tbody>
-                            <tfoot>
-                                <tr style={{ borderTop: '2px solid #333' }}>
-                                    <td colSpan={3} style={{ padding: '15px', fontWeight: 'bold', textAlign: 'right' }}>
-                                        TOTAL:
-                                    </td>
-                                    <td style={{ padding: '15px', fontWeight: 'bold', color: '#2e7d32', fontSize: '1.2rem', textAlign: 'right' }}>
-                                        ${(selectedPedido.total || 0).toLocaleString()}
-                                    </td>
-                                </tr>
-                            </tfoot>
+
                         </table>
+                    </div>
+                </div>
+            )}
+
+            {/* Edit Modal */}
+            {editingPedido && (
+                <div style={{
+                    position: 'fixed',
+                    top: 0, left: 0, right: 0, bottom: 0,
+                    backgroundColor: 'rgba(0,0,0,0.5)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    zIndex: 1000
+                }}>
+                    <div style={{
+                        backgroundColor: '#fff',
+                        borderRadius: '12px',
+                        padding: '30px',
+                        width: '90%',
+                        maxWidth: '500px',
+                        maxHeight: '80vh',
+                        overflow: 'auto'
+                    }}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            marginBottom: '20px'
+                        }}>
+                            <div>
+                                <h2>Editar Pedido #{editingPedido.id.toString().padStart(4, '0')}</h2>
+                                <p style={{ color: '#888' }}>
+                                    {editingPedido.casinoNombre} - {editingPedido.empresaNombre}
+                                </p>
+                            </div>
+                            <button
+                                onClick={() => setEditingPedido(null)}
+                                style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    fontSize: '1.5rem',
+                                    cursor: 'pointer',
+                                    color: '#888'
+                                }}
+                            >
+                                ✕
+                            </button>
+                        </div>
+
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                            {/* Hora de Entrega */}
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                                    🕐 Hora de Entrega
+                                </label>
+                                <input
+                                    type="time"
+                                    value={editingPedido.horaEntrega || ''}
+                                    onChange={(e) => setEditingPedido({
+                                        ...editingPedido,
+                                        horaEntrega: e.target.value
+                                    })}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #ddd',
+                                        fontSize: '1rem'
+                                    }}
+                                />
+                            </div>
+
+                            {/* Repartidor */}
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                                    🚗 Repartidor
+                                </label>
+                                <select
+                                    value={editingPedido.repartidor || ''}
+                                    onChange={(e) => setEditingPedido({
+                                        ...editingPedido,
+                                        repartidor: e.target.value
+                                    })}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #ddd',
+                                        fontSize: '1rem'
+                                    }}
+                                >
+                                    <option value="">Sin asignar</option>
+                                    {repartidores.map(r => (
+                                        <option key={r.id} value={r.nombre}>{r.nombre}</option>
+                                    ))}
+                                </select>
+                            </div>
+
+                            {/* Estado */}
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                                    📋 Estado
+                                </label>
+                                <select
+                                    value={editingPedido.estado}
+                                    onChange={(e) => setEditingPedido({
+                                        ...editingPedido,
+                                        estado: e.target.value as any
+                                    })}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #ddd',
+                                        fontSize: '1rem'
+                                    }}
+                                >
+                                    <option value="pendiente">Pendiente</option>
+                                    <option value="confirmado">Confirmado</option>
+                                    <option value="en_produccion">En Producción</option>
+                                    <option value="despachado">Despachado</option>
+                                    <option value="entregado">Entregado</option>
+                                    <option value="cancelado">Cancelado</option>
+                                </select>
+                            </div>
+
+                            {/* Productos */}
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '10px', fontWeight: 'bold' }}>
+                                    📦 Productos del Pedido
+                                </label>
+                                <div style={{ border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                        <thead>
+                                            <tr style={{ backgroundColor: '#f5f5f5' }}>
+                                                <th style={{ padding: '8px', textAlign: 'left', fontSize: '0.9rem' }}>Producto</th>
+                                                <th style={{ padding: '8px', textAlign: 'center', fontSize: '0.9rem', width: '80px' }}>Cantidad</th>
+                                                <th style={{ padding: '8px', textAlign: 'center', fontSize: '0.9rem', width: '80px' }}>Unidad</th>
+                                                <th style={{ padding: '8px', textAlign: 'center', fontSize: '0.9rem', width: '50px' }}></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {editingPedido.detalles.map((detalle, idx) => (
+                                                <tr key={detalle.id} style={{ borderBottom: '1px solid #eee' }}>
+                                                    <td style={{ padding: '8px', fontSize: '0.9rem' }}>{detalle.productoNombre}</td>
+                                                    <td style={{ padding: '4px' }}>
+                                                        <input
+                                                            type="number"
+                                                            min="0.1"
+                                                            step="0.1"
+                                                            value={detalle.cantidad}
+                                                            onChange={(e) => {
+                                                                const newDetalles = [...editingPedido.detalles];
+                                                                newDetalles[idx] = { ...newDetalles[idx], cantidad: parseFloat(e.target.value) || 0 };
+                                                                setEditingPedido({ ...editingPedido, detalles: newDetalles });
+                                                            }}
+                                                            style={{
+                                                                width: '100%',
+                                                                padding: '6px',
+                                                                borderRadius: '4px',
+                                                                border: '1px solid #ddd',
+                                                                textAlign: 'center'
+                                                            }}
+                                                        />
+                                                    </td>
+                                                    <td style={{ padding: '4px' }}>
+                                                        <select
+                                                            value={detalle.unidad || 'Kg'}
+                                                            onChange={(e) => {
+                                                                const newDetalles = [...editingPedido.detalles];
+                                                                newDetalles[idx] = { ...newDetalles[idx], unidad: e.target.value };
+                                                                setEditingPedido({ ...editingPedido, detalles: newDetalles });
+                                                            }}
+                                                            style={{
+                                                                width: '100%',
+                                                                padding: '6px',
+                                                                borderRadius: '4px',
+                                                                border: '1px solid #ddd'
+                                                            }}
+                                                        >
+                                                            <option value="Kg">Kg</option>
+                                                            <option value="Un">Un</option>
+                                                        </select>
+                                                    </td>
+                                                    <td style={{ padding: '4px', textAlign: 'center' }}>
+                                                        <button
+                                                            onClick={() => {
+                                                                const newDetalles = editingPedido.detalles.filter((_, i) => i !== idx);
+                                                                setEditingPedido({ ...editingPedido, detalles: newDetalles });
+                                                            }}
+                                                            style={{
+                                                                background: 'none',
+                                                                border: 'none',
+                                                                fontSize: '1.2rem',
+                                                                cursor: 'pointer',
+                                                                color: '#c62828'
+                                                            }}
+                                                            title="Eliminar producto"
+                                                        >
+                                                            🗑️
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                {/* Add Product */}
+                                <div style={{ marginTop: '10px', display: 'flex', gap: '8px', alignItems: 'center' }}>
+                                    <select
+                                        id="addProductSelect"
+                                        style={{
+                                            flex: 1,
+                                            padding: '8px',
+                                            borderRadius: '6px',
+                                            border: '1px solid #ddd',
+                                            fontSize: '0.9rem'
+                                        }}
+                                    >
+                                        <option value="">Seleccionar producto...</option>
+                                        {productos.map(p => (
+                                            <option key={p.id} value={p.id}>{p.nombre}</option>
+                                        ))
+                                        }
+                                    </select>
+                                    <button
+                                        onClick={() => {
+                                            const select = document.getElementById('addProductSelect') as HTMLSelectElement;
+                                            const productoId = parseInt(select.value);
+                                            if (!productoId) return;
+                                            const producto = productos.find(p => p.id === productoId);
+                                            if (!producto) return;
+
+                                            const newDetalle: DetallePedido = {
+                                                id: Date.now(), // Temporary ID
+                                                pedidoId: editingPedido.id,
+                                                productoId: producto.id,
+                                                productoNombre: producto.nombre,
+                                                cantidad: 1,
+                                                unidad: 'Kg',
+                                                precioUnitario: producto.precioKilo || 0,
+                                                subtotal: producto.precioKilo || 0
+                                            };
+                                            setEditingPedido({
+                                                ...editingPedido,
+                                                detalles: [...editingPedido.detalles, newDetalle]
+                                            });
+                                            select.value = '';
+                                        }}
+                                        style={{
+                                            padding: '8px 16px',
+                                            backgroundColor: '#1976d2',
+                                            color: '#fff',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            cursor: 'pointer',
+                                            fontSize: '0.9rem'
+                                        }}
+                                    >
+                                        ➕ Agregar
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Observaciones */}
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '5px', fontWeight: 'bold' }}>
+                                    📝 Observaciones
+                                </label>
+                                <textarea
+                                    value={editingPedido.observaciones || ''}
+                                    onChange={(e) => setEditingPedido({
+                                        ...editingPedido,
+                                        observaciones: e.target.value
+                                    })}
+                                    rows={3}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        borderRadius: '8px',
+                                        border: '1px solid #ddd',
+                                        fontSize: '1rem',
+                                        resize: 'vertical'
+                                    }}
+                                    placeholder="Notas adicionales..."
+                                />
+                            </div>
+                        </div>
+
+                        {/* Buttons */}
+                        <div style={{ display: 'flex', gap: '10px', marginTop: '25px', justifyContent: 'flex-end' }}>
+                            <button
+                                onClick={() => setEditingPedido(null)}
+                                style={{
+                                    padding: '10px 20px',
+                                    backgroundColor: '#f5f5f5',
+                                    color: '#666',
+                                    border: '1px solid #ddd',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    fontSize: '1rem'
+                                }}
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={() => handleSaveEdit(editingPedido)}
+                                style={{
+                                    padding: '10px 20px',
+                                    backgroundColor: '#2e7d32',
+                                    color: '#fff',
+                                    border: 'none',
+                                    borderRadius: '8px',
+                                    cursor: 'pointer',
+                                    fontSize: '1rem',
+                                    fontWeight: 'bold'
+                                }}
+                            >
+                                💾 Guardar Cambios
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
@@ -629,6 +1078,18 @@ export default function PedidosDiaPage() {
                     .no-print {
                         display: none !important;
                     }
+                    
+                    /* Show print-only content */
+                    .print-only-repartidor {
+                        display: block !important;
+                    }
+                    
+                    /* Hide main content when printing repartidor route */
+                    ${printMode === 'repartidor' ? `
+                        body > div > div:not(.print-only-repartidor) {
+                            display: none !important;
+                        }
+                    ` : ''}
                     
                     /* Hide sidebar and general UI */
                     aside, .sidebar, nav, header, footer {
@@ -650,13 +1111,6 @@ export default function PedidosDiaPage() {
                     th, td {
                         padding: 8px 10px !important;
                     }
-                    
-                    /* Hide action columns when printing */
-                    ${printMode !== 'none' ? `
-                        th:last-child, td:last-child {
-                            display: none;
-                        }
-                    ` : ''}
                     
                     /* Add header for print */
                     @page {

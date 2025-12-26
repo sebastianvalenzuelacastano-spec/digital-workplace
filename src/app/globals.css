@@ -40,8 +40,9 @@ body {
   font-family: var(--font-family-sans);
   background-color: var(--color-background);
   color: var(--color-text);
-  line-height: 1.4;
-  font-size: 11px;
+  line-height: 1.6;
+  font-size: 14px;
+  /* Tamaño base consistente en todo el sistema */
 }
 
 h1,
@@ -54,6 +55,8 @@ h6 {
   color: var(--color-primary);
   margin-bottom: 0.5rem;
   font-weight: 700;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
 }
 
 a {
@@ -66,6 +69,47 @@ button {
   cursor: pointer;
   font-family: inherit;
   border: none;
+}
+
+/* FORZAR TODO A 14PX - Override EXTREMADAMENTE AGRESIVO */
+html {
+  font-size: 14px !important;
+}
+
+body {
+  font-size: 14px !important;
+}
+
+*,
+*::before,
+*::after,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+div,
+a,
+button,
+input,
+select,
+textarea,
+label,
+td,
+th,
+li,
+ul,
+ol {
+  font-size: 14px !important;
+}
+
+/* Override cualquier estilo inline */
+[style*="font-size"],
+[style*="fontSize"] {
+  font-size: 14px !important;
 }
 
 /* Utility Classes */
@@ -81,12 +125,12 @@ button {
   justify-content: center;
   padding: 8px 16px;
   border-radius: 50px;
-  /* Pill shape */
   font-weight: 600;
   letter-spacing: 0.3px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-transform: uppercase;
-  font-size: 0.55rem;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
 }
 
 .btn-primary {
@@ -152,51 +196,83 @@ button {
   animation-delay: 0.3s;
 }
 
-/* ===== MOBILE RESPONSIVE STYLES ===== */
+/* ===== RESPONSIVE STYLES ===== */
 
-/* Tablet breakpoint */
+/* Tablet / iPad breakpoint (768px - 1024px) */
 @media (max-width: 1024px) {
+  .container {
+    padding: 0 15px;
+  }
+
+  /* Sidebar se oculta en tablet */
+  .dashboard-main {
+    margin-left: 0 !important;
+  }
+
+  /* Grids de 4 columnas pasan a 2 */
+  [style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Reducir padding en cards */
+  div[style*="padding: '20px'"],
+  div[style*="padding: 20px"] {
+    padding: 12px !important;
+  }
+
+  /* Tablas con scroll horizontal */
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* Mobile breakpoint (<768px) */
+@media (max-width: 768px) {
+  :root {
+    --spacing-unit: 6px;
+    --border-radius: 8px;
+  }
+
   .container {
     padding: 0 10px;
   }
 
-  h1 {
-    font-size: 0.85rem;
+  /* Dashboard sin sidebar */
+  .dashboard-main {
+    margin-left: 0 !important;
+    padding: 10px !important;
   }
 
-  h2 {
-    font-size: 0.7rem;
-  }
-
-  h3 {
-    font-size: 0.6rem;
-  }
-}
-
-/* Mobile breakpoint */
-@media (max-width: 768px) {
-  :root {
-    --spacing-unit: 4px;
-    --border-radius: 6px;
-  }
-
-  body {
-    font-size: 9px;
-  }
-
-  .container {
-    padding: 0 8px;
-  }
-
-  /* Responsive buttons */
+  /* Botones full width en móvil */
   .btn {
-    padding: 6px 12px;
-    font-size: 0.5rem;
+    padding: 10px 16px !important;
     width: 100%;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
   }
 
-  /* Make tables scroll horizontally on mobile */
+  /* Grids pasan a 1 columna */
+  [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Flex columns en móvil */
+  [style*="display: flex"][style*="gap"] {
+    flex-direction: column !important;
+  }
+
+  /* Inputs y selects full width */
+  input,
+  select,
+  textarea {
+    width: 100% !important;
+    padding: 12px !important;
+    font-size: 16px !important;
+    /* Previene zoom en iOS */
+  }
+
+  /* Tablas responsivas */
   table {
     display: block;
     overflow-x: auto;
@@ -206,74 +282,59 @@ button {
 
   table th,
   table td {
-    padding: 6px 8px !important;
-    font-size: 0.5rem;
+    padding: 8px 10px !important;
+    min-width: 80px;
   }
 
-  /* Stack form elements */
-  form {
-    gap: 0.5rem !important;
-  }
-
-  form input,
-  form select,
-  form textarea {
-    padding: 8px !important;
-    font-size: 11px !important;
-    /* Prevents iOS zoom on focus */
-  }
-
-  /* Modal adjustments for mobile */
-  .modal-content {
+  /* Modal fullscreen en móvil */
+  .modal-content,
+  div[style*="maxWidth: '600px'"],
+  div[style*="max-width: 600px"] {
     width: 95vw !important;
+    max-width: 95vw !important;
     max-height: 90vh !important;
     margin: 5vh auto !important;
   }
 
-  /* Card grid adjustments */
-  [style*="grid-template-columns"] {
-    grid-template-columns: 1fr !important;
+  /* Cards compactas */
+  div[style*="padding: '20px'"],
+  div[style*="padding: 20px"] {
+    padding: 10px !important;
   }
 
-  /* Flex wrap for header buttons */
-  [style*="justify-content: space-between"] {
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    gap: 0.5rem !important;
+  /* Ocultar elementos overflow */
+  body {
+    overflow-x: hidden;
   }
 
-  /* Touch-friendly action buttons */
-  button[title] {
-    min-width: 36px;
-    min-height: 36px;
+  /* Touch-friendly buttons */
+  button {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 
-/* Small mobile */
+/* Small mobile (<480px) */
 @media (max-width: 480px) {
-  h1 {
-    font-size: 0.7rem;
+  .container {
+    padding: 0 8px;
   }
 
-  h2 {
-    font-size: 0.6rem;
+  /* Reducir más el padding */
+  .dashboard-main>div {
+    padding: 8px !important;
   }
 
-  h3 {
-    font-size: 0.55rem;
-  }
-
-  /* Even smaller buttons */
-  .btn {
-    padding: 6px 12px;
-    font-size: 0.48rem;
-  }
-
-  /* Compact table cells */
+  /* Tabla cells más compactas */
   table th,
   table td {
-    padding: 4px 6px !important;
-    font-size: 0.48rem;
+    padding: 6px 8px !important;
+    min-width: 60px;
+  }
+
+  /* Botones más pequeños */
+  button[style*="padding"] {
+    padding: 8px 12px !important;
   }
 }
 
@@ -319,22 +380,25 @@ div[class*="sidebar"] {
 
 /* Reduce all heading sizes in dashboard */
 .dashboard-main h1 {
-  font-size: 1.3rem !important;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
   margin-bottom: 0.8rem !important;
 }
 
 .dashboard-main h2 {
-  font-size: 1.1rem !important;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
   margin-bottom: 0.6rem !important;
 }
 
 .dashboard-main h3 {
-  font-size: 0.95rem !important;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
   margin-bottom: 0.5rem !important;
 }
 
 /* Reduce padding in all dashboard containers */
-.dashboard-main > div {
+.dashboard-main>div {
   padding: 1rem !important;
 }
 
@@ -371,29 +435,34 @@ div[class*="sidebar"] {
 /* Reduce font sizes in metric cards */
 .dashboard-main p[style*="fontSize: '2rem'"],
 .dashboard-main p[style*="font-size: 2rem"] {
-  font-size: 1.4rem !important;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
 }
 
 .dashboard-main p[style*="fontSize: '1.8rem'"],
 .dashboard-main p[style*="font-size: 1.8rem"] {
-  font-size: 1.2rem !important;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
 }
 
 .dashboard-main p[style*="fontSize: '1.5rem'"],
 .dashboard-main p[style*="font-size: 1.5rem"] {
-  font-size: 1.1rem !important;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
 }
 
 .dashboard-main h3[style*="fontSize: '1rem'"],
 .dashboard-main h3[style*="font-size: 1rem"] {
-  font-size: 0.85rem !important;
+  font-size: 10px !important;
+  /* Todo igual a 10px */
 }
 
 /* Compact table spacing */
 .dashboard-main table th,
 .dashboard-main table td {
-  padding: 6px 8px !important;
-  font-size: 0.85rem !important;
+  padding: 8px 12px !important;
+  font-size: 10px !important;
+  /* Mismo tamaño que el body */
 }
 
 /* Reduce form element spacing */
@@ -404,15 +473,17 @@ div[class*="sidebar"] {
 .dashboard-main input,
 .dashboard-main select,
 .dashboard-main textarea {
-  padding: 6px 10px !important;
-  font-size: 0.9rem !important;
+  padding: 8px 12px !important;
+  font-size: 10px !important;
+  /* Mismo tamaño que el body */
 }
 
 /* Compact buttons in dashboard */
 .dashboard-main button,
 .dashboard-main .btn {
-  padding: 6px 14px !important;
-  font-size: 0.85rem !important;
+  padding: 8px 16px !important;
+  font-size: 10px !important;
+  /* Mismo tamaño que el body */
 }
 
 /* Reduce border radius for tighter look */
@@ -423,5 +494,8 @@ div[class*="sidebar"] {
 /* Compact label spacing */
 .dashboard-main label {
   margin-bottom: 0.3rem !important;
-  font-size: 0.9rem !important;
-}/* Railway cache buster - 1766360240 */
+  font-size: 10px !important;
+  /* Mismo tamaño que el body */
+}
+
+/* Railway cache buster - 1766360240 */

@@ -6,20 +6,25 @@ import { User } from '@/types/dashboard';
 import Modal from '@/components/Modal';
 
 const AVAILABLE_MODULES = [
+    { name: 'Dashboard', path: '/dashboard' },
     { name: 'Balance', path: '/dashboard/balance' },
     { name: 'Conciliación Bancaria', path: '/dashboard/banco' },
     { name: 'Caja Chica', path: '/dashboard/caja-chica' },
-    { name: 'Configuración', path: '/dashboard/configuracion' },
-    { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Pagos', path: '/dashboard/pagos' },
+    { name: 'Ventas', path: '/dashboard/ventas' },
+    { name: 'Rendimiento', path: '/dashboard/rendimiento' },
+    { name: 'Insumos', path: '/dashboard/inventario' },
+    { name: 'Colegios', path: '/dashboard/colegios' },
     { name: 'Equipos', path: '/dashboard/equipos' },
     { name: 'Vehículos', path: '/dashboard/vehiculos' },
-    { name: 'Informes', path: '/dashboard/informes' },
-    { name: 'Insumos', path: '/dashboard/inventario' },
-    { name: 'Pagos', path: '/dashboard/pagos' },
-    { name: 'Pedidos', path: '/dashboard/pedidos' },
     { name: 'Productos (Web)', path: '/dashboard/productos-web' },
-    { name: 'Rendimiento', path: '/dashboard/rendimiento' },
-    { name: 'Ventas', path: '/dashboard/ventas' },
+    { name: 'Empresas (B2B)', path: '/dashboard/empresas-clientes' },
+    { name: 'Precios (B2B)', path: '/dashboard/precios-clientes' },
+    { name: 'Pedidos del Día', path: '/dashboard/pedidos-dia' },
+    { name: 'Hoja de Ruta', path: '/dashboard/hoja-ruta' },
+    { name: 'Reclamos y Sugerencias', path: '/dashboard/reclamos' },
+    { name: 'Informes', path: '/dashboard/informes' },
+    { name: 'Configuración', path: '/dashboard/configuracion' },
 ];
 
 export default function UsersPage() {

@@ -156,8 +156,8 @@
     transition: opacity 0.3s;
 }
 
-/* Mobile Responsiveness */
-@media (max-width: 768px) {
+/* Tablet Responsiveness (iPad) */
+@media (max-width: 1024px) {
     .sidebar {
         transform: translateX(-100%);
         width: 280px;
@@ -175,5 +175,47 @@
     .overlay.open {
         display: block;
         opacity: 1;
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+        padding: 1.5rem;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .toggleButton {
+        display: block;
+    }
+
+    .overlay.open {
+        display: block;
+        opacity: 1;
+    }
+
+    .logoImage {
+        width: 80px !important;
+        height: 80px !important;
+    }
+
+    .brandName {
+        font-size: 1.2rem;
+    }
+
+    .menuLink {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .logoutButton {
+        padding: 14px;
+        font-size: 0.85rem;
     }
 }

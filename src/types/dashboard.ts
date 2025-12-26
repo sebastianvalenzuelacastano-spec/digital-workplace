@@ -275,6 +275,7 @@ export interface DetallePedido {
     productoId: number;
     productoNombre: string; // Cache
     cantidad: number;
+    unidad?: string; // Unidad seleccionada (Kg, Un, etc.)
     precioUnitario: number;
     subtotal: number;
 }
@@ -290,3 +291,21 @@ export interface ProductoCatalogo {
     imagen?: string;
     activo: boolean;
 }
+
+// Registro de Colegios - Control de Mermas por Repartidor
+export interface RegistroColegio {
+    id: number;
+    fecha: string;
+    repartidor: string; // Nombre del repartidor (4 repartidores)
+    cliente: string; // Nombre del colegio
+    casinoId?: number; // Opcional si está en el sistema
+    producto: string;
+    pesoFormula: number; // Kg según fórmula (teórico)
+    pesoReal: number; // Kg pesado (real)
+    diferencia: number; // pesoReal - pesoFormula (puede ser positivo o negativo)
+    porcentajeMerma: number; // ((pesoReal - pesoFormula) / pesoFormula) * 100
+    observaciones?: string;
+    creador: string; // Usuario que registró
+    fechaCreacion: string;
+}
+

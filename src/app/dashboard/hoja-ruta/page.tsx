@@ -140,192 +140,106 @@ export default function HojaRutaPage() {
                             key={ruta.nombre}
                             style={{
                                 backgroundColor: '#fff',
-                                borderRadius: '12px',
-                                padding: '2rem',
-                                marginBottom: '2rem',
-                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                                padding: '15px',
+                                marginBottom: '1rem',
                                 pageBreakAfter: 'always'
                             }}
                         >
-                            {/* Repartidor Header */}
+                            {/* Repartidor Header - COMPACT */}
                             <div style={{
-                                borderBottom: '3px solid #2196f3',
-                                paddingBottom: '1rem',
-                                marginBottom: '1.5rem'
+                                borderBottom: '2px solid #000',
+                                paddingBottom: '5px',
+                                marginBottom: '10px'
                             }}>
                                 <h2 style={{
-                                    fontSize: '1.8rem',
-                                    color: '#2196f3',
-                                    marginBottom: '0.5rem'
+                                    fontSize: '12pt',
+                                    margin: '0',
+                                    fontWeight: 'bold'
                                 }}>
-                                    🚗 {ruta.nombre}
+                                    {ruta.nombre} - {ruta.casinos.length} entregas
                                 </h2>
-                                <p style={{ color: '#666', fontSize: '1rem' }}>
-                                    Total de entregas: {ruta.casinos.length}
-                                </p>
                             </div>
 
-                            {/* Casinos */}
-                            {ruta.casinos.map((casino, casinoIndex) => (
-                                <div
-                                    key={casino.pedido.id}
-                                    style={{
-                                        marginBottom: '2rem',
-                                        padding: '1.5rem',
-                                        backgroundColor: '#f9f9f9',
-                                        borderRadius: '8px',
-                                        border: '1px solid #e0e0e0'
-                                    }}
-                                >
-                                    {/* Casino Header */}
-                                    <div style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'flex-start',
-                                        marginBottom: '1rem',
-                                        paddingBottom: '0.75rem',
-                                        borderBottom: '2px solid #ddd'
-                                    }}>
-                                        <div>
-                                            <h3 style={{
-                                                fontSize: '1.3rem',
-                                                marginBottom: '0.25rem',
-                                                color: '#333'
-                                            }}>
-                                                {casinoIndex + 1}. {casino.pedido.casinoNombre}
-                                            </h3>
-                                            <p style={{ color: '#666', fontSize: '0.9rem' }}>
-                                                {casino.pedido.empresaNombre}
-                                            </p>
-                                        </div>
-                                        <div style={{ textAlign: 'right' }}>
-                                            <p style={{ fontSize: '0.85rem', color: '#666' }}>
-                                                Pedido #{casino.pedido.id}
-                                            </p>
-                                            <p style={{ fontSize: '0.85rem', color: '#666' }}>
-                                                Hora: {casino.pedido.horaEntrega || casino.pedido.horaPedido}
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Products */}
-                                    <table style={{
-                                        width: '100%',
-                                        borderCollapse: 'collapse',
-                                        marginBottom: '0.75rem'
-                                    }}>
-                                        <thead>
-                                            <tr style={{ backgroundColor: '#e8e8e8' }}>
-                                                <th style={{
-                                                    padding: '10px',
-                                                    textAlign: 'left',
-                                                    fontSize: '0.9rem'
-                                                }}>
-                                                    Producto
-                                                </th>
-                                                <th style={{
-                                                    padding: '10px',
-                                                    textAlign: 'center',
-                                                    fontSize: '0.9rem',
-                                                    width: '100px'
-                                                }}>
-                                                    Cantidad
-                                                </th>
-                                                <th style={{
-                                                    padding: '10px',
-                                                    textAlign: 'right',
-                                                    fontSize: '0.9rem',
-                                                    width: '120px'
-                                                }}>
-                                                    Subtotal
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {casino.pedido.detalles.map(detalle => (
-                                                <tr key={detalle.id} style={{ borderBottom: '1px solid #ddd' }}>
-                                                    <td style={{ padding: '10px', fontSize: '0.95rem' }}>
-                                                        {detalle.productoNombre}
-                                                    </td>
-                                                    <td style={{
-                                                        padding: '10px',
-                                                        textAlign: 'center',
-                                                        fontWeight: 'bold',
-                                                        fontSize: '1rem'
-                                                    }}>
-                                                        {detalle.cantidad} {detalle.unidad || 'und'}
-                                                    </td>
-                                                    <td style={{
-                                                        padding: '10px',
-                                                        textAlign: 'right',
-                                                        fontSize: '0.95rem'
-                                                    }}>
-                                                        ${detalle.subtotal.toLocaleString()}
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                        <tfoot>
-                                            <tr style={{ backgroundColor: '#e8f5e9' }}>
-                                                <td colSpan={2} style={{
-                                                    padding: '10px',
-                                                    fontWeight: 'bold',
-                                                    textAlign: 'right',
-                                                    fontSize: '1rem'
-                                                }}>
-                                                    Total Casino:
-                                                </td>
-                                                <td style={{
-                                                    padding: '10px',
-                                                    textAlign: 'right',
-                                                    fontWeight: 'bold',
-                                                    fontSize: '1.1rem',
-                                                    color: '#2e7d32'
-                                                }}>
-                                                    ${casino.pedido.total.toLocaleString()}
-                                                </td>
-                                            </tr>
-                                        </tfoot>
-                                    </table>
-
-                                    {/* Observaciones */}
-                                    {casino.pedido.observaciones && (
+                            {/* Casinos Container - Grid Layout */}
+                            <div
+                                className="casinos-container"
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: 'repeat(3, 1fr)',
+                                    gap: '8px'
+                                }}
+                            >
+                                {/* Casinos - COMPACT FORMAT */}
+                                {ruta.casinos.map((casino, casinoIndex) => (
+                                    <div
+                                        key={casino.pedido.id}
+                                        className="casino-block"
+                                        style={{
+                                            marginBottom: '5px',
+                                            padding: '4px',
+                                            border: '1px solid #000',
+                                            pageBreakInside: 'avoid',
+                                            fontSize: '6pt',
+                                            boxSizing: 'border-box',
+                                            backgroundColor: '#fff'
+                                        }}
+                                    >
+                                        {/* Casino Header - Compact */}
                                         <div style={{
-                                            marginTop: '0.75rem',
-                                            padding: '0.75rem',
-                                            backgroundColor: '#fff3cd',
-                                            borderRadius: '6px',
-                                            borderLeft: '4px solid #ffc107'
+                                            fontWeight: 'bold',
+                                            marginBottom: '2px',
+                                            paddingBottom: '2px',
+                                            borderBottom: '1px solid #ccc',
+                                            fontSize: '7pt'
                                         }}>
-                                            <strong>📝 Observaciones:</strong> {casino.pedido.observaciones}
+                                            {casino.pedido.casinoNombre.toUpperCase()} - {casino.pedido.horaEntrega || casino.pedido.horaPedido || 'S/H'}
                                         </div>
-                                    )}
 
-                                    {/* Firma */}
-                                    <div style={{
-                                        marginTop: '1.5rem',
-                                        paddingTop: '1rem',
-                                        borderTop: '1px dashed #ccc'
-                                    }}>
-                                        <div style={{
-                                            display: 'flex',
-                                            justifyContent: 'space-between',
-                                            alignItems: 'flex-end'
+
+                                        {/* Products - Table Format */}
+                                        <table style={{
+                                            width: '100%',
+                                            borderCollapse: 'collapse',
+                                            fontSize: '6pt',
+                                            tableLayout: 'fixed'
                                         }}>
-                                            <div>
-                                                <p style={{ marginBottom: '2rem', fontSize: '0.9rem' }}>
-                                                    Firma: _______________________
-                                                </p>
-                                            </div>
-                                            <div>
-                                                <p style={{ fontSize: '0.85rem', color: '#666' }}>
-                                                    Hora entrega: _______
-                                                </p>
-                                            </div>
-                                        </div>
+                                            <tbody>
+                                                {casino.pedido.detalles.map(detalle => (
+                                                    <tr key={detalle.id}>
+                                                        <td style={{
+                                                            padding: '1px 2px 1px 0',
+                                                            textAlign: 'left',
+                                                            width: '50%'
+                                                        }}>
+                                                            {detalle.productoNombre}
+                                                        </td>
+                                                        <td style={{
+                                                            padding: '1px 2px',
+                                                            textAlign: 'right',
+                                                            fontWeight: 'bold',
+                                                            width: '25%',
+                                                            fontSize: '7pt',
+                                                            whiteSpace: 'nowrap'
+                                                        }}>
+                                                            {detalle.cantidad}
+                                                        </td>
+                                                        <td style={{
+                                                            padding: '1px 2px',
+                                                            textAlign: 'center',
+                                                            width: '25%',
+                                                            fontSize: '7pt',
+                                                            fontWeight: 'bold',
+                                                            whiteSpace: 'nowrap'
+                                                        }}>
+                                                            {detalle.unidad || 'Un'}
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     ))}
                 </>
@@ -370,6 +284,59 @@ export default function HojaRutaPage() {
                     
                     table {
                         page-break-inside: avoid;
+                        width: 100% !important;
+                        table-layout: fixed !important;
+                    }
+                    
+                    td, th {
+                        background-color: white !important;
+                        -webkit-print-color-adjust: exact !important;
+                        print-color-adjust: exact !important;
+                    }
+                    
+                    /* Ensure quantity and unit columns are visible */
+                    td:nth-child(2), td:nth-child(3) {\n                        min-width: 60px !important;
+                        white-space: nowrap !important;
+                        display: table-cell !important;
+                        visibility: visible !important;
+                    }
+                    
+                    /* Expand casino blocks to full width on print */
+                    @page {
+                        margin: 1cm;
+                    }
+                    
+                    /* Force 3-column grid layout on print */
+                    .casinos-container {
+                        display: grid !important;
+                        grid-template-columns: repeat(3, 1fr) !important;
+                        gap: 8px !important;
+                    }
+                    
+                    /* Force casino block to fill grid cell */
+                    .casino-block {
+                        break-inside: avoid !important;
+                        page-break-inside: avoid !important;
+                        width: 100% !important;
+                    }
+                    
+                    /* Ensure tbody cells are visible */
+                    tbody td {
+                        display: table-cell !important;
+                        visibility: visible !important;
+                        opacity: 1 !important;
+                    }
+                    
+                    /* Force unit column */
+                    tbody td:nth-child(3) {
+                        width: 25% !important;
+                        min-width: 70px !important;
+                        max-width: none !important;
+                    }
+                    
+                    /* Ensure flexbox works in print */
+                    div[style*="display: flex"] {
+                        display: flex !important;
                     }
                 }
             `}</style>

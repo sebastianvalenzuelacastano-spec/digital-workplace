@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import type { EmpresaCliente, CasinoSucursal } from '@/types/dashboard';
 
+import { formatRUT, validateRUT } from '@/lib/rutUtils';
+
 export default function EmpresasClientesPage() {
     const [empresas, setEmpresas] = useState<EmpresaCliente[]>([]);
     const [casinos, setCasinos] = useState<CasinoSucursal[]>([]);
@@ -10,6 +12,7 @@ export default function EmpresasClientesPage() {
     const [showModal, setShowModal] = useState(false);
     const [showCasinoModal, setShowCasinoModal] = useState(false);
     const [selectedEmpresa, setSelectedEmpresa] = useState<EmpresaCliente | null>(null);
+    const [rutError, setRutError] = useState('');
     const [formData, setFormData] = useState({
         id: 0,
         rut: '',
@@ -26,8 +29,7 @@ export default function EmpresasClientesPage() {
         password: '',
         direccion: '',
         telefono: '',
-        email: '',
-        whatsapp: ''
+        email: ''
     });
 
     useEffect(() => {
@@ -46,14 +48,24 @@ export default function EmpresasClientesPage() {
 
             // Validate responses are arrays
             if (Array.isArray(empresasData)) {
-                setEmpresas(empresasData.filter((e: EmpresaCliente) => e.activo));
+                // Sort: active first, inactive last
+                const sorted = empresasData.sort((a, b) => {
+                    if (a.activo === b.activo) return 0;
+                    return a.activo ? -1 : 1;
+                });
+                setEmpresas(sorted);
             } else {
                 console.error('empresasData is not an array:', empresasData);
                 setEmpresas([]);
             }
 
             if (Array.isArray(casinosData)) {
-                setCasinos(casinosData);
+                // Sort: active first, inactive last
+                const sorted = casinosData.sort((a, b) => {
+                    if (a.activo === b.activo) return 0;
+                    return a.activo ? -1 : 1;
+                });
+                setCasinos(sorted);
             } else {
                 console.error('casinosData is not an array:', casinosData);
                 setCasinos([]);
@@ -122,7 +134,7 @@ export default function EmpresasClientesPage() {
     const resetCasinoForm = () => {
         setCasinoFormData({
             id: 0, empresaId: 0, nombre: '', username: '', password: '',
-            direccion: '', telefono: '', email: '', whatsapp: ''
+            direccion: '', telefono: '', email: ''
         });
     };
 
@@ -136,6 +148,50 @@ export default function EmpresasClientesPage() {
             email: empresa.email
         });
         setShowModal(true);
+    };
+
+    const handleToggleActivo = async (empresa: EmpresaCliente) => {
+        try {
+            const response = await fetch('/api/empresas-clientes', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: empresa.id,
+                    activo: !empresa.activo
+                })
+            });
+
+            if (response.ok) {
+                loadData();
+            } else {
+                alert('Error al actualizar el estado');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al actualizar el estado');
+        }
+    };
+
+    const handleDeleteEmpresa = async (empresa: EmpresaCliente) => {
+        if (!confirm(`¿Estás seguro de eliminar la empresa "${empresa.nombre}"?\n\nEsto también eliminará todos sus casinos asociados.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/empresas-clientes?id=${empresa.id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Empresa eliminada exitosamente');
+                loadData();
+            } else {
+                alert('Error al eliminar la empresa');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al eliminar la empresa');
+        }
     };
 
     const handleAddCasino = (empresa: EmpresaCliente) => {
@@ -213,12 +269,42 @@ export default function EmpresasClientesPage() {
                                 alignItems: 'center'
                             }}>
                                 <div>
-                                    <h3 style={{ marginBottom: '5px' }}>{empresa.nombre}</h3>
+                                    <h3 style={{ marginBottom: '5px' }}>
+                                        {empresa.nombre}
+                                        {!empresa.activo && (
+                                            <span style={{
+                                                marginLeft: '10px',
+                                                padding: '3px 8px',
+                                                backgroundColor: '#ffebee',
+                                                color: '#c62828',
+                                                fontSize: '0.75rem',
+                                                borderRadius: '4px',
+                                                fontWeight: 'normal'
+                                            }}>
+                                                INACTIVO
+                                            </span>
+                                        )}
+                                    </h3>
                                     <p style={{ color: '#888', fontSize: '0.9rem' }}>
                                         RUT: {empresa.rut} | {empresa.email}
                                     </p>
                                 </div>
                                 <div style={{ display: 'flex', gap: '10px' }}>
+                                    <button
+                                        onClick={() => handleToggleActivo(empresa)}
+                                        style={{
+                                            padding: '8px 15px',
+                                            backgroundColor: empresa.activo ? '#fff3e0' : '#e8f5e9',
+                                            color: empresa.activo ? '#e65100' : '#2e7d32',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            cursor: 'pointer',
+                                            fontWeight: '500'
+                                        }}
+                                        title={empresa.activo ? 'Desactivar empresa' : 'Activar empresa'}
+                                    >
+                                        {empresa.activo ? '🔴 Desactivar' : '✅ Activar'}
+                                    </button>
                                     <button
                                         onClick={() => handleEditEmpresa(empresa)}
                                         style={{
@@ -244,6 +330,20 @@ export default function EmpresasClientesPage() {
                                         }}
                                     >
                                         + Agregar Casino
+                                    </button>
+                                    <button
+                                        onClick={() => handleDeleteEmpresa(empresa)}
+                                        style={{
+                                            padding: '8px 15px',
+                                            backgroundColor: '#ffebee',
+                                            color: '#c62828',
+                                            border: 'none',
+                                            borderRadius: '6px',
+                                            cursor: 'pointer'
+                                        }}
+                                        title="Eliminar empresa"
+                                    >
+                                        🗑️ Eliminar
                                     </button>
                                     <a
                                         href={`/dashboard/precios-clientes?empresaId=${empresa.id}`}
@@ -276,7 +376,6 @@ export default function EmpresasClientesPage() {
                                                 <th style={{ padding: '8px' }}>Nombre</th>
                                                 <th style={{ padding: '8px' }}>Usuario</th>
                                                 <th style={{ padding: '8px' }}>Email</th>
-                                                <th style={{ padding: '8px' }}>WhatsApp</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -293,7 +392,6 @@ export default function EmpresasClientesPage() {
                                                         </code>
                                                     </td>
                                                     <td style={{ padding: '8px' }}>{casino.email || '-'}</td>
-                                                    <td style={{ padding: '8px' }}>{casino.whatsapp || '-'}</td>
                                                 </tr>
                                             ))}
                                         </tbody>
@@ -319,7 +417,14 @@ export default function EmpresasClientesPage() {
                         <h3 style={{ marginBottom: '20px' }}>
                             {formData.id ? 'Editar Empresa' : 'Nueva Empresa'}
                         </h3>
-                        <form onSubmit={handleSubmitEmpresa}>
+                        <form onSubmit={(e) => {
+                            if (!validateRUT(formData.rut)) {
+                                e.preventDefault();
+                                setRutError('El RUT ingresado no es válido');
+                                return;
+                            }
+                            handleSubmitEmpresa(e);
+                        }}>
                             <div style={{ display: 'grid', gap: '15px' }}>
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>RUT *</label>
@@ -327,10 +432,25 @@ export default function EmpresasClientesPage() {
                                         type="text"
                                         required
                                         value={formData.rut}
-                                        onChange={(e) => setFormData({ ...formData, rut: e.target.value })}
+                                        onChange={(e) => {
+                                            const formatted = formatRUT(e.target.value);
+                                            setFormData({ ...formData, rut: formatted });
+                                            if (formatted.length > 8 && !validateRUT(formatted)) {
+                                                setRutError('RUT inválido');
+                                            } else {
+                                                setRutError('');
+                                            }
+                                        }}
                                         placeholder="76.024.739-1"
-                                        style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '6px' }}
+                                        style={{
+                                            width: '100%',
+                                            padding: '10px',
+                                            border: `1px solid ${rutError ? '#f44336' : '#ddd'}`,
+                                            borderRadius: '6px',
+                                            backgroundColor: rutError ? '#ffebee' : '#fff'
+                                        }}
                                     />
+                                    {rutError && <span style={{ color: '#f44336', fontSize: '0.8rem', marginTop: '4px', display: 'block' }}>{rutError}</span>}
                                 </div>
                                 <div>
                                     <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>Nombre *</label>
@@ -379,16 +499,19 @@ export default function EmpresasClientesPage() {
                             <div style={{ display: 'flex', gap: '10px', marginTop: '25px', justifyContent: 'flex-end' }}>
                                 <button
                                     type="button"
-                                    onClick={() => setShowModal(false)}
+                                    onClick={() => { setShowModal(false); setRutError(''); }}
                                     style={{ padding: '10px 20px', border: '1px solid #ddd', borderRadius: '6px', cursor: 'pointer' }}
                                 >
                                     Cancelar
                                 </button>
                                 <button
                                     type="submit"
+                                    disabled={!!rutError}
                                     style={{
-                                        padding: '10px 20px', backgroundColor: '#4caf50', color: '#fff',
-                                        border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold'
+                                        padding: '10px 20px',
+                                        backgroundColor: rutError ? '#a5d6a7' : '#4caf50',
+                                        color: '#fff',
+                                        border: 'none', borderRadius: '6px', cursor: rutError ? 'not-allowed' : 'pointer', fontWeight: 'bold'
                                     }}
                                 >
                                     Guardar
@@ -460,16 +583,6 @@ export default function EmpresasClientesPage() {
                                         value={casinoFormData.email}
                                         onChange={(e) => setCasinoFormData({ ...casinoFormData, email: e.target.value })}
                                         placeholder="casino@empresa.cl"
-                                        style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '6px' }}
-                                    />
-                                </div>
-                                <div>
-                                    <label style={{ display: 'block', marginBottom: '5px', fontWeight: '600' }}>WhatsApp</label>
-                                    <input
-                                        type="tel"
-                                        value={casinoFormData.whatsapp}
-                                        onChange={(e) => setCasinoFormData({ ...casinoFormData, whatsapp: e.target.value })}
-                                        placeholder="+56 9 1234 5678"
                                         style={{ width: '100%', padding: '10px', border: '1px solid #ddd', borderRadius: '6px' }}
                                     />
                                 </div>

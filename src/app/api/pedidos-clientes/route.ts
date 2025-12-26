@@ -114,14 +114,22 @@ export async function POST(request: Request) {
     const now = new Date();
     const currentHour = now.getHours();
     const orderDate = now.toISOString().split('T')[0];
-    const deliveryDate = new Date(data.fechaEntrega);
+
+    // Parse delivery date as LOCAL midnight to avoid UTC offsets making it the previous day
+    const [y, m, d] = data.fechaEntrega.split('-').map(Number);
+    const deliveryDate = new Date(y, m - 1, d); // Local midnight
+
+    // Calculate thresholds (Local midnight)
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
 
     if (currentHour >= 18) {
         // After 18:00, minimum delivery is day after tomorrow
         const minDelivery = new Date(now);
         minDelivery.setDate(minDelivery.getDate() + 2);
+        minDelivery.setHours(0, 0, 0, 0);
+
         if (deliveryDate < minDelivery) {
             return NextResponse.json({
                 error: 'Después de las 18:00, el pedido mínimo es para pasado mañana'
@@ -150,13 +158,16 @@ export async function POST(request: Request) {
         fechaPedido: orderDate,
         fechaEntrega: data.fechaEntrega,
         horaPedido: now.toTimeString().slice(0, 5),
+        horaEntrega: data.horaEntrega || '', // Include delivery time
         estado: 'pendiente',
         total: 0,
         observaciones: data.observaciones || '',
         esRecurrente: data.esRecurrente || false,
         diasRecurrencia: data.diasRecurrencia || [],
         notificadoEmail: false,
-        notificadoWhatsapp: false
+        notificadoWhatsapp: false,
+        origenPedido: data.origenPedido || 'manual',
+        repartidor: data.repartidor || ''
     };
 
     // Create order items
@@ -177,6 +188,7 @@ export async function POST(request: Request) {
             productoId: item.productoId,
             productoNombre: item.productoNombre,
             cantidad: item.cantidad,
+            unidad: item.unidad,
             precioUnitario: item.precioUnitario,
             subtotal
         };
@@ -195,7 +207,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ ...newOrder, detalles }, { status: 201 });
 }
 
-// PUT - Update order status
+// PUT - Update order status and details
 export async function PUT(request: Request) {
     const data = await request.json();
     const db = await readDb();
@@ -209,12 +221,49 @@ export async function PUT(request: Request) {
         return NextResponse.json({ error: 'Pedido no encontrado' }, { status: 404 });
     }
 
+    // Update pedido fields (excluding detalles which we handle separately)
+    const { detalles, ...pedidoData } = data;
     db.pedidosClientes[index] = {
         ...db.pedidosClientes[index],
-        ...data
+        ...pedidoData
     };
 
-    writeDb(db);
+    // Handle detalles update if provided
+    if (detalles && Array.isArray(detalles)) {
+        if (!db.detallesPedidos) db.detallesPedidos = [];
+
+        // Remove old detalles for this pedido
+        db.detallesPedidos = db.detallesPedidos.filter(
+            (d: DetallePedido) => d.pedidoId !== data.id
+        );
+
+        // Add new/updated detalles
+        let total = 0;
+        const baseId = db.detallesPedidos.length > 0
+            ? Math.max(...db.detallesPedidos.map((d: DetallePedido) => d.id)) + 1
+            : 1;
+
+        detalles.forEach((det: DetallePedido, i: number) => {
+            const subtotal = (det.cantidad || 0) * (det.precioUnitario || 0);
+            total += subtotal;
+
+            db.detallesPedidos.push({
+                id: baseId + i,
+                pedidoId: data.id,
+                productoId: det.productoId,
+                productoNombre: det.productoNombre,
+                cantidad: det.cantidad,
+                unidad: det.unidad || 'Kg',
+                precioUnitario: det.precioUnitario || 0,
+                subtotal
+            });
+        });
+
+        // Update order total
+        db.pedidosClientes[index].total = total;
+    }
+
+    await writeDb(db);
     return NextResponse.json(db.pedidosClientes[index]);
 }
 

@@ -18,7 +18,7 @@ export async function GET() {
     if (!await isAuthenticated()) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const data = readDb();
+    const data = await readDb();
     if (!data) {
         return NextResponse.json({ error: 'Database not found' }, { status: 404 });
     }
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
 
     // If user is not manager, check for deletions
     if (decoded.role !== 'manager') {
-        const currentDb = readDb();
+        const currentDb = await readDb();
         if (currentDb) {
             // Check each collection for deletions
             const collections = [
@@ -55,6 +55,9 @@ export async function POST(request: Request) {
             ];
 
             for (const collection of collections) {
+                // Skip checks if collection is not being updated
+                if (!body[collection]) continue;
+
                 const currentItems = currentDb[collection] || [];
                 const newItems = body[collection] || [];
 
@@ -82,11 +85,13 @@ export async function POST(request: Request) {
 
     // CRITICAL: Always preserve the users array from the original database
     // The frontend should never modify users
-    const currentDb = readDb();
-    if (currentDb && currentDb.users) {
-        body.users = currentDb.users;
+    const currentDb = await readDb() || {};
+    const finalDb = { ...currentDb, ...body };
+
+    if (currentDb.users) {
+        finalDb.users = currentDb.users;
     }
 
-    writeDb(body);
+    await writeDb(finalDb);
     return NextResponse.json({ success: true });
 }

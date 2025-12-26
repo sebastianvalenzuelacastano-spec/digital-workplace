@@ -46,31 +46,38 @@ export async function GET(request: Request) {
         (d: DetallePedido) => pedidoIds.includes(d.pedidoId)
     );
 
-    // Aggregate by product
-    const resumenPorProducto: Record<number, {
+    // Aggregate by product AND unit (to avoid mixing Kg with Un)
+    const resumenPorProducto: Record<string, {
         productoId: number;
         productoNombre: string;
+        unidad: string;
         cantidadTotal: number;
         subtotalTotal: number;
     }> = {};
 
     for (const detalle of detalles) {
-        if (!resumenPorProducto[detalle.productoId]) {
-            resumenPorProducto[detalle.productoId] = {
+        // Create a unique key combining product ID and unit
+        const key = `${detalle.productoId}-${detalle.unidad || 'Un'}`;
+
+        if (!resumenPorProducto[key]) {
+            resumenPorProducto[key] = {
                 productoId: detalle.productoId,
                 productoNombre: detalle.productoNombre,
+                unidad: detalle.unidad || 'Un',
                 cantidadTotal: 0,
                 subtotalTotal: 0
             };
         }
-        resumenPorProducto[detalle.productoId].cantidadTotal += detalle.cantidad;
-        resumenPorProducto[detalle.productoId].subtotalTotal += detalle.subtotal;
+        resumenPorProducto[key].cantidadTotal += detalle.cantidad;
+        resumenPorProducto[key].subtotalTotal += detalle.subtotal;
     }
 
-    // Convert to array and sort by product name
-    const resumen = Object.values(resumenPorProducto).sort((a, b) =>
-        a.productoNombre.localeCompare(b.productoNombre)
-    );
+    // Convert to array and sort by product name, then by unit
+    const resumen = Object.values(resumenPorProducto).sort((a, b) => {
+        const nameCompare = a.productoNombre.localeCompare(b.productoNombre);
+        if (nameCompare !== 0) return nameCompare;
+        return a.unidad.localeCompare(b.unidad);
+    });
 
     // Calculate totals
     const totales = {

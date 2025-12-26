@@ -63,13 +63,20 @@ export default function ClientLoginPage() {
                 boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
             }}>
                 <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+                    <img src="/logo.jpg" alt="Pan San Sebastián" style={{
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '50%',
+                        marginBottom: '15px',
+                        objectFit: 'cover'
+                    }} />
                     <h1 style={{
                         fontSize: '1.8rem',
                         fontWeight: 'bold',
                         color: '#1a1a2e',
                         marginBottom: '8px'
                     }}>
-                        🍞 Pan San Sebastián
+                        Pan San Sebastián
                     </h1>
                     <p style={{ color: '#666', fontSize: '0.95rem' }}>
                         Portal de Pedidos para Clientes
@@ -174,6 +181,37 @@ export default function ClientLoginPage() {
                 }}>
                     <p>¿Problemas para ingresar?</p>
                     <p>Contacta a: <a href="mailto:pedidos@pansansebastian.cl" style={{ color: '#ff9800' }}>pedidos@pansansebastian.cl</a></p>
+                </div>
+
+                {/* New customers contact section */}
+                <div style={{
+                    marginTop: '25px',
+                    padding: '20px',
+                    backgroundColor: '#f5f5f5',
+                    borderRadius: '8px',
+                    textAlign: 'center'
+                }}>
+                    <p style={{ fontWeight: '600', color: '#333', marginBottom: '8px' }}>
+                        ¿Quieres ser cliente?
+                    </p>
+                    <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '12px' }}>
+                        Contáctanos para obtener acceso al portal de pedidos
+                    </p>
+                    <a
+                        href="/contacto"
+                        style={{
+                            display: 'inline-block',
+                            padding: '10px 24px',
+                            backgroundColor: '#1976d2',
+                            color: '#fff',
+                            borderRadius: '6px',
+                            textDecoration: 'none',
+                            fontSize: '0.95rem',
+                            fontWeight: '500'
+                        }}
+                    >
+                        📧 Solicitar Acceso
+                    </a>
                 </div>
             </div>
         </div>

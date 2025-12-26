@@ -113,78 +113,31 @@ const DashboardContext = createContext<DashboardContextType | undefined>(undefin
 
 export function DashboardProvider({ children }: { children: ReactNode }) {
     // Orders State
-    const [orders, setOrders] = useState<Order[]>([
-        { id: 1, fecha: '2025-11-28', cliente: 'Restaurant El Buen Gusto', productos: '50 panes amasados, 20 hallullas', total: 55000, estado: 'pendiente', entrega: '2025-11-30' },
-        { id: 2, fecha: '2025-11-27', cliente: 'Cafetería Centro', productos: '30 croissants, 15 pasteles', total: 85000, estado: 'en_proceso', entrega: '2025-11-29' },
-        { id: 3, fecha: '2025-11-26', cliente: 'Hotel Plaza', productos: '100 panes marraqueta', total: 45000, estado: 'completado', entrega: '2025-11-27' },
-        { id: 4, fecha: '2025-11-25', cliente: 'Panadería Local', productos: '20kg harina, 5kg levadura', total: 120000, estado: 'completado', entrega: '2025-11-26' },
-    ]);
+    const [orders, setOrders] = useState<Order[]>([]);
 
     // Sales State
-    const [ventas, setVentas] = useState<Venta[]>([
-        { id: 1, fecha: '2025-11-28', cliente: 'Restaurant El Buen Gusto', kilos: 45, monto: 135000 },
-        { id: 2, fecha: '2025-11-27', cliente: 'Cafetería Centro', kilos: 30, monto: 90000 },
-        { id: 3, fecha: '2025-11-26', cliente: 'Hotel Plaza', kilos: 80, monto: 240000 },
-        { id: 4, fecha: '2025-11-25', cliente: 'Panadería Local', kilos: 25, monto: 75000 },
-    ]);
+    const [ventas, setVentas] = useState<Venta[]>([]);
 
     // Payments State
-    const [payments, setPayments] = useState<Payment[]>([
-        { id: 1, factura: 'FAC-2023-001', cliente: 'Restaurant El Buen Gusto', fechaPago: '2025-11-28', montoPagado: 150000 },
-        { id: 2, factura: 'BOL-2023-089', cliente: 'Cafetería Centro', fechaPago: '2025-11-27', montoPagado: 45000 },
-        { id: 3, factura: 'FAC-2023-005', cliente: 'Hotel Plaza', fechaPago: '2025-11-26', montoPagado: 320000 },
-    ]);
+    const [payments, setPayments] = useState<Payment[]>([]);
 
     // Performance State
-    const [rendimientos, setRendimientos] = useState<Rendimiento[]>([
-        { id: 1, fecha: '2025-11-28', kilosProducidos: 1200, sacos: 24, rinde: 50, barrido: 5, merma: 2 },
-        { id: 2, fecha: '2025-11-27', kilosProducidos: 1150, sacos: 23, rinde: 50, barrido: 4, merma: 3 },
-        { id: 3, fecha: '2025-11-26', kilosProducidos: 1300, sacos: 26, rinde: 50, barrido: 6, merma: 2 },
-        { id: 4, fecha: '2025-11-25', kilosProducidos: 1100, sacos: 22, rinde: 50, barrido: 3, merma: 1 },
-    ]);
+    const [rendimientos, setRendimientos] = useState<Rendimiento[]>([]);
 
     // Inventory State
-    const [insumoTransactions, setInsumoTransactions] = useState<InsumoTransaction[]>([
-        { id: 1, fecha: '2025-11-28', insumo: 'Harina', cantidadEntrada: 1000, cantidadSalida: 0, proveedor: 'Molino Central', fechaCompra: '2025-11-28', fechaPago: '2025-11-30', factura: 'FAC-001', estadoPago: 'pendiente' },
-        { id: 2, fecha: '2025-11-28', insumo: 'Levadura', cantidadEntrada: 50, cantidadSalida: 0, proveedor: 'Distribuidora Sur', fechaCompra: '2025-11-28', fechaPago: '2025-11-28', factura: 'BOL-999', estadoPago: 'pagada' },
-        { id: 3, fecha: '2025-11-29', insumo: 'Harina', cantidadEntrada: 0, cantidadSalida: 100, proveedor: '-', fechaCompra: '-', fechaPago: '-', factura: '-', estadoPago: 'pagada' },
-    ]);
+    const [insumoTransactions, setInsumoTransactions] = useState<InsumoTransaction[]>([]);
 
     // Bank State
-    const [bankTransactions, setBankTransactions] = useState<BankTransaction[]>([
-        { id: 1, fecha: '2025-11-28', entrada: 1500000, salida: 0, descripcion: 'Venta del día', documento: 'BOL-001', observacion: 'Venta normal', saldo: 1500000 },
-        { id: 2, fecha: '2025-11-28', entrada: 0, salida: 350000, descripcion: 'Pago Proveedor Harina', documento: 'FAC-123', observacion: 'Pago contado', saldo: 1150000 },
-        { id: 3, fecha: '2025-11-27', entrada: 800000, salida: 0, descripcion: 'Anticipo Evento', documento: 'TRF-999', observacion: 'Matrimonio', saldo: 1950000 },
-        { id: 4, fecha: '2025-11-27', entrada: 0, salida: 120000, descripcion: 'Compra Insumos Aseo', documento: 'BOL-555', observacion: '', saldo: 1830000 },
-    ]);
+    const [bankTransactions, setBankTransactions] = useState<BankTransaction[]>([]);
 
     // Caja Chica State
-    const [cajaChica, setCajaChica] = useState<CajaChica[]>([
-        { id: 1, fecha: '2025-11-28', area: 'Producción', monto: 15000, descripcion: 'Compra de artículos de limpieza' },
-        { id: 2, fecha: '2025-11-27', area: 'Administración', monto: 8500, descripcion: 'Pago de estacionamiento' },
-        { id: 3, fecha: '2025-11-26', area: 'Ventas', monto: 12000, descripcion: 'Gasolina para reparto' },
-    ]);
+    const [cajaChica, setCajaChica] = useState<CajaChica[]>([]);
 
     // Master Data - Areas
-    const [maestroAreas, setMaestroAreas] = useState<MaestroArea[]>([
-        { id: 1, nombre: 'Producción', activo: true },
-        { id: 2, nombre: 'Administración', activo: true },
-        { id: 3, nombre: 'Ventas', activo: true },
-        { id: 4, nombre: 'Mantenimiento', activo: true },
-        { id: 5, nombre: 'Otros', activo: true },
-    ]);
+    const [maestroAreas, setMaestroAreas] = useState<MaestroArea[]>([]);
 
     // Master Data - Insumos
-    const [maestroInsumos, setMaestroInsumos] = useState<Insumo[]>([
-        { id: 1, nombre: 'Harina', unidad: 'sacos_25kg', activo: true },
-        { id: 2, nombre: 'Levadura', unidad: 'unidades', activo: true },
-        { id: 3, nombre: 'Sal', unidad: 'sacos', activo: true },
-        { id: 4, nombre: 'Aceite', unidad: 'unidades', activo: true },
-        { id: 5, nombre: 'Mejorador Marraqueta', unidad: 'unidades', activo: true },
-        { id: 6, nombre: 'Mejorador Hallulla', unidad: 'unidades', activo: true },
-        { id: 7, nombre: 'Manteca', unidad: 'kg', activo: true },
-        { id: 8, nombre: 'Grasa', unidad: 'kg', activo: true },
-    ]);
+    const [maestroInsumos, setMaestroInsumos] = useState<Insumo[]>([]);
 
     // Gastos Generales State
     const [gastosGenerales, setGastosGenerales] = useState<GastoGeneral[]>([]);
@@ -313,19 +266,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newOrder = { ...order, id: Math.max(...orders.map(o => o.id), 0) + 1 };
         const newOrders = [...orders, newOrder];
         setOrders(newOrders);
-        saveData({ orders: newOrders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales });
+        saveData({ orders: newOrders });
     };
 
     const updateOrder = (id: number, order: Partial<Order>) => {
         const newOrders = orders.map(o => o.id === id ? { ...o, ...order } : o);
         setOrders(newOrders);
-        saveData({ orders: newOrders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales });
+        saveData({ orders: newOrders });
     };
 
     const deleteOrder = (id: number) => {
         const newOrders = orders.filter(o => o.id !== id);
         setOrders(newOrders);
-        saveData({ orders: newOrders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales });
+        saveData({ orders: newOrders });
     };
 
     // Helper to sync Rendimiento when Sales or Inventory changes
@@ -377,7 +330,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const updatedRendimientos = syncRendimiento(venta.fecha, newVentas, insumoTransactions, rendimientos);
         if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
 
-        saveData({ orders, ventas: newVentas, payments, rendimientos: updatedRendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales });
+        saveData({ ventas: newVentas, rendimientos: updatedRendimientos });
     };
 
     const updateVenta = (id: number, venta: Partial<Venta>) => {
@@ -392,7 +345,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         }
         if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
 
-        saveData({ orders, ventas: newVentas, payments, rendimientos: updatedRendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales });
+        saveData({ ventas: newVentas, rendimientos: updatedRendimientos });
     };
 
     const deleteVenta = (id: number) => {
@@ -407,7 +360,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
             if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
         }
 
-        saveData({ orders, ventas: newVentas, payments, rendimientos: updatedRendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales });
+        saveData({ ventas: newVentas, rendimientos: updatedRendimientos });
     };
 
     // Payments Functions
@@ -415,19 +368,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newPayment = { ...payment, id: Math.max(...payments.map(p => p.id), 0) + 1 };
         const newPayments = [...payments, newPayment];
         setPayments(newPayments);
-        saveData({ orders, ventas, payments: newPayments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ payments: newPayments });
     };
 
     const updatePayment = (id: number, payment: Partial<Payment>) => {
         const newPayments = payments.map(p => p.id === id ? { ...p, ...payment } : p);
         setPayments(newPayments);
-        saveData({ orders, ventas, payments: newPayments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ payments: newPayments });
     };
 
     const deletePayment = (id: number) => {
         const newPayments = payments.filter(p => p.id !== id);
         setPayments(newPayments);
-        saveData({ orders, ventas, payments: newPayments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ payments: newPayments });
     };
 
     // Performance Functions
@@ -435,19 +388,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newRendimiento = { ...rendimiento, id: Math.max(...rendimientos.map(r => r.id), 0) + 1 };
         const newRendimientos = [...rendimientos, newRendimiento];
         setRendimientos(newRendimientos);
-        saveData({ orders, ventas, payments, rendimientos: newRendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ rendimientos: newRendimientos });
     };
 
     const updateRendimiento = (id: number, rendimiento: Partial<Rendimiento>) => {
         const newRendimientos = rendimientos.map(r => r.id === id ? { ...r, ...rendimiento } : r);
         setRendimientos(newRendimientos);
-        saveData({ orders, ventas, payments, rendimientos: newRendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ rendimientos: newRendimientos });
     };
 
     const deleteRendimiento = (id: number) => {
         const newRendimientos = rendimientos.filter(r => r.id !== id);
         setRendimientos(newRendimientos);
-        saveData({ orders, ventas, payments, rendimientos: newRendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ rendimientos: newRendimientos });
     };
 
     // Inventory Functions
@@ -463,7 +416,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
             if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
         }
 
-        saveData({ orders, ventas, payments, rendimientos: updatedRendimientos, insumoTransactions: newTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ rendimientos: updatedRendimientos, insumoTransactions: newTransactions });
     };
 
     const updateInsumoTransaction = (id: number, transaction: Partial<InsumoTransaction>) => {
@@ -482,7 +435,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
             if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
         }
 
-        saveData({ orders, ventas, payments, rendimientos: updatedRendimientos, insumoTransactions: newTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ rendimientos: updatedRendimientos, insumoTransactions: newTransactions });
     };
 
     const deleteInsumoTransaction = (id: number) => {
@@ -497,7 +450,7 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
             if (updatedRendimientos !== rendimientos) setRendimientos(updatedRendimientos);
         }
 
-        saveData({ orders, ventas, payments, rendimientos: updatedRendimientos, insumoTransactions: newTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ rendimientos: updatedRendimientos, insumoTransactions: newTransactions });
     };
 
     /**
@@ -540,19 +493,8 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
 
         // 3. Save everything once
         saveData({
-            orders,
-            ventas,
-            payments,
-            rendimientos,
             insumoTransactions: newTransactions,
-            bankTransactions,
-            cajaChica,
-            maestroAreas,
-            maestroInsumos: newMaestroInsumos,
-            gastosGenerales,
-            maestroProveedores,
-            maestroClientes,
-            maestroTrabajadores
+            maestroInsumos: newMaestroInsumos
         });
     };
 
@@ -626,19 +568,9 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
 
         // 3. Save everything once
         saveData({
-            orders,
-            ventas,
-            payments,
             rendimientos: updatedRendimientos,
             insumoTransactions: newTransactions,
-            bankTransactions,
-            cajaChica,
-            maestroAreas,
-            maestroInsumos: newMaestroInsumos,
-            gastosGenerales,
-            maestroProveedores,
-            maestroClientes,
-            maestroTrabajadores
+            maestroInsumos: newMaestroInsumos
         });
     };
 
@@ -671,19 +603,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
             }
         }
 
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions: updatedInsumoTransactions, bankTransactions: newBankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ insumoTransactions: updatedInsumoTransactions, bankTransactions: newBankTransactions });
     };
 
     const updateBankTransaction = (id: number, transaction: Partial<BankTransaction>) => {
         const newBankTransactions = bankTransactions.map(t => t.id === id ? { ...t, ...transaction } : t);
         setBankTransactions(newBankTransactions);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions: newBankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ bankTransactions: newBankTransactions });
     };
 
     const deleteBankTransaction = (id: number) => {
         const newBankTransactions = bankTransactions.filter(t => t.id !== id);
         setBankTransactions(newBankTransactions);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions: newBankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ bankTransactions: newBankTransactions });
     };
 
     // Caja Chica Functions
@@ -691,19 +623,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newItem = { ...item, id: Math.max(...cajaChica.map(c => c.id), 0) + 1 };
         const newCajaChica = [...cajaChica, newItem];
         setCajaChica(newCajaChica);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica: newCajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ cajaChica: newCajaChica });
     };
 
     const updateCajaChica = (id: number, item: Partial<CajaChica>) => {
         const newCajaChica = cajaChica.map(c => c.id === id ? { ...c, ...item } : c);
         setCajaChica(newCajaChica);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica: newCajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ cajaChica: newCajaChica });
     };
 
     const deleteCajaChica = (id: number) => {
         const newCajaChica = cajaChica.filter(c => c.id !== id);
         setCajaChica(newCajaChica);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica: newCajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ cajaChica: newCajaChica });
     };
 
     // Master Data Functions - Areas
@@ -711,19 +643,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newArea = { ...area, id: Math.max(...maestroAreas.map(a => a.id), 0) + 1 };
         const newMaestroAreas = [...maestroAreas, newArea];
         setMaestroAreas(newMaestroAreas);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas: newMaestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroAreas: newMaestroAreas });
     };
 
     const updateMaestroArea = (id: number, area: Partial<MaestroArea>) => {
         const newMaestroAreas = maestroAreas.map(a => a.id === id ? { ...a, ...area } : a);
         setMaestroAreas(newMaestroAreas);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas: newMaestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroAreas: newMaestroAreas });
     };
 
     const deleteMaestroArea = (id: number) => {
         const newMaestroAreas = maestroAreas.filter(a => a.id !== id);
         setMaestroAreas(newMaestroAreas);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas: newMaestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroAreas: newMaestroAreas });
     };
 
     // Master Data Functions - Insumos
@@ -731,19 +663,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newInsumo = { ...insumo, id: Math.max(...maestroInsumos.map(i => i.id), 0) + 1 };
         const newMaestroInsumos = [...maestroInsumos, newInsumo];
         setMaestroInsumos(newMaestroInsumos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos: newMaestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroInsumos: newMaestroInsumos });
     };
 
     const updateMaestroInsumo = (id: number, insumo: Partial<Insumo>) => {
         const newMaestroInsumos = maestroInsumos.map(i => i.id === id ? { ...i, ...insumo } : i);
         setMaestroInsumos(newMaestroInsumos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos: newMaestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroInsumos: newMaestroInsumos });
     };
 
     const deleteMaestroInsumo = (id: number) => {
         const newMaestroInsumos = maestroInsumos.filter(i => i.id !== id);
         setMaestroInsumos(newMaestroInsumos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos: newMaestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroInsumos: newMaestroInsumos });
     };
 
     // Gastos Generales Functions
@@ -751,19 +683,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newGasto = { ...gasto, id: Math.max(...gastosGenerales.map(g => g.id), 0) + 1 };
         const newGastosGenerales = [...gastosGenerales, newGasto];
         setGastosGenerales(newGastosGenerales);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales: newGastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ gastosGenerales: newGastosGenerales });
     };
 
     const updateGastoGeneral = (id: number, gasto: Partial<GastoGeneral>) => {
         const newGastosGenerales = gastosGenerales.map(g => g.id === id ? { ...g, ...gasto } : g);
         setGastosGenerales(newGastosGenerales);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales: newGastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ gastosGenerales: newGastosGenerales });
     };
 
     const deleteGastoGeneral = (id: number) => {
         const newGastosGenerales = gastosGenerales.filter(g => g.id !== id);
         setGastosGenerales(newGastosGenerales);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales: newGastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ gastosGenerales: newGastosGenerales });
     };
 
     // Master Data Functions - Proveedores
@@ -771,19 +703,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newProveedor = { ...proveedor, id: Math.max(...maestroProveedores.map(p => p.id), 0) + 1 };
         const newMaestroProveedores = [...maestroProveedores, newProveedor];
         setMaestroProveedores(newMaestroProveedores);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores: newMaestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroProveedores: newMaestroProveedores });
     };
 
     const updateMaestroProveedor = (id: number, proveedor: Partial<Proveedor>) => {
         const newMaestroProveedores = maestroProveedores.map(p => p.id === id ? { ...p, ...proveedor } : p);
         setMaestroProveedores(newMaestroProveedores);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores: newMaestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroProveedores: newMaestroProveedores });
     };
 
     const deleteMaestroProveedor = (id: number) => {
         const newMaestroProveedores = maestroProveedores.filter(p => p.id !== id);
         setMaestroProveedores(newMaestroProveedores);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores: newMaestroProveedores, maestroClientes, maestroTrabajadores });
+        saveData({ maestroProveedores: newMaestroProveedores });
     };
 
     // Master Data Functions - Clientes
@@ -791,19 +723,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newCliente = { ...cliente, id: Math.max(...maestroClientes.map(c => c.id), 0) + 1 };
         const newMaestroClientes = [...maestroClientes, newCliente];
         setMaestroClientes(newMaestroClientes);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes: newMaestroClientes, maestroTrabajadores });
+        saveData({ maestroClientes: newMaestroClientes });
     };
 
     const updateMaestroCliente = (id: number, cliente: Partial<Cliente>) => {
         const newMaestroClientes = maestroClientes.map(c => c.id === id ? { ...c, ...cliente } : c);
         setMaestroClientes(newMaestroClientes);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes: newMaestroClientes, maestroTrabajadores });
+        saveData({ maestroClientes: newMaestroClientes });
     };
 
     const deleteMaestroCliente = (id: number) => {
         const newMaestroClientes = maestroClientes.filter(c => c.id !== id);
         setMaestroClientes(newMaestroClientes);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes: newMaestroClientes, maestroTrabajadores });
+        saveData({ maestroClientes: newMaestroClientes });
     };
 
     // Master Data Functions - Trabajadores
@@ -811,19 +743,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newTrabajador = { ...trabajador, id: Math.max(...maestroTrabajadores.map(t => t.id), 0) + 1 };
         const newMaestroTrabajadores = [...maestroTrabajadores, newTrabajador];
         setMaestroTrabajadores(newMaestroTrabajadores);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores: newMaestroTrabajadores });
+        saveData({ maestroTrabajadores: newMaestroTrabajadores });
     };
 
     const updateMaestroTrabajador = (id: number, trabajador: Partial<Trabajador>) => {
         const newMaestroTrabajadores = maestroTrabajadores.map(t => t.id === id ? { ...t, ...trabajador } : t);
         setMaestroTrabajadores(newMaestroTrabajadores);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores: newMaestroTrabajadores });
+        saveData({ maestroTrabajadores: newMaestroTrabajadores });
     };
 
     const deleteMaestroTrabajador = (id: number) => {
         const newMaestroTrabajadores = maestroTrabajadores.filter(t => t.id !== id);
         setMaestroTrabajadores(newMaestroTrabajadores);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores: newMaestroTrabajadores });
+        saveData({ maestroTrabajadores: newMaestroTrabajadores });
     };
 
     // Equipos Functions
@@ -831,19 +763,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newEquipo = { ...equipo, id: Math.max(...equipos.map(e => e.id), 0) + 1 };
         const newEquipos = [...equipos, newEquipo];
         setEquipos(newEquipos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos: newEquipos, mantenimientos });
+        saveData({ equipos: newEquipos });
     };
 
     const updateEquipo = (id: number, equipo: Partial<Equipo>) => {
         const newEquipos = equipos.map(e => e.id === id ? { ...e, ...equipo } : e);
         setEquipos(newEquipos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos: newEquipos, mantenimientos });
+        saveData({ equipos: newEquipos });
     };
 
     const deleteEquipo = (id: number) => {
         const newEquipos = equipos.filter(e => e.id !== id);
         setEquipos(newEquipos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos: newEquipos, mantenimientos });
+        saveData({ equipos: newEquipos });
     };
 
     // Mantenimientos Functions
@@ -851,19 +783,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newMantenimiento = { ...mantenimiento, id: Math.max(...mantenimientos.map(m => m.id), 0) + 1 };
         const newMantenimientos = [...mantenimientos, newMantenimiento];
         setMantenimientos(newMantenimientos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos: newMantenimientos });
+        saveData({ mantenimientos: newMantenimientos });
     };
 
     const updateMantenimiento = (id: number, mantenimiento: Partial<Mantenimiento>) => {
         const newMantenimientos = mantenimientos.map(m => m.id === id ? { ...m, ...mantenimiento } : m);
         setMantenimientos(newMantenimientos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos: newMantenimientos });
+        saveData({ mantenimientos: newMantenimientos });
     };
 
     const deleteMantenimiento = (id: number) => {
         const newMantenimientos = mantenimientos.filter(m => m.id !== id);
         setMantenimientos(newMantenimientos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos: newMantenimientos });
+        saveData({ mantenimientos: newMantenimientos });
     };
 
     // Vehículos Functions
@@ -871,19 +803,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newVehiculo = { ...vehiculo, id: Math.max(...vehiculos.map(v => v.id), 0) + 1 };
         const newVehiculos = [...vehiculos, newVehiculo];
         setVehiculos(newVehiculos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos: newVehiculos, mantenimientosVehiculos });
+        saveData({ vehiculos: newVehiculos });
     };
 
     const updateVehiculo = (id: number, vehiculo: Partial<Vehiculo>) => {
         const newVehiculos = vehiculos.map(v => v.id === id ? { ...v, ...vehiculo } : v);
         setVehiculos(newVehiculos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos: newVehiculos, mantenimientosVehiculos });
+        saveData({ vehiculos: newVehiculos });
     };
 
     const deleteVehiculo = (id: number) => {
         const newVehiculos = vehiculos.filter(v => v.id !== id);
         setVehiculos(newVehiculos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos: newVehiculos, mantenimientosVehiculos });
+        saveData({ vehiculos: newVehiculos });
     };
 
     // Mantenimientos Vehículos Functions
@@ -891,19 +823,19 @@ export function DashboardProvider({ children }: { children: ReactNode }) {
         const newMantenimiento = { ...mantenimiento, id: Math.max(...mantenimientosVehiculos.map(m => m.id), 0) + 1 };
         const newMantenimientosVehiculos = [...mantenimientosVehiculos, newMantenimiento];
         setMantenimientosVehiculos(newMantenimientosVehiculos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos, mantenimientosVehiculos: newMantenimientosVehiculos });
+        saveData({ mantenimientosVehiculos: newMantenimientosVehiculos });
     };
 
     const updateMantenimientoVehiculo = (id: number, mantenimiento: Partial<MantenimientoVehiculo>) => {
         const newMantenimientosVehiculos = mantenimientosVehiculos.map(m => m.id === id ? { ...m, ...mantenimiento } : m);
         setMantenimientosVehiculos(newMantenimientosVehiculos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos, mantenimientosVehiculos: newMantenimientosVehiculos });
+        saveData({ mantenimientosVehiculos: newMantenimientosVehiculos });
     };
 
     const deleteMantenimientoVehiculo = (id: number) => {
         const newMantenimientosVehiculos = mantenimientosVehiculos.filter(m => m.id !== id);
         setMantenimientosVehiculos(newMantenimientosVehiculos);
-        saveData({ orders, ventas, payments, rendimientos, insumoTransactions, bankTransactions, cajaChica, maestroAreas, maestroInsumos, gastosGenerales, maestroProveedores, maestroClientes, maestroTrabajadores, equipos, mantenimientos, vehiculos, mantenimientosVehiculos: newMantenimientosVehiculos });
+        saveData({ mantenimientosVehiculos: newMantenimientosVehiculos });
     };
 
     const value: DashboardContextType = {

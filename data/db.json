@@ -1,0 +1,2311 @@
+{
+  "orders": [
+    {
+      "id": 1,
+      "cliente": "Juan Pérez",
+      "productos": "2kg Hallulla, 1kg Marraqueta",
+      "total": 8500,
+      "fecha": "2025-11-30",
+      "estado": "pendiente"
+    },
+    {
+      "id": 2,
+      "cliente": "María González",
+      "productos": "5kg Hallulla",
+      "total": 12500,
+      "fecha": "2025-11-29",
+      "estado": "completado"
+    },
+    {
+      "id": 3,
+      "cliente": "Pedro Soto",
+      "productos": "1 Torta Selva Negra",
+      "total": 18000,
+      "fecha": "2025-11-28",
+      "estado": "completado"
+    }
+  ],
+  "ventas": [
+    {
+      "fecha": "2025-12-01",
+      "cliente": "Aramark",
+      "kilos": 600,
+      "monto": 494728,
+      "id": 6
+    },
+    {
+      "fecha": "2025-12-05",
+      "cliente": "Test Auto",
+      "kilos": 200,
+      "monto": 10000,
+      "id": 7
+    }
+  ],
+  "payments": [
+    {
+      "id": 1,
+      "factura": "FAC-2023-001",
+      "cliente": "Restaurant El Buen Gusto",
+      "fechaPago": "2025-11-28",
+      "montoPagado": 150000
+    },
+    {
+      "id": 2,
+      "factura": "BOL-2023-089",
+      "cliente": "Cafetería Centro",
+      "fechaPago": "2025-11-27",
+      "montoPagado": 45000
+    },
+    {
+      "id": 3,
+      "factura": "FAC-2023-005",
+      "cliente": "Hotel Plaza",
+      "fechaPago": "2025-11-26",
+      "montoPagado": 320000
+    }
+  ],
+  "rendimientos": [
+    {
+      "id": 1,
+      "fecha": "2025-11-28",
+      "kilosProducidos": 1200,
+      "sacos": 24,
+      "rinde": 100,
+      "barrido": 5,
+      "merma": 2
+    },
+    {
+      "id": 2,
+      "fecha": "2025-11-27",
+      "kilosProducidos": 1150,
+      "sacos": 23,
+      "rinde": 100,
+      "barrido": 4,
+      "merma": 3
+    },
+    {
+      "id": 3,
+      "fecha": "2025-11-26",
+      "kilosProducidos": 1300,
+      "sacos": 26,
+      "rinde": 100,
+      "barrido": 6,
+      "merma": 2
+    },
+    {
+      "id": 4,
+      "fecha": "2025-11-25",
+      "kilosProducidos": 1100,
+      "sacos": 22,
+      "rinde": 100,
+      "barrido": 3,
+      "merma": 1
+    },
+    {
+      "fecha": "2025-11-08",
+      "kilosProducidos": 200,
+      "sacos": 43,
+      "rinde": 9.3,
+      "barrido": 33,
+      "merma": 6,
+      "id": 5
+    },
+    {
+      "fecha": "2025-12-01",
+      "kilosProducidos": 600,
+      "sacos": 20,
+      "rinde": 60,
+      "barrido": 10,
+      "merma": 12,
+      "id": 6
+    },
+    {
+      "fecha": "2025-12-05",
+      "kilosProducidos": 200,
+      "sacos": 12,
+      "rinde": 33.33,
+      "barrido": 0,
+      "merma": 0,
+      "id": 7
+    }
+  ],
+  "insumoTransactions": [
+    {
+      "id": 1,
+      "fecha": "2025-11-28",
+      "insumo": "Harina",
+      "cantidadEntrada": 1000,
+      "cantidadSalida": 0,
+      "proveedor": "Molino Central",
+      "fechaCompra": "2025-11-28",
+      "fechaPago": "2025-11-30",
+      "factura": "FAC-001",
+      "estadoPago": "pendiente"
+    },
+    {
+      "id": 2,
+      "fecha": "2025-11-28",
+      "insumo": "Levadura",
+      "cantidadEntrada": 50,
+      "cantidadSalida": 0,
+      "proveedor": "Distribuidora Sur",
+      "fechaCompra": "2025-11-28",
+      "fechaPago": "2025-11-28",
+      "factura": "BOL-999",
+      "estadoPago": "pagada"
+    },
+    {
+      "id": 3,
+      "fecha": "2025-11-29",
+      "insumo": "Harina",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 100,
+      "proveedor": "-",
+      "fechaCompra": "-",
+      "fechaPago": "-",
+      "factura": "-",
+      "estadoPago": "pagada"
+    },
+    {
+      "fecha": "2025-11-08",
+      "insumo": "Harina",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 43,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "id": 5
+    },
+    {
+      "fecha": "2025-12-01",
+      "insumo": "Harina",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 20,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "id": 6
+    },
+    {
+      "fecha": "2025-12-05",
+      "insumo": "Harina",
+      "cantidadEntrada": 0,
+      "cantidadSalida": 12,
+      "proveedor": "",
+      "fechaCompra": "",
+      "fechaPago": "",
+      "factura": "",
+      "estadoPago": "pendiente",
+      "id": 7
+    }
+  ],
+  "bankTransactions": [
+    {
+      "id": 1,
+      "fecha": "2025-11-28",
+      "entrada": 1500000,
+      "salida": 0,
+      "descripcion": "Venta del día",
+      "documento": "BOL-001",
+      "observacion": "Venta normal",
+      "saldo": 1500000
+    },
+    {
+      "id": 2,
+      "fecha": "2025-11-28",
+      "entrada": 0,
+      "salida": 350000,
+      "descripcion": "Pago Proveedor Harina",
+      "documento": "FAC-123",
+      "observacion": "Pago contado",
+      "saldo": 1150000
+    },
+    {
+      "id": 3,
+      "fecha": "2025-11-27",
+      "entrada": 800000,
+      "salida": 0,
+      "descripcion": "Anticipo Evento",
+      "documento": "TRF-999",
+      "observacion": "Matrimonio",
+      "saldo": 1950000
+    },
+    {
+      "id": 4,
+      "fecha": "2025-11-27",
+      "entrada": 0,
+      "salida": 120000,
+      "descripcion": "Compra Insumos Aseo",
+      "documento": "BOL-555",
+      "observacion": "",
+      "saldo": 1830000
+    }
+  ],
+  "cajaChica": [
+    {
+      "fecha": "2026-01-01",
+      "area": "Administración",
+      "monto": 344440,
+      "descripcion": "prubea",
+      "id": 6
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Panificadores",
+      "monto": 20000,
+      "descripcion": "Pago Gutierrez\n",
+      "id": 4
+    },
+    {
+      "fecha": "2025-12-01",
+      "area": "Insumos",
+      "monto": 250000,
+      "descripcion": "se",
+      "id": 5
+    },
+    {
+      "fecha": "2025-11-30",
+      "area": "Bonos",
+      "monto": 10,
+      "descripcion": "prueba",
+      "id": 7
+    },
+    {
+      "id": 1,
+      "fecha": "2025-11-28",
+      "area": "Producción",
+      "monto": 15000,
+      "descripcion": "Compra de artículos de limpieza"
+    },
+    {
+      "id": 2,
+      "fecha": "2025-11-27",
+      "area": "Administración",
+      "monto": 8500,
+      "descripcion": "Pago de estacionamiento"
+    },
+    {
+      "id": 3,
+      "fecha": "2025-11-26",
+      "area": "Ventas",
+      "monto": 12000,
+      "descripcion": "Gasolina para reparto"
+    }
+  ],
+  "maestroAreas": [
+    {
+      "id": 1,
+      "nombre": "Insumos",
+      "activo": true
+    },
+    {
+      "id": 2,
+      "nombre": "Administración",
+      "activo": true
+    },
+    {
+      "id": 3,
+      "nombre": "Ventas",
+      "activo": true
+    },
+    {
+      "id": 4,
+      "nombre": "Mantenimiento",
+      "activo": true
+    },
+    {
+      "id": 5,
+      "nombre": "Otros",
+      "activo": true
+    },
+    {
+      "nombre": "Panificadores",
+      "activo": true,
+      "id": 6
+    },
+    {
+      "nombre": "Vehiculos",
+      "activo": true,
+      "id": 7
+    },
+    {
+      "nombre": "Bonos",
+      "activo": true,
+      "id": 8
+    }
+  ],
+  "maestroInsumos": [
+    {
+      "id": 1,
+      "nombre": "Harina",
+      "unidad": "sacos_25kg",
+      "activo": true,
+      "costoUnitario": 12000,
+      "tieneImpuestoAdicional": true
+    },
+    {
+      "id": 2,
+      "nombre": "Levadura",
+      "unidad": "kg",
+      "activo": true,
+      "costoUnitario": 3500
+    },
+    {
+      "id": 3,
+      "nombre": "Sal",
+      "unidad": "sacos",
+      "activo": true,
+      "costoUnitario": 4000
+    },
+    {
+      "id": 4,
+      "nombre": "Aceite",
+      "unidad": "unidades",
+      "activo": true,
+      "costoUnitario": 1800
+    },
+    {
+      "id": 5,
+      "nombre": "Mejorador Marraqueta",
+      "unidad": "unidades",
+      "activo": true,
+      "costoUnitario": 2500
+    },
+    {
+      "id": 6,
+      "nombre": "Mejorador Hallulla",
+      "unidad": "unidades",
+      "activo": true,
+      "costoUnitario": 2500
+    },
+    {
+      "id": 7,
+      "nombre": "Manteca",
+      "unidad": "kg",
+      "activo": true,
+      "costoUnitario": 2800
+    },
+    {
+      "id": 8,
+      "nombre": "Grasa",
+      "unidad": "kg",
+      "activo": true,
+      "costoUnitario": 2200
+    }
+  ],
+  "gastosGenerales": [],
+  "users": [
+    {
+      "id": 1,
+      "username": "gerencia",
+      "email": "gerencia@panificadora.cl",
+      "password": "$2b$10$YKXwV0Q44UGppCxQO1neKuRz6FxIHyRQBrzmHmLKnMfBJjlG6oN1a",
+      "role": "manager",
+      "nombre": "Administrador",
+      "permissions": [
+        "all"
+      ]
+    },
+    {
+      "id": 1766707245825,
+      "username": "carolina",
+      "nombre": "Carolina",
+      "role": "employee",
+      "permissions": [
+        "/dashboard/pedidos-dia",
+        "/dashboard/hoja-ruta"
+      ],
+      "password": "$2b$10$lzlOt4lZ3ioYlpuX4.Op2OP0CJeBylsKjyjjZf3.PwFUDOe8sGjwe",
+      "mustChangePassword": true
+    }
+  ],
+  "maestroTrabajadores": [
+    {
+      "id": 4,
+      "rut": "16776840-7",
+      "nombre": "ACUÑA CARRASCO ALEJANDRA PAMELA",
+      "cargo": "Envasado",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 5,
+      "rut": "16230861-0",
+      "nombre": "ACUÑA CARRASCO JOHANA ANDREA",
+      "cargo": "Envasado",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 6,
+      "rut": "10461916-9",
+      "nombre": "ARANDA PONCE JUAN ARTURO",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 7,
+      "rut": "10001423-8",
+      "nombre": "BAZAES BRIONES ORLANDO AURELIO",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 8,
+      "rut": "44433401-0",
+      "nombre": "BORGES RAMIREZ BETZABETH CAROLINA",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 9,
+      "rut": "13634899-K",
+      "nombre": "BRAVO SAN MARTIN LORENA ALEJANDRA",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 10,
+      "rut": "26494429-5",
+      "nombre": "CASTILLO ROJAS DUGLAS JOSE",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 11,
+      "rut": "44489752-K",
+      "nombre": "CHAVEZ GUEVARA EDIMAR JENDERMIS",
+      "cargo": "Envasado",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 12,
+      "rut": "41358580-5",
+      "nombre": "CORRALES OROPEZA MAILYN DEL CARMEN",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 13,
+      "rut": "11548116-9",
+      "nombre": "DIAZ DEL CANTO MIGUEL ESTEBAN",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 14,
+      "rut": "13650806-7",
+      "nombre": "DIAZ VILLARROEL RODRIGO PATRICIO",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 15,
+      "rut": "44433397-9",
+      "nombre": "ESPINOZA CARLOS JEISON",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 16,
+      "rut": "13025499-3",
+      "nombre": "GODOY BERRIOS CRISTIAN FROILAN",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 17,
+      "rut": "8023578-K",
+      "nombre": "GONZALEZ SOBARO EDUARDO .S",
+      "cargo": "Mantencion",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 18,
+      "rut": "12955055-4",
+      "nombre": "GUTIERREZ GARRIDO MANUEL ALEJANDRO",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 19,
+      "rut": "41358567-8",
+      "nombre": "HERNANDEZ PALMA RANDHY RAFAEL",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 20,
+      "rut": "15949342-3",
+      "nombre": "IBAÑEZ BERROETA JORGE PATRICIO",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 21,
+      "rut": "22047441-0",
+      "nombre": "LLANOS DELGADO NATALY REGINA",
+      "cargo": "Envasado",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 22,
+      "rut": "15561089-1",
+      "nombre": "MARCUS SANTA CRUZ ENRIQUE ALEJANDRO",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 23,
+      "rut": "13632561-2",
+      "nombre": "MARQUES SALFATE EMILIO ALEJANDRO",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 24,
+      "rut": "17162606-4",
+      "nombre": "PEREZ CUEVAS JUAN LUIS",
+      "cargo": "Aseador",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 25,
+      "rut": "44429062-5",
+      "nombre": "PEREZ GONZALEZ NEOMAR DANIEL",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 26,
+      "rut": "9746524-K",
+      "nombre": "PONCE MORANGA JULIO ALBERTO",
+      "cargo": "Aseador",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 27,
+      "rut": "41540117-5",
+      "nombre": "RAMOS BUSTAMANTE HEYDER HODWARD",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 28,
+      "rut": "8498958-4",
+      "nombre": "ROJAS MARTINEZ LUIS ALBERTO",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 29,
+      "rut": "20276938-1",
+      "nombre": "SAN CRISTOBAL POBLETE JOSE ALEJANDRO",
+      "cargo": "Repartidor",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 30,
+      "rut": "41648261-6",
+      "nombre": "SANTAELLA HUERFANO ISAAC ALBERTO",
+      "cargo": "Panadero",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 31,
+      "rut": "7558875-5",
+      "nombre": "SUAREZ ASTUDILLO LAURA EDUVIGENES",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 32,
+      "rut": "9366365-9",
+      "nombre": "VALENZUELA CASTAÑO MACARENA ALEJANDRA",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 33,
+      "rut": "9578977-3",
+      "nombre": "VALENZUELA CASTAÑO SEBASTIAN",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 34,
+      "rut": "5300265-K",
+      "nombre": "VENTURA OSVALDO M.",
+      "cargo": "Administrativo",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    }
+  ],
+  "empresasClientes": [
+    {
+      "id": 1,
+      "rut": "76.178.360-2",
+      "nombre": "Aramark",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 2,
+      "rut": "96872930-6",
+      "nombre": "Aliservice",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 3,
+      "rut": "77683000-3",
+      "nombre": "Ami",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 4,
+      "rut": "76178360-2",
+      "nombre": "aramark",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": false
+    },
+    {
+      "id": 5,
+      "rut": "76335857-7",
+      "nombre": "Campomar",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 6,
+      "rut": "76065612-7",
+      "nombre": "Sscc catalan",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 7,
+      "rut": "76491710-3",
+      "nombre": "Clinica miraflores",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 8,
+      "rut": "79589870-0",
+      "nombre": "Comalin",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 9,
+      "rut": "77379000-0",
+      "nombre": "Help pan de azucar",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 10,
+      "rut": "94623000-6",
+      "nombre": "sodexo servicios",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 11,
+      "rut": "96550960-7",
+      "nombre": "sodexo servicios",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    },
+    {
+      "id": 12,
+      "rut": "77095563-7",
+      "nombre": "Tujina",
+      "contacto": "",
+      "telefono": "",
+      "email": "",
+      "activo": true
+    }
+  ],
+  "casinosSucursales": [
+    {
+      "id": 1,
+      "empresaId": 1,
+      "nombre": "enap",
+      "username": "enap",
+      "passwordHash": "$2b$10$P0iqUrQUUkKZv8zQU7gS5exIhkEuf5XxlqMuCJrBFAA62wg5wP3Fm",
+      "direccion": "",
+      "telefono": "",
+      "email": "",
+      "whatsapp": "",
+      "activo": true,
+      "mustChangePassword": false
+    },
+    {
+      "id": 2,
+      "empresaId": 1,
+      "nombre": "easy",
+      "username": "easy",
+      "passwordHash": "$2b$10$xJzAsyi.FyNULPIGQzBs6.JRWsf31sZlfEfDxItmxh8J.826KD29y",
+      "direccion": "",
+      "telefono": "",
+      "email": "fichbone@gmail.com",
+      "whatsapp": "",
+      "activo": true,
+      "mustChangePassword": true
+    },
+    {
+      "id": 3,
+      "empresaId": 1,
+      "nombre": "sodimac",
+      "username": "sodimac",
+      "passwordHash": "$2b$10$fkeVDqYOCtF/wYukicN5GeetdHysyisV996k4MgdO6t2qhuA.N07C",
+      "direccion": "",
+      "telefono": "",
+      "email": "",
+      "whatsapp": "",
+      "activo": true,
+      "mustChangePassword": false
+    }
+  ],
+  "productosCatalogo": [
+    {
+      "id": 3,
+      "nombre": "AMASADO",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709135162_amasado.jpg"
+    },
+    {
+      "id": 4,
+      "nombre": "AMASADO INTEGRAL",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 5,
+      "nombre": "BAGUETTE",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 6,
+      "nombre": "BAGUETTE 16 CM",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 7,
+      "nombre": "BATIDO",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709159628_marraqueta.jpg"
+    },
+    {
+      "id": 8,
+      "nombre": "BOLLO 45",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709168054_Bollito.jpg"
+    },
+    {
+      "id": 9,
+      "nombre": "BOLLO 45 INTEGRAL",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709176104_Bollito_integral.jpg"
+    },
+    {
+      "id": 10,
+      "nombre": "CIABATTA",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 11,
+      "nombre": "DOBLADAS",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 12,
+      "nombre": "FRICA",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709186246_frica.jpg"
+    },
+    {
+      "id": 13,
+      "nombre": "FRICA  12",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709195439_frica.jpg"
+    },
+    {
+      "id": 14,
+      "nombre": "FRICA 14",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709208516_frica.jpg"
+    },
+    {
+      "id": 15,
+      "nombre": "HALLULLA 100 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709216561_hallulla.jpg"
+    },
+    {
+      "id": 16,
+      "nombre": "HALLULLA 50 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709224028_hallulla.jpg"
+    },
+    {
+      "id": 17,
+      "nombre": "HALLULLA 70 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709234261_hallulla.jpg"
+    },
+    {
+      "id": 18,
+      "nombre": "HALLULLA 90 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709243588_hallulla.jpg"
+    },
+    {
+      "id": 19,
+      "nombre": "HALLULLA INTEGRAL 100 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709252496_hallulla_integral.jpg"
+    },
+    {
+      "id": 20,
+      "nombre": "HALLULLA INTEGRAL 50 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709259970_hallulla_integral.jpg"
+    },
+    {
+      "id": 21,
+      "nombre": "HALLULLA INTEGRAL 70 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709268014_hallulla_integral.jpg"
+    },
+    {
+      "id": 22,
+      "nombre": "HALLULLA INTEGRAL 90 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709275364_hallulla_integral.jpg"
+    },
+    {
+      "id": 23,
+      "nombre": "HALLULLON ESPECIAL",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709288196_hallulla.jpg"
+    },
+    {
+      "id": 24,
+      "nombre": "HOJARASCA",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 25,
+      "nombre": "KUCHEN",
+      "categoria": "Pasteleria",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 26,
+      "nombre": "LATA DE PIZZAS 62X64",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 27,
+      "nombre": "MESA NORMAL",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709332599_hotdog.jpg"
+    },
+    {
+      "id": 28,
+      "nombre": "MOLDE BLANCO",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709300091_Molde.jpg"
+    },
+    {
+      "id": 29,
+      "nombre": "MOLDE CHICO",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 30,
+      "nombre": "MOLDE INTEGRAL",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 31,
+      "nombre": "PAN SIN SAL",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 32,
+      "nombre": "PITA BLANCA",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 33,
+      "nombre": "PITA INTEGRAL",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 34,
+      "nombre": "PIZZA INDIVIDUAL CHICA",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709309608_pizza.jpg"
+    },
+    {
+      "id": 35,
+      "nombre": "RALLADO",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 36,
+      "nombre": "ROSITA 60 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true,
+      "imagen": "/productos/1766709318581_rosita.jpg"
+    },
+    {
+      "id": 37,
+      "nombre": "SOPAIPILLA",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 38,
+      "nombre": "TAPADITOS",
+      "categoria": "Pan Tradicional",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 39,
+      "nombre": "TARTALETA",
+      "categoria": "Pasteleria",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 40,
+      "nombre": "TORTA ESPECIAL",
+      "categoria": "Pasteleria",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 41,
+      "nombre": "TORTA I",
+      "categoria": "Pasteleria",
+      "precioKilo": 0,
+      "activo": true
+    },
+    {
+      "id": 42,
+      "nombre": "TORTA II",
+      "categoria": "Pasteleria",
+      "precioKilo": 0,
+      "activo": true
+    }
+  ],
+  "preciosClientes": [
+    {
+      "id": 1,
+      "empresaId": 1,
+      "productoId": 1,
+      "nombreProducto": "batido",
+      "precioNeto": 1445
+    },
+    {
+      "id": 2,
+      "empresaId": 1,
+      "productoId": 2,
+      "nombreProducto": "hallulla",
+      "precioNeto": 3333
+    }
+  ],
+  "pedidosClientes": [
+    {
+      "id": 1,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-22",
+      "fechaEntrega": "2025-12-24",
+      "horaPedido": "22:03",
+      "estado": "entregado",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "Juan"
+    },
+    {
+      "id": 2,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-22",
+      "fechaEntrega": "2025-12-24",
+      "horaPedido": "22:06",
+      "estado": "pendiente",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "Juan"
+    },
+    {
+      "id": 3,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-22",
+      "fechaEntrega": "2025-12-24",
+      "horaPedido": "22:07",
+      "estado": "pendiente",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "cristian"
+    },
+    {
+      "id": 4,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-22",
+      "fechaEntrega": "2025-12-24",
+      "horaPedido": "22:20",
+      "estado": "pendiente",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "cristian"
+    },
+    {
+      "id": 5,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-22",
+      "fechaEntrega": "2025-12-24",
+      "horaPedido": "22:28",
+      "estado": "pendiente",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "cristian"
+    },
+    {
+      "id": 6,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-26",
+      "horaPedido": "20:08",
+      "estado": "pendiente",
+      "total": null,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "Juan"
+    },
+    {
+      "id": 7,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-31",
+      "horaPedido": "20:31",
+      "estado": "en_produccion",
+      "total": null,
+      "observaciones": "ghfftffytf",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "cristian"
+    },
+    {
+      "id": 8,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-25",
+      "horaPedido": "23:10",
+      "estado": "cancelado",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "cristian"
+    },
+    {
+      "id": 9,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-25",
+      "horaPedido": "23:10",
+      "estado": "cancelado",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "cristian"
+    },
+    {
+      "id": 10,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-25",
+      "horaPedido": "23:10",
+      "estado": "cancelado",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "cristian"
+    },
+    {
+      "id": 11,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-25",
+      "horaPedido": "23:11",
+      "estado": "cancelado",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "repartidor": "cristian"
+    },
+    {
+      "id": 12,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-25",
+      "horaPedido": "23:16",
+      "horaEntrega": "07:00",
+      "estado": "despachado",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "origenPedido": "manual",
+      "repartidor": "IBAÑEZ BERROETA JORGE PATRICIO"
+    },
+    {
+      "id": 13,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-25",
+      "horaPedido": "23:23",
+      "horaEntrega": "07:00",
+      "estado": "despachado",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "origenPedido": "manual",
+      "repartidor": "IBAÑEZ BERROETA JORGE PATRICIO"
+    },
+    {
+      "id": 14,
+      "casinoId": 2,
+      "empresaId": 1,
+      "casinoNombre": "easy",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-29",
+      "horaPedido": "11:10",
+      "horaEntrega": "07:00",
+      "estado": "pendiente",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "origenPedido": "manual",
+      "repartidor": ""
+    },
+    {
+      "id": 15,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-26",
+      "horaPedido": "12:54",
+      "horaEntrega": "07:00",
+      "estado": "pendiente",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "origenPedido": "manual",
+      "repartidor": ""
+    },
+    {
+      "id": 16,
+      "casinoId": 1,
+      "empresaId": 1,
+      "casinoNombre": "enap",
+      "empresaNombre": "Aramark",
+      "fechaPedido": "2025-12-24",
+      "fechaEntrega": "2025-12-28",
+      "horaPedido": "12:55",
+      "horaEntrega": "07:00",
+      "estado": "pendiente",
+      "total": 0,
+      "observaciones": "",
+      "esRecurrente": false,
+      "diasRecurrencia": [],
+      "notificadoEmail": false,
+      "notificadoWhatsapp": false,
+      "origenPedido": "manual",
+      "repartidor": "ARANDA PONCE JUAN ARTURO"
+    },
+    {
+      "id": 17,
+      "casinoId": 1,
+      "empresaId": 1,
+      "fechaPedido": "2025-12-25",
+      "horaPedido": "16:32",
+      "fechaEntrega": "2025-12-26",
+      "horaEntrega": "07:00",
+      "total": null,
+      "estado": "Pendiente",
+      "origenPedido": "Pedidos Múltiples",
+      "observaciones": "",
+      "repartidor": null,
+      "notificadoEmail": false
+    },
+    {
+      "id": 18,
+      "casinoId": 1,
+      "empresaId": 1,
+      "fechaPedido": "2025-12-25",
+      "horaPedido": "16:32",
+      "fechaEntrega": "2025-12-28",
+      "horaEntrega": "07:00",
+      "total": null,
+      "estado": "Pendiente",
+      "origenPedido": "Pedidos Múltiples",
+      "observaciones": "",
+      "repartidor": null,
+      "notificadoEmail": false
+    },
+    {
+      "id": 19,
+      "casinoId": 1,
+      "empresaId": 1,
+      "fechaPedido": "2025-12-25",
+      "horaPedido": "16:32",
+      "fechaEntrega": "2025-12-29",
+      "horaEntrega": "07:00",
+      "total": null,
+      "estado": "Pendiente",
+      "origenPedido": "Pedidos Múltiples",
+      "observaciones": "",
+      "repartidor": null,
+      "notificadoEmail": false
+    },
+    {
+      "id": 20,
+      "casinoId": 1,
+      "empresaId": 1,
+      "fechaPedido": "2025-12-25",
+      "horaPedido": "16:32",
+      "fechaEntrega": "2025-12-30",
+      "horaEntrega": "07:00",
+      "total": null,
+      "estado": "Pendiente",
+      "origenPedido": "Pedidos Múltiples",
+      "observaciones": "",
+      "repartidor": null,
+      "notificadoEmail": false
+    },
+    {
+      "id": 21,
+      "casinoId": 1,
+      "empresaId": 1,
+      "fechaPedido": "2025-12-25",
+      "horaPedido": "16:32",
+      "fechaEntrega": "2025-12-31",
+      "horaEntrega": "07:00",
+      "total": null,
+      "estado": "Pendiente",
+      "origenPedido": "Pedidos Múltiples",
+      "observaciones": "",
+      "repartidor": null,
+      "notificadoEmail": false
+    }
+  ],
+  "detallesPedidos": [
+    {
+      "id": 1,
+      "pedidoId": 1,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 14,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 2,
+      "pedidoId": 2,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 3,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 3,
+      "pedidoId": 3,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 18,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 4,
+      "pedidoId": 4,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 3,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 5,
+      "pedidoId": 4,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 6,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 6,
+      "pedidoId": 5,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 3,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 7,
+      "pedidoId": 6,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 4,
+      "unidad": "kg",
+      "subtotal": null
+    },
+    {
+      "id": 8,
+      "pedidoId": 6,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 4,
+      "unidad": "kg",
+      "subtotal": null
+    },
+    {
+      "id": 9,
+      "pedidoId": 6,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 5,
+      "unidad": "unidad",
+      "subtotal": null
+    },
+    {
+      "id": 10,
+      "pedidoId": 7,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 3,
+      "unidad": "kg",
+      "subtotal": null
+    },
+    {
+      "id": 11,
+      "pedidoId": 7,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 2,
+      "unidad": "unidad",
+      "subtotal": null
+    },
+    {
+      "id": 12,
+      "pedidoId": 7,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 1,
+      "unidad": "kg",
+      "subtotal": null
+    },
+    {
+      "id": 13,
+      "pedidoId": 8,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 6,
+      "unidad": "Un",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 14,
+      "pedidoId": 8,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 3,
+      "unidad": "Un",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 15,
+      "pedidoId": 9,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 7,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 16,
+      "pedidoId": 9,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 5,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 17,
+      "pedidoId": 10,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 6,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 18,
+      "pedidoId": 10,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 7,
+      "unidad": "Un",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 19,
+      "pedidoId": 11,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 7,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 20,
+      "pedidoId": 11,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 7,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 21,
+      "pedidoId": 12,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 3,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 22,
+      "pedidoId": 12,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 1,
+      "unidad": "Un",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 23,
+      "pedidoId": 13,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 1,
+      "unidad": "Un",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 24,
+      "pedidoId": 13,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 1,
+      "unidad": "Un",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 25,
+      "pedidoId": 14,
+      "productoId": 1,
+      "productoNombre": "batido",
+      "cantidad": 2,
+      "unidad": "Un",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 26,
+      "pedidoId": 14,
+      "productoId": 2,
+      "productoNombre": "hallulla",
+      "cantidad": 1,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 27,
+      "pedidoId": 15,
+      "productoId": 35,
+      "productoNombre": "RALLADO",
+      "cantidad": 1,
+      "unidad": "Un",
+      "precioUnitario": 0,
+      "subtotal": 0
+    },
+    {
+      "id": 28,
+      "pedidoId": 16,
+      "productoId": 3,
+      "productoNombre": "AMASADO",
+      "cantidad": 1.6,
+      "unidad": "Kg",
+      "precioUnitario": 0,
+      "subtotal": 0
+    }
+  ],
+  "maestroProductos": [
+    {
+      "id": 1,
+      "nombre": "AMASADO",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 2,
+      "nombre": "AMASADO INTEGRAL",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 3,
+      "nombre": "BAGUETTE",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 4,
+      "nombre": "BAGUETTE 16 CM",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 5,
+      "nombre": "BATIDO",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 6,
+      "nombre": "BOLLO 45",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 7,
+      "nombre": "BOLLO 45 INTEGRAL",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 8,
+      "nombre": "CIABATTA",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 9,
+      "nombre": "DOBLADAS",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 10,
+      "nombre": "FRICA",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 11,
+      "nombre": "FRICA  12",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 12,
+      "nombre": "FRICA 14",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 13,
+      "nombre": "HALLULLA 100 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 14,
+      "nombre": "HALLULLA 50 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 15,
+      "nombre": "HALLULLA 70 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 16,
+      "nombre": "HALLULLA 90 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 17,
+      "nombre": "HALLULLA INTEGRAL 100 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 18,
+      "nombre": "HALLULLA INTEGRAL 50 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 19,
+      "nombre": "HALLULLA INTEGRAL 70 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 20,
+      "nombre": "HALLULLA INTEGRAL 90 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 21,
+      "nombre": "HALLULLON ESPECIAL",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 22,
+      "nombre": "HOJARASCA",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 23,
+      "nombre": "KUCHEN",
+      "categoria": "Pasteleria",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 24,
+      "nombre": "LATA DE PIZZAS 62X64",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 25,
+      "nombre": "MESA NORMAL",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 26,
+      "nombre": "MOLDE BLANCO",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 27,
+      "nombre": "MOLDE CHICO",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 28,
+      "nombre": "MOLDE INTEGRAL",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 29,
+      "nombre": "PAN SIN SAL",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 30,
+      "nombre": "PITA BLANCA",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 31,
+      "nombre": "PITA INTEGRAL",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 32,
+      "nombre": "PIZZA INDIVIDUAL CHICA",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 33,
+      "nombre": "RALLADO",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 34,
+      "nombre": "ROSITA 60 GRS.",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 35,
+      "nombre": "SOPAIPILLA",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 36,
+      "nombre": "TAPADITOS",
+      "categoria": "Pan Tradicional",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 37,
+      "nombre": "TARTALETA",
+      "categoria": "Pasteleria",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 38,
+      "nombre": "TORTA ESPECIAL",
+      "categoria": "Pasteleria",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 39,
+      "nombre": "TORTA I",
+      "categoria": "Pasteleria",
+      "precioBase": 0,
+      "activo": true
+    },
+    {
+      "id": 40,
+      "nombre": "TORTA II",
+      "categoria": "Pasteleria",
+      "precioBase": 0,
+      "activo": true
+    }
+  ],
+  "reclamos": [
+    {
+      "id": 1,
+      "casinoId": 3,
+      "empresaId": 1,
+      "fechaIncidente": "2025-12-24",
+      "horaIncidente": "14:02",
+      "area": "Administración",
+      "descripcion": "dxdgdgfdbfc",
+      "imagenes": [],
+      "estado": "Pendiente",
+      "fechaCreacion": "2025-12-24",
+      "horaCreacion": "14:02",
+      "respuesta": null,
+      "fechaRespuesta": null
+    }
+  ],
+  "detallesPedido": [
+    {
+      "id": 1,
+      "pedidoId": 17,
+      "productoId": 3,
+      "nombreProducto": "AMASADO",
+      "cantidad": 1.3,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 2,
+      "pedidoId": 17,
+      "productoId": 4,
+      "nombreProducto": "AMASADO INTEGRAL",
+      "cantidad": 1.1,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 3,
+      "pedidoId": 17,
+      "productoId": 11,
+      "nombreProducto": "DOBLADAS",
+      "cantidad": 0.8,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 4,
+      "pedidoId": 18,
+      "productoId": 3,
+      "nombreProducto": "AMASADO",
+      "cantidad": 1.3,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 5,
+      "pedidoId": 18,
+      "productoId": 4,
+      "nombreProducto": "AMASADO INTEGRAL",
+      "cantidad": 1.1,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 6,
+      "pedidoId": 18,
+      "productoId": 11,
+      "nombreProducto": "DOBLADAS",
+      "cantidad": 0.8,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 7,
+      "pedidoId": 19,
+      "productoId": 3,
+      "nombreProducto": "AMASADO",
+      "cantidad": 1.3,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 8,
+      "pedidoId": 19,
+      "productoId": 4,
+      "nombreProducto": "AMASADO INTEGRAL",
+      "cantidad": 1.1,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 9,
+      "pedidoId": 19,
+      "productoId": 11,
+      "nombreProducto": "DOBLADAS",
+      "cantidad": 0.8,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 10,
+      "pedidoId": 19,
+      "productoId": 30,
+      "nombreProducto": "MOLDE INTEGRAL",
+      "cantidad": 1,
+      "subtotal": null,
+      "unidad": "Un"
+    },
+    {
+      "id": 11,
+      "pedidoId": 19,
+      "productoId": 29,
+      "nombreProducto": "MOLDE CHICO",
+      "cantidad": 1,
+      "subtotal": null,
+      "unidad": "Un"
+    },
+    {
+      "id": 12,
+      "pedidoId": 20,
+      "productoId": 3,
+      "nombreProducto": "AMASADO",
+      "cantidad": 1.3,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 13,
+      "pedidoId": 20,
+      "productoId": 4,
+      "nombreProducto": "AMASADO INTEGRAL",
+      "cantidad": 1.1,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 14,
+      "pedidoId": 20,
+      "productoId": 11,
+      "nombreProducto": "DOBLADAS",
+      "cantidad": 0.8,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 15,
+      "pedidoId": 21,
+      "productoId": 3,
+      "nombreProducto": "AMASADO",
+      "cantidad": 1.3,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 16,
+      "pedidoId": 21,
+      "productoId": 4,
+      "nombreProducto": "AMASADO INTEGRAL",
+      "cantidad": 1.1,
+      "subtotal": null,
+      "unidad": "Kg"
+    },
+    {
+      "id": 17,
+      "pedidoId": 21,
+      "productoId": 11,
+      "nombreProducto": "DOBLADAS",
+      "cantidad": 0.8,
+      "subtotal": null,
+      "unidad": "Kg"
+    }
+  ],
+  "colegios": [
+    {
+      "id": 1,
+      "fecha": "2025-12-26",
+      "repartidor": "Repartidor 1",
+      "cliente": "Salud y vida",
+      "producto": "pan",
+      "pesoFormula": 900,
+      "pesoReal": 980,
+      "diferencia": 80,
+      "porcentajeMerma": 8.89,
+      "observaciones": null,
+      "creador": "gerencia@panificadora.cl",
+      "fechaCreacion": "2025-12-26T00:21:09.694Z"
+    },
+    {
+      "id": 2,
+      "fecha": "2025-12-26",
+      "repartidor": "Repartidor 2",
+      "cliente": "Colegio Principal",
+      "producto": "Pan Total",
+      "pesoFormula": 300,
+      "pesoReal": 280,
+      "diferencia": -20,
+      "porcentajeMerma": -6.67,
+      "observaciones": null,
+      "creador": "gerencia@panificadora.cl",
+      "fechaCreacion": "2025-12-26T01:12:55.138Z"
+    }
+  ]
+}

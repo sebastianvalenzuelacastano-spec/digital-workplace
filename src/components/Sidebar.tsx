@@ -91,6 +91,7 @@ export default function Sidebar() {
                                     { name: 'Ventas', path: '/dashboard/ventas' },
                                     { name: 'Rendimiento', path: '/dashboard/rendimiento' },
                                     { name: 'Insumos', path: '/dashboard/inventario' },
+                                    { name: 'Colegios', path: '/dashboard/colegios' },
                                 ]
                             },
                             {
@@ -108,6 +109,7 @@ export default function Sidebar() {
                                     { name: 'Precios', path: '/dashboard/precios-clientes', role: 'manager' },
                                     { name: 'Pedidos del Día', path: '/dashboard/pedidos-dia', role: 'manager' },
                                     { name: 'Hoja de Ruta', path: '/dashboard/hoja-ruta', role: 'manager' },
+                                    { name: 'Reclamos y Sugerencias', path: '/dashboard/reclamos', role: 'manager' },
                                 ]
                             },
                             {
