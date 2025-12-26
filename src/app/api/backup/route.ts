@@ -12,14 +12,18 @@ export async function GET() {
             }, { status: 404 });
         }
 
-        const fileName = `backup_panificadora_${new Date().toISOString().split('T')[0]}.json`;
+        const dateStr = new Date().toISOString().split('T')[0];
+        const fileName = `backup_panificadora_${dateStr}.json`;
         const fileContent = JSON.stringify(db, null, 2);
 
-        // Return as downloadable file
+        // Return as downloadable file with explicit headers
         return new NextResponse(fileContent, {
+            status: 200,
             headers: {
-                'Content-Type': 'application/json',
-                'Content-Disposition': `attachment; filename="${fileName}"`,
+                'Content-Type': 'application/octet-stream',
+                'Content-Disposition': `attachment; filename="${fileName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`,
+                'Content-Length': String(Buffer.byteLength(fileContent, 'utf-8')),
+                'Cache-Control': 'no-cache, no-store, must-revalidate',
             },
         });
     } catch (error) {
