@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readDb } from '@/lib/db';
+import { createServerClient } from '@/lib/supabase';
 import type { PedidoCliente, DetallePedido } from '@/types/dashboard';
 
 // GET - Get production summary for a specific date
@@ -11,97 +11,124 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Fecha requerida' }, { status: 400 });
     }
 
-    let db = await readDb();
+    try {
+        const supabase = createServerClient();
 
-    // Initialize database if it doesn't exist
-    if (!db) {
-        console.log('Database not found in resumen-produccion, initializing...');
-        const { initializeDb } = await import('@/lib/db');
-        await initializeDb();
-        db = await readDb();
+        // Get all orders for the specified delivery date from Supabase
+        const { data: pedidosDelDia, error: pedidosError } = await supabase
+            .from('pedidos')
+            .select('*')
+            .eq('fecha_entrega', fecha)
+            .neq('estado', 'cancelado');
 
-        if (!db) {
-            return NextResponse.json({ error: 'Failed to initialize database' }, { status: 500 });
+        if (pedidosError) {
+            console.error('Error fetching pedidos:', pedidosError);
+            return NextResponse.json({ error: 'Error al cargar pedidos' }, { status: 500 });
         }
-    }
 
-    // Initialize collections if they don't exist
-    if (!db.pedidosClientes) {
-        db.pedidosClientes = [];
-    }
-    if (!db.detallesPedidos) {
-        db.detallesPedidos = [];
-    }
+        // Get all order IDs
+        const pedidoIds = (pedidosDelDia || []).map((p: any) => p.id);
 
-    // Get all orders for the specified delivery date
-    const pedidosDelDia = db.pedidosClientes.filter(
-        (p: PedidoCliente) => p.fechaEntrega === fecha && p.estado !== 'cancelado'
-    );
+        // Get all details for these orders
+        let detalles: any[] = [];
+        if (pedidoIds.length > 0) {
+            const { data: detallesData, error: detallesError } = await supabase
+                .from('detalle_pedidos')
+                .select('*')
+                .in('pedido_id', pedidoIds);
 
-    // Get all order IDs
-    const pedidoIds = pedidosDelDia.map((p: PedidoCliente) => p.id);
-
-    // Get all details for these orders
-    const detalles = db.detallesPedidos.filter(
-        (d: DetallePedido) => pedidoIds.includes(d.pedidoId)
-    );
-
-    // Aggregate by product AND unit (to avoid mixing Kg with Un)
-    const resumenPorProducto: Record<string, {
-        productoId: number;
-        productoNombre: string;
-        unidad: string;
-        cantidadTotal: number;
-        subtotalTotal: number;
-    }> = {};
-
-    for (const detalle of detalles) {
-        // Create a unique key combining product ID and unit
-        const key = `${detalle.productoId}-${detalle.unidad || 'Un'}`;
-
-        if (!resumenPorProducto[key]) {
-            resumenPorProducto[key] = {
-                productoId: detalle.productoId,
-                productoNombre: detalle.productoNombre,
-                unidad: detalle.unidad || 'Un',
-                cantidadTotal: 0,
-                subtotalTotal: 0
-            };
+            if (detallesError) {
+                console.error('Error fetching detalles:', detallesError);
+            } else {
+                detalles = detallesData || [];
+            }
         }
-        resumenPorProducto[key].cantidadTotal += detalle.cantidad;
-        resumenPorProducto[key].subtotalTotal += detalle.subtotal;
-    }
 
-    // Convert to array and sort by product name, then by unit
-    const resumen = Object.values(resumenPorProducto).sort((a, b) => {
-        const nameCompare = a.productoNombre.localeCompare(b.productoNombre);
-        if (nameCompare !== 0) return nameCompare;
-        return a.unidad.localeCompare(b.unidad);
-    });
+        // Aggregate by product AND unit (to avoid mixing Kg with Un)
+        const resumenPorProducto: Record<string, {
+            productoId: number;
+            productoNombre: string;
+            unidad: string;
+            cantidadTotal: number;
+            subtotalTotal: number;
+        }> = {};
 
-    // Calculate totals
-    const totales = {
-        totalPedidos: pedidosDelDia.length,
-        totalProductos: resumen.length,
-        totalUnidades: resumen.reduce((sum, p) => sum + p.cantidadTotal, 0),
-        totalMonto: resumen.reduce((sum, p) => sum + p.subtotalTotal, 0)
-    };
+        for (const detalle of detalles) {
+            // Create a unique key combining product ID and unit
+            const key = `${detalle.producto_id}-${detalle.unidad || 'Un'}`;
 
-    // Also return orders by casino for the detailed view
-    const pedidosPorCasino = pedidosDelDia.map((pedido: PedidoCliente) => {
-        const detallesPedido = (db.detallesPedidos || []).filter(
-            (d: DetallePedido) => d.pedidoId === pedido.id
-        );
-        return {
-            ...pedido,
-            detalles: detallesPedido
+            if (!resumenPorProducto[key]) {
+                resumenPorProducto[key] = {
+                    productoId: detalle.producto_id,
+                    productoNombre: detalle.producto_nombre,
+                    unidad: detalle.unidad || 'Un',
+                    cantidadTotal: 0,
+                    subtotalTotal: 0
+                };
+            }
+            resumenPorProducto[key].cantidadTotal += detalle.cantidad || 0;
+            resumenPorProducto[key].subtotalTotal += detalle.subtotal || 0;
+        }
+
+        // Convert to array and sort by product name, then by unit
+        const resumen = Object.values(resumenPorProducto).sort((a, b) => {
+            const nameCompare = a.productoNombre.localeCompare(b.productoNombre);
+            if (nameCompare !== 0) return nameCompare;
+            return a.unidad.localeCompare(b.unidad);
+        });
+
+        // Calculate totals
+        const totales = {
+            totalPedidos: (pedidosDelDia || []).length,
+            totalProductos: resumen.length,
+            totalUnidades: resumen.reduce((sum, p) => sum + p.cantidadTotal, 0),
+            totalMonto: resumen.reduce((sum, p) => sum + p.subtotalTotal, 0)
         };
-    });
 
-    return NextResponse.json({
-        fecha,
-        resumenProduccion: resumen,
-        totales,
-        pedidosPorCasino
-    });
+        // Also return orders by casino for the detailed view
+        // Map Supabase snake_case to expected camelCase
+        const pedidosPorCasino = (pedidosDelDia || []).map((pedido: any) => {
+            const detallesPedido = detalles
+                .filter((d: any) => d.pedido_id === pedido.id)
+                .map((d: any) => ({
+                    id: d.id,
+                    pedidoId: d.pedido_id,
+                    productoId: d.producto_id,
+                    productoNombre: d.producto_nombre,
+                    cantidad: d.cantidad,
+                    precioUnitario: d.precio_unitario,
+                    subtotal: d.subtotal,
+                    unidad: d.unidad
+                }));
+
+            return {
+                id: pedido.id,
+                casinoId: pedido.casino_id,
+                casinoNombre: pedido.casino_nombre,
+                empresaId: pedido.empresa_id,
+                empresaNombre: pedido.empresa_nombre,
+                fechaPedido: pedido.fecha_pedido,
+                fechaEntrega: pedido.fecha_entrega,
+                horaPedido: pedido.hora_pedido,
+                horaEntrega: pedido.hora_entrega,
+                estado: pedido.estado,
+                total: pedido.total,
+                observaciones: pedido.observaciones,
+                repartidor: pedido.repartidor,
+                origenPedido: pedido.origen_pedido,
+                detalles: detallesPedido
+            };
+        });
+
+        return NextResponse.json({
+            fecha,
+            resumenProduccion: resumen,
+            totales,
+            pedidosPorCasino
+        });
+
+    } catch (error) {
+        console.error('Error in resumen-produccion:', error);
+        return NextResponse.json({ error: 'Error al procesar resumen' }, { status: 500 });
+    }
 }
