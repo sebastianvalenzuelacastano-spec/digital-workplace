@@ -25,6 +25,7 @@ export default function InventoryTable() {
         proveedor: '',
         fechaCompra: '',
         fechaPago: '',
+        fechaVencimiento: '',
         factura: '',
         estadoPago: 'pendiente',
         precioUnitario: 0
@@ -78,6 +79,7 @@ export default function InventoryTable() {
             proveedor: '',
             fechaCompra: '',
             fechaPago: '',
+            fechaVencimiento: '',
             factura: '',
             estadoPago: 'pendiente',
             precioUnitario: 0
@@ -94,6 +96,7 @@ export default function InventoryTable() {
             proveedor: item.proveedor,
             fechaCompra: item.fechaCompra,
             fechaPago: item.fechaPago,
+            fechaVencimiento: item.fechaVencimiento || '',
             factura: item.factura,
             estadoPago: item.estadoPago,
             precioUnitario: item.precioUnitario || 0
@@ -118,6 +121,7 @@ export default function InventoryTable() {
             proveedor: '',
             fechaCompra: '',
             fechaPago: '',
+            fechaVencimiento: '',
             factura: '',
             estadoPago: 'pendiente',
             precioUnitario: 0
@@ -331,8 +335,9 @@ export default function InventoryTable() {
                     {formData.cantidadEntrada! > 0 && (
                         <>
                             <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Proveedor</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Proveedor *</label>
                                 <select
+                                    required
                                     value={formData.proveedor}
                                     onChange={(e) => setFormData({ ...formData, proveedor: e.target.value })}
                                     style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -348,29 +353,32 @@ export default function InventoryTable() {
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Fecha Compra</label>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Fecha Compra *</label>
                                     <input
                                         type="date"
+                                        required
                                         value={formData.fechaCompra}
                                         onChange={(e) => setFormData({ ...formData, fechaCompra: e.target.value })}
                                         style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
                                     />
                                 </div>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Fecha Pago</label>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Fecha Vencimiento *</label>
                                     <input
                                         type="date"
-                                        value={formData.fechaPago}
-                                        onChange={(e) => setFormData({ ...formData, fechaPago: e.target.value })}
+                                        required
+                                        value={formData.fechaVencimiento}
+                                        onChange={(e) => setFormData({ ...formData, fechaVencimiento: e.target.value })}
                                         style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
                                     />
                                 </div>
                             </div>
                             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                                 <div>
-                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>N° Factura</label>
+                                    <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>N° Factura *</label>
                                     <input
                                         type="text"
+                                        required
                                         value={formData.factura}
                                         onChange={(e) => setFormData({ ...formData, factura: e.target.value })}
                                         style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}

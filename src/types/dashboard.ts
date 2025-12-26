@@ -52,6 +52,7 @@ export interface InsumoTransaction {
     proveedor: string;
     fechaCompra: string;
     fechaPago: string;
+    fechaVencimiento?: string; // Expiry date of the product
     factura: string;
     estadoPago: 'pendiente' | 'urgente' | 'pagada';
     stockAcumulado?: number;
