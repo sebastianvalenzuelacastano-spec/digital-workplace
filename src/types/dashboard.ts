@@ -102,6 +102,7 @@ export interface BankTransaction {
     documento: string;
     observacion: string;
     saldo: number;
+    areaPago?: string; // Area de pago: Proveedores, Sueldos, Servicios, etc
     proveedor?: string; // Link to maestroProveedores
     cliente?: string; // Link to maestroClientes
 }

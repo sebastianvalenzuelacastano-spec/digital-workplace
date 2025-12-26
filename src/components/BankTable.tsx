@@ -21,6 +21,7 @@ export default function BankTable() {
         descripcion: '',
         documento: '',
         observacion: '',
+        areaPago: '',
         proveedor: '',
         cliente: ''
     });
@@ -55,6 +56,7 @@ export default function BankTable() {
                 descripcion: formData.descripcion || '',
                 documento: formData.documento || '',
                 observacion: formData.observacion || '',
+                areaPago: formData.areaPago,
                 proveedor: formData.proveedor,
                 cliente: formData.cliente
             });
@@ -66,6 +68,7 @@ export default function BankTable() {
                 descripcion: formData.descripcion || '',
                 documento: formData.documento || '',
                 observacion: formData.observacion || '',
+                areaPago: formData.areaPago,
                 proveedor: formData.proveedor,
                 cliente: formData.cliente
             });
@@ -80,6 +83,7 @@ export default function BankTable() {
             descripcion: '',
             documento: '',
             observacion: '',
+            areaPago: '',
             proveedor: '',
             cliente: ''
         });
@@ -94,6 +98,7 @@ export default function BankTable() {
             descripcion: item.descripcion,
             documento: item.documento,
             observacion: item.observacion,
+            areaPago: item.areaPago || '',
             proveedor: item.proveedor || '',
             cliente: item.cliente || ''
         });
@@ -116,6 +121,7 @@ export default function BankTable() {
             descripcion: '',
             documento: '',
             observacion: '',
+            areaPago: '',
             proveedor: '',
             cliente: ''
         });
@@ -229,11 +235,40 @@ export default function BankTable() {
                             />
                         </div>
 
-                        {/* Proveedor selector (for Salidas) */}
+                        {/* Area de Pago selector (for Salidas) */}
                         {formData.salida! > 0 && (
                             <div>
-                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Proveedor</label>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Área de Pago *</label>
                                 <select
+                                    required
+                                    value={formData.areaPago || ''}
+                                    onChange={(e) => {
+                                        const area = e.target.value;
+                                        setFormData({
+                                            ...formData,
+                                            areaPago: area,
+                                            proveedor: area === 'Proveedores' ? formData.proveedor : ''
+                                        });
+                                    }}
+                                    style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                >
+                                    <option value="">Seleccionar área...</option>
+                                    <option value="Proveedores">🏢 Proveedores (Insumos)</option>
+                                    <option value="Sueldos">👷 Sueldos</option>
+                                    <option value="Servicios">💡 Servicios Básicos</option>
+                                    <option value="Arriendos">🏠 Arriendos</option>
+                                    <option value="Impuestos">📋 Impuestos</option>
+                                    <option value="Otros">📦 Otros</option>
+                                </select>
+                            </div>
+                        )}
+
+                        {/* Proveedor selector (only when Area is Proveedores) */}
+                        {formData.salida! > 0 && formData.areaPago === 'Proveedores' && (
+                            <div>
+                                <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Proveedor *</label>
+                                <select
+                                    required
                                     value={formData.proveedor || ''}
                                     onChange={(e) => setFormData({ ...formData, proveedor: e.target.value })}
                                     style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
@@ -246,6 +281,51 @@ export default function BankTable() {
                                             <option key={p.id} value={p.nombre}>{p.nombre}</option>
                                         ))}
                                 </select>
+
+                                {/* Pending invoices for selected proveedor */}
+                                {formData.proveedor && (
+                                    <div style={{ marginTop: '0.75rem' }}>
+                                        <p style={{ fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '0.5rem', color: '#666' }}>
+                                            📋 Facturas Pendientes (más antiguas primero):
+                                        </p>
+                                        <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid #ddd', borderRadius: '4px' }}>
+                                            {insumoTransactions
+                                                .filter(inv => inv.proveedor === formData.proveedor && inv.estadoPago !== 'pagada' && inv.cantidadEntrada > 0)
+                                                .sort((a, b) => a.fechaCompra.localeCompare(b.fechaCompra))
+                                                .map(inv => (
+                                                    <div
+                                                        key={inv.id}
+                                                        onClick={() => setFormData({ ...formData, documento: inv.factura })}
+                                                        style={{
+                                                            padding: '8px 10px',
+                                                            borderBottom: '1px solid #eee',
+                                                            cursor: 'pointer',
+                                                            backgroundColor: formData.documento === inv.factura ? '#e3f2fd' : 'transparent',
+                                                            fontSize: '0.85rem'
+                                                        }}
+                                                    >
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                                                            <span><strong>Factura:</strong> {inv.factura || 'S/N'}</span>
+                                                            <span style={{
+                                                                color: inv.estadoPago === 'urgente' ? '#f44336' : '#ff9800',
+                                                                fontWeight: 'bold'
+                                                            }}>
+                                                                {inv.estadoPago === 'urgente' ? '⚠️ URGENTE' : '⏳ Pendiente'}
+                                                            </span>
+                                                        </div>
+                                                        <div style={{ color: '#666', fontSize: '0.8rem' }}>
+                                                            {inv.insumo} - {inv.cantidadEntrada} unid. - Compra: {inv.fechaCompra}
+                                                        </div>
+                                                    </div>
+                                                ))}
+                                            {insumoTransactions.filter(inv => inv.proveedor === formData.proveedor && inv.estadoPago !== 'pagada' && inv.cantidadEntrada > 0).length === 0 && (
+                                                <div style={{ padding: '12px', textAlign: 'center', color: '#4caf50' }}>
+                                                    ✅ No hay facturas pendientes
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         )}
 
