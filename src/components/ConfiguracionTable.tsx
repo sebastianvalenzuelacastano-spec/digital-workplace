@@ -1215,19 +1215,36 @@ export default function ConfiguracionTable() {
                                 Descarga una copia completa de tu base de datos (usuarios, ventas, inventario, etc.)
                                 para guardarla en un lugar seguro como Google Drive, Dropbox o tu computadora.
                             </p>
-                            <a
-                                href="/api/backup"
-                                download
+                            <button
+                                onClick={async () => {
+                                    try {
+                                        const res = await fetch('/api/backup');
+                                        const data = await res.json();
+                                        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                                        const url = URL.createObjectURL(blob);
+                                        const a = document.createElement('a');
+                                        const dateStr = new Date().toISOString().split('T')[0];
+                                        a.href = url;
+                                        a.download = `backup_panificadora_${dateStr}.json`;
+                                        document.body.appendChild(a);
+                                        a.click();
+                                        document.body.removeChild(a);
+                                        URL.revokeObjectURL(url);
+                                        alert('✅ Respaldo descargado correctamente');
+                                    } catch (error) {
+                                        alert('Error al descargar respaldo: ' + error);
+                                    }
+                                }}
                                 className="btn btn-primary"
                                 style={{
                                     display: 'inline-flex',
                                     alignItems: 'center',
                                     gap: '0.5rem',
-                                    textDecoration: 'none'
+                                    cursor: 'pointer'
                                 }}
                             >
                                 💾 Descargar Respaldo
-                            </a>
+                            </button>
                         </div>
 
                         <div style={{
