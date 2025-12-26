@@ -1,106 +1,138 @@
 import { NextResponse } from 'next/server';
-import { readDb, writeDb } from '@/lib/db';
-import type { EmpresaCliente } from '@/types/dashboard';
+import { createServerClient } from '@/lib/supabase';
 
-// GET - List all client companies
+// GET - List all client companies from Supabase
 export async function GET() {
-    const db = await readDb();
+    try {
+        const supabase = createServerClient();
 
-    if (!db || !db.empresasClientes) {
+        const { data, error } = await supabase
+            .from('empresas_clientes')
+            .select('*')
+            .order('nombre');
+
+        if (error) {
+            console.error('Error fetching empresas:', error);
+            return NextResponse.json([]);
+        }
+
+        // Map to camelCase
+        const empresas = (data || []).map((e: any) => ({
+            id: e.id,
+            rut: e.rut || '',
+            nombre: e.nombre,
+            contacto: e.contacto || '',
+            telefono: e.telefono || '',
+            email: e.email || '',
+            activo: e.activo !== false
+        }));
+
+        return NextResponse.json(empresas);
+
+    } catch (error) {
+        console.error('Error in empresas-clientes GET:', error);
         return NextResponse.json([]);
     }
-
-    return NextResponse.json(db.empresasClientes);
 }
 
 // POST - Create new client company
 export async function POST(request: Request) {
-    const data = await request.json();
-    const db = await readDb();
+    try {
+        const data = await request.json();
+        const supabase = createServerClient();
 
-    if (!db) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+        const { data: newEmpresa, error } = await supabase
+            .from('empresas_clientes')
+            .insert({
+                rut: data.rut,
+                nombre: data.nombre,
+                contacto: data.contacto || '',
+                telefono: data.telefono || '',
+                email: data.email || '',
+                activo: true
+            })
+            .select()
+            .single();
+
+        if (error) {
+            if (error.code === '23505') { // unique violation
+                return NextResponse.json({ error: 'RUT ya existe' }, { status: 400 });
+            }
+            console.error('Error creating empresa:', error);
+            return NextResponse.json({ error: 'Error al crear empresa' }, { status: 500 });
+        }
+
+        return NextResponse.json({
+            id: newEmpresa.id,
+            rut: newEmpresa.rut,
+            nombre: newEmpresa.nombre,
+            contacto: newEmpresa.contacto,
+            telefono: newEmpresa.telefono,
+            email: newEmpresa.email,
+            activo: newEmpresa.activo
+        }, { status: 201 });
+
+    } catch (error) {
+        console.error('Error in empresas-clientes POST:', error);
+        return NextResponse.json({ error: 'Error al crear empresa' }, { status: 500 });
     }
-
-    if (!db.empresasClientes) {
-        db.empresasClientes = [];
-    }
-
-    // Check if RUT already exists
-    const existingRut = db.empresasClientes.find((e: EmpresaCliente) => e.rut === data.rut);
-    if (existingRut) {
-        return NextResponse.json({ error: 'RUT ya existe' }, { status: 400 });
-    }
-
-    const newId = db.empresasClientes.length > 0
-        ? Math.max(...db.empresasClientes.map((e: EmpresaCliente) => e.id)) + 1
-        : 1;
-
-    const newEmpresa: EmpresaCliente = {
-        id: newId,
-        rut: data.rut,
-        nombre: data.nombre,
-        contacto: data.contacto || '',
-        telefono: data.telefono || '',
-        email: data.email || '',
-        activo: true
-    };
-
-    db.empresasClientes.push(newEmpresa);
-    writeDb(db);
-
-    return NextResponse.json(newEmpresa, { status: 201 });
 }
 
 // PUT - Update client company
 export async function PUT(request: Request) {
-    const data = await request.json();
-    const db = await readDb();
+    try {
+        const data = await request.json();
+        const supabase = createServerClient();
 
-    if (!db || !db.empresasClientes) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+        const { error } = await supabase
+            .from('empresas_clientes')
+            .update({
+                rut: data.rut,
+                nombre: data.nombre,
+                contacto: data.contacto || '',
+                telefono: data.telefono || '',
+                email: data.email || '',
+                activo: data.activo
+            })
+            .eq('id', data.id);
+
+        if (error) {
+            if (error.code === '23505') {
+                return NextResponse.json({ error: 'RUT ya existe' }, { status: 400 });
+            }
+            console.error('Error updating empresa:', error);
+            return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true });
+
+    } catch (error) {
+        console.error('Error in empresas-clientes PUT:', error);
+        return NextResponse.json({ error: 'Error al actualizar' }, { status: 500 });
     }
-
-    const index = db.empresasClientes.findIndex((e: EmpresaCliente) => e.id === data.id);
-    if (index === -1) {
-        return NextResponse.json({ error: 'Empresa no encontrada' }, { status: 404 });
-    }
-
-    // Check if RUT already exists for another company
-    const existingRut = db.empresasClientes.find(
-        (e: EmpresaCliente) => e.rut === data.rut && e.id !== data.id
-    );
-    if (existingRut) {
-        return NextResponse.json({ error: 'RUT ya existe' }, { status: 400 });
-    }
-
-    db.empresasClientes[index] = {
-        ...db.empresasClientes[index],
-        ...data
-    };
-
-    writeDb(db);
-    return NextResponse.json(db.empresasClientes[index]);
 }
 
 // DELETE - Deactivate client company (soft delete)
 export async function DELETE(request: Request) {
-    const { searchParams } = new URL(request.url);
-    const id = parseInt(searchParams.get('id') || '0');
-    const db = await readDb();
+    try {
+        const { searchParams } = new URL(request.url);
+        const id = parseInt(searchParams.get('id') || '0');
+        const supabase = createServerClient();
 
-    if (!db || !db.empresasClientes) {
-        return NextResponse.json({ error: 'Database error' }, { status: 500 });
+        const { error } = await supabase
+            .from('empresas_clientes')
+            .update({ activo: false })
+            .eq('id', id);
+
+        if (error) {
+            console.error('Error deleting empresa:', error);
+            return NextResponse.json({ error: 'Error al eliminar' }, { status: 500 });
+        }
+
+        return NextResponse.json({ success: true });
+
+    } catch (error) {
+        console.error('Error in empresas-clientes DELETE:', error);
+        return NextResponse.json({ error: 'Error al eliminar' }, { status: 500 });
     }
-
-    const index = db.empresasClientes.findIndex((e: EmpresaCliente) => e.id === id);
-    if (index === -1) {
-        return NextResponse.json({ error: 'Empresa no encontrada' }, { status: 404 });
-    }
-
-    // Soft delete - just deactivate
-    db.empresasClientes[index].activo = false;
-    writeDb(db);
-
-    return NextResponse.json({ success: true });
 }
