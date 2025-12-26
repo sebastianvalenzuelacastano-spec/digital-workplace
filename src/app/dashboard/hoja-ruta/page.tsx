@@ -192,7 +192,7 @@ export default function HojaRutaPage() {
                                             borderBottom: '1px solid #ccc',
                                             fontSize: '7pt'
                                         }}>
-                                            {casino.pedido.casinoNombre.toUpperCase()} - {casino.pedido.horaEntrega || casino.pedido.horaPedido || 'S/H'}
+                                            {(casino.pedido.casinoNombre || 'Sin Nombre').toUpperCase()} - {casino.pedido.horaEntrega || casino.pedido.horaPedido || 'S/H'}
                                         </div>
 
 
@@ -211,7 +211,7 @@ export default function HojaRutaPage() {
                                                             textAlign: 'left',
                                                             width: '50%'
                                                         }}>
-                                                            {detalle.productoNombre}
+                                                            {detalle.productoNombre || 'Producto'}
                                                         </td>
                                                         <td style={{
                                                             padding: '1px 2px',
