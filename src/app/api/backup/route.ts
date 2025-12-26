@@ -1,22 +1,19 @@
 import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
+import { readDb } from '@/lib/db';
 
 export async function GET() {
     try {
-        // Get the path to the persistent database
-        const defaultDbPath = path.join(process.cwd(), 'src/data/db.json');
-        const dbPath = process.env.DB_PATH || defaultDbPath;
+        // Read from the actual database (Vercel KV in production, local in dev)
+        const db = await readDb();
 
-        if (!fs.existsSync(dbPath)) {
+        if (!db) {
             return NextResponse.json({
-                error: 'Database file not found'
+                error: 'Database not found or empty'
             }, { status: 404 });
         }
 
-        // Read the file
-        const fileContent = fs.readFileSync(dbPath, 'utf-8');
         const fileName = `backup_panificadora_${new Date().toISOString().split('T')[0]}.json`;
+        const fileContent = JSON.stringify(db, null, 2);
 
         // Return as downloadable file
         return new NextResponse(fileContent, {
@@ -26,6 +23,7 @@ export async function GET() {
             },
         });
     } catch (error) {
+        console.error('Backup error:', error);
         return NextResponse.json({
             error: 'Internal Server Error',
             details: String(error)
