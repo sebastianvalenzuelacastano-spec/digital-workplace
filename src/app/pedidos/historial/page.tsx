@@ -36,6 +36,51 @@ export default function HistorialPedidosPage() {
         }
     };
 
+    const cancelPedido = async (pedido: PedidoConDetalles) => {
+        // Only allow canceling pending or confirmed orders
+        if (!['pendiente', 'confirmado'].includes(pedido.estado)) {
+            alert('Solo se pueden cancelar pedidos en estado Pendiente o Confirmado');
+            return;
+        }
+
+        const confirmed = window.confirm(
+            `¿Estás seguro de que deseas cancelar el pedido #${pedido.id.toString().padStart(4, '0')}?\n\nEsta acción no se puede deshacer.`
+        );
+
+        if (!confirmed) return;
+
+        try {
+            // Cancel the order
+            const res = await fetch(`/api/pedidos-clientes?id=${pedido.id}`, {
+                method: 'DELETE'
+            });
+
+            if (res.ok) {
+                // Send notification to admin
+                const clientData = JSON.parse(localStorage.getItem('clientData') || '{}');
+                await fetch('/api/notificar-cancelacion', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        pedidoId: pedido.id,
+                        casinoNombre: clientData.nombre || pedido.casinoNombre,
+                        fechaEntrega: pedido.fechaEntrega,
+                        total: pedido.total,
+                        productos: pedido.detalles.length
+                    })
+                }).catch(e => console.error('Error sending notification:', e));
+
+                alert('Pedido cancelado exitosamente');
+                loadPedidos(); // Refresh list
+            } else {
+                alert('Error al cancelar el pedido');
+            }
+        } catch (error) {
+            console.error('Error canceling order:', error);
+            alert('Error de conexión');
+        }
+    };
+
     // Filter: show only future/pending orders or all
     const filteredPedidos = showAll
         ? pedidos
@@ -196,20 +241,36 @@ export default function HistorialPedidosPage() {
                                         {getEstadoBadge(pedido.estado)}
                                     </td>
                                     <td style={{ padding: '12px' }}>
-                                        <button
-                                            onClick={() => setSelectedPedido(pedido)}
-                                            style={{
-                                                padding: '6px 12px',
-                                                backgroundColor: '#e3f2fd',
-                                                color: '#1565c0',
-                                                border: 'none',
-                                                borderRadius: '6px',
-                                                cursor: 'pointer',
-                                                marginRight: '8px'
-                                            }}
-                                        >
-                                            Ver Detalle
-                                        </button>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button
+                                                onClick={() => setSelectedPedido(pedido)}
+                                                style={{
+                                                    padding: '6px 12px',
+                                                    backgroundColor: '#e3f2fd',
+                                                    color: '#1565c0',
+                                                    border: 'none',
+                                                    borderRadius: '6px',
+                                                    cursor: 'pointer'
+                                                }}
+                                            >
+                                                Ver Detalle
+                                            </button>
+                                            {['pendiente', 'confirmado'].includes(pedido.estado) && (
+                                                <button
+                                                    onClick={() => cancelPedido(pedido)}
+                                                    style={{
+                                                        padding: '6px 12px',
+                                                        backgroundColor: '#ffebee',
+                                                        color: '#c62828',
+                                                        border: 'none',
+                                                        borderRadius: '6px',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                >
+                                                    Cancelar
+                                                </button>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
