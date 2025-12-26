@@ -81,7 +81,11 @@ export default function HistorialPedidosPage() {
     };
 
     const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr + 'T12:00:00');
+        if (!dateStr) return 'Sin fecha';
+        // Handle both YYYY-MM-DD and full ISO strings (from Supabase)
+        const dateOnly = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr;
+        const date = new Date(dateOnly + 'T12:00:00');
+        if (isNaN(date.getTime())) return 'Fecha inválida';
         return date.toLocaleDateString('es-CL', {
             weekday: 'short',
             day: 'numeric',

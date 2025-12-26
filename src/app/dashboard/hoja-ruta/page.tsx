@@ -59,7 +59,10 @@ export default function HojaRutaPage() {
     const rutas = agruparPorRepartidor();
 
     const formatDate = (dateStr: string) => {
-        const date = new Date(dateStr + 'T12:00:00');
+        if (!dateStr) return 'Sin fecha';
+        const dateOnly = dateStr.includes('T') ? dateStr.split('T')[0] : dateStr;
+        const date = new Date(dateOnly + 'T12:00:00');
+        if (isNaN(date.getTime())) return 'Fecha inválida';
         return date.toLocaleDateString('es-CL', {
             weekday: 'long',
             year: 'numeric',
