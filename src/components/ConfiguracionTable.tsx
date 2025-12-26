@@ -1218,27 +1218,35 @@ export default function ConfiguracionTable() {
                             <button
                                 onClick={async () => {
                                     try {
+                                        // Fetch the backup data
                                         const res = await fetch('/api/backup');
+                                        if (!res.ok) throw new Error('Error del servidor');
+
                                         const data = await res.json();
                                         const jsonStr = JSON.stringify(data, null, 2);
-                                        const blob = new Blob([jsonStr], { type: 'application/json' });
-                                        const url = window.URL.createObjectURL(blob);
-                                        const a = document.createElement('a');
                                         const dateStr = new Date().toISOString().split('T')[0];
-                                        a.href = url;
-                                        a.download = `backup_panificadora_${dateStr}.json`;
-                                        a.style.display = 'none';
-                                        document.body.appendChild(a);
-                                        a.click();
-                                        // Delay cleanup to allow download to complete
+                                        const fileName = `backup_panificadora_${dateStr}.json`;
+
+                                        // Create blob and download using data URI approach
+                                        const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(jsonStr);
+
+                                        const link = document.createElement('a');
+                                        link.setAttribute('href', dataUri);
+                                        link.setAttribute('download', fileName);
+                                        link.style.visibility = 'hidden';
+                                        link.style.position = 'absolute';
+                                        document.body.appendChild(link);
+                                        link.click();
+
+                                        // Clean up after a longer delay
                                         setTimeout(() => {
-                                            window.URL.revokeObjectURL(url);
-                                            document.body.removeChild(a);
-                                        }, 1000);
-                                        alert('✅ Respaldo descargado: backup_panificadora_' + dateStr + '.json');
+                                            document.body.removeChild(link);
+                                        }, 2000);
+
+                                        alert('✅ Archivo guardado como: ' + fileName);
                                     } catch (error) {
                                         console.error('Backup error:', error);
-                                        alert('Error al descargar respaldo: ' + error);
+                                        alert('❌ Error al descargar: ' + error);
                                     }
                                 }}
                                 className="btn btn-primary"
