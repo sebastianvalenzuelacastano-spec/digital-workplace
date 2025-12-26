@@ -149,8 +149,8 @@ export default function InventoryTable() {
         return insumo ? getUnidadLabel(insumo.unidad) : '';
     };
 
-    // Get unique items for stock summary
-    const uniqueItems = Array.from(new Set(insumoTransactions.map(t => t.insumo)));
+    // Get all active insumos from master list (show even if no transactions)
+    const allActiveInsumos = maestroInsumos.filter(i => i.activo).map(i => i.nombre);
 
     // Calculate stock for all items
     // Filter by date
@@ -409,7 +409,7 @@ export default function InventoryTable() {
 
             {/* Stock Summary Cards */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
-                {uniqueItems.map(item => (
+                {allActiveInsumos.map((item: string) => (
                     <div key={item} style={{ backgroundColor: '#f5f5f5', padding: '1rem', borderRadius: '8px', borderLeft: '4px solid var(--color-primary)' }}>
                         <p style={{ fontSize: '0.85rem', color: '#666' }}>{item}</p>
                         <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: '#333' }}>
