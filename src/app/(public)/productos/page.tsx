@@ -21,6 +21,7 @@ export default async function ProductsPage() {
             const data = await res.json();
             products = (data || [])
                 .filter((p: any) => p.activo)
+                .filter((p: any) => p.imagen && p.imagen.trim() !== '') // Only show products with real images
                 .sort((a: any, b: any) => (a.nombre || '').localeCompare(b.nombre || '', 'es'));
         }
     } catch (error) {
