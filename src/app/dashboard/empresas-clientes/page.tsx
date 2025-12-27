@@ -220,6 +220,29 @@ export default function EmpresasClientesPage() {
         return casinos.filter(c => c.empresaId === empresaId && c.activo);
     };
 
+    const handleDeleteCasino = async (casino: CasinoSucursal) => {
+        if (!confirm(`¿Estás seguro de eliminar el casino "${casino.nombre}"?\n\nEsta acción no se puede deshacer.`)) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/casinos?id=${casino.id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                alert('Casino eliminado exitosamente');
+                loadData();
+            } else {
+                const error = await response.json();
+                alert(error.error || 'Error al eliminar el casino');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Error al eliminar el casino');
+        }
+    };
+
     if (loading) {
         return <div style={{ padding: '20px' }}>Cargando...</div>;
     }
@@ -376,6 +399,7 @@ export default function EmpresasClientesPage() {
                                                 <th style={{ padding: '8px' }}>Nombre</th>
                                                 <th style={{ padding: '8px' }}>Usuario</th>
                                                 <th style={{ padding: '8px' }}>Email</th>
+                                                <th style={{ padding: '8px', width: '80px' }}>Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -392,6 +416,23 @@ export default function EmpresasClientesPage() {
                                                         </code>
                                                     </td>
                                                     <td style={{ padding: '8px' }}>{casino.email || '-'}</td>
+                                                    <td style={{ padding: '8px' }}>
+                                                        <button
+                                                            onClick={() => handleDeleteCasino(casino)}
+                                                            style={{
+                                                                padding: '4px 8px',
+                                                                backgroundColor: '#ffebee',
+                                                                color: '#c62828',
+                                                                border: 'none',
+                                                                borderRadius: '4px',
+                                                                cursor: 'pointer',
+                                                                fontSize: '0.85rem'
+                                                            }}
+                                                            title="Eliminar casino"
+                                                        >
+                                                            🗑️
+                                                        </button>
+                                                    </td>
                                                 </tr>
                                             ))}
                                         </tbody>
