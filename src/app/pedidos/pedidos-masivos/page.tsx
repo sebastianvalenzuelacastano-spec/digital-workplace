@@ -101,7 +101,7 @@ export default function PedidosMasivosPage() {
     };
 
     const addProductoBase = (producto: Producto) => {
-        const cantidad = productQuantities[producto.id] || 1;
+        const cantidad = productQuantities[producto.id] || 0;
         const unidad = productUnits[producto.id] || 'Kg';
 
         const exists = productosBase.find(p => p.productoId === producto.id);
@@ -172,7 +172,7 @@ export default function PedidosMasivosPage() {
             nuevos[fechaIndex].productos.push({
                 productoId: producto.id,
                 nombre: producto.nombre,
-                cantidad: 1,
+                cantidad: 0,
                 precio: producto.precio,
                 unidad: 'Kg'
             });
@@ -329,7 +329,7 @@ export default function PedidosMasivosPage() {
                                 <tbody>
                                     {productos.map(producto => {
                                         const isInCart = productosBase.some(item => item.productoId === producto.id);
-                                        const tempQuantity = productQuantities[producto.id] || 1;
+                                        const tempQuantity = productQuantities[producto.id] || 0;
                                         const tempUnit = productUnits[producto.id] || 'Kg';
 
                                         return (

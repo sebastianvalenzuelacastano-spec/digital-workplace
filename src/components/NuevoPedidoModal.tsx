@@ -89,7 +89,7 @@ export default function NuevoPedidoModal({ isOpen, onClose, onSuccess, fechaEntr
             setCart([...cart, {
                 productoId: producto.id,
                 nombre: producto.nombre,
-                cantidad: 1,
+                cantidad: 0,
                 precio: Number(producto.precio) || 0,
                 unidad: producto.unidad || 'Un'
             }]);
@@ -326,7 +326,7 @@ export default function NuevoPedidoModal({ isOpen, onClose, onSuccess, fechaEntr
                             <tbody>
                                 {productos.map(producto => {
                                     const isInCart = cart.some(item => item.productoId === producto.id);
-                                    const tempQuantity = productQuantities[producto.id] || 1;
+                                    const tempQuantity = productQuantities[producto.id] || 0;
                                     const tempUnit = productUnits[producto.id] || 'Kg';
 
                                     return (<tr

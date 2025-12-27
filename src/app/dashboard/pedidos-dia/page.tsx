@@ -988,7 +988,7 @@ export default function PedidosDiaPage() {
                                                 pedidoId: editingPedido.id,
                                                 productoId: producto.id,
                                                 productoNombre: producto.nombre,
-                                                cantidad: 1,
+                                                cantidad: 0,
                                                 unidad: 'Kg',
                                                 precioUnitario: producto.precioKilo || 0,
                                                 subtotal: producto.precioKilo || 0
