@@ -378,10 +378,10 @@ export default function HistorialPedidosPage() {
                                     <tr key={detalle.id} style={{ borderBottom: '1px solid #eee' }}>
                                         <td style={{ padding: '10px' }}>{detalle.productoNombre}</td>
                                         <td style={{ padding: '10px', textAlign: 'right' }}>
-                                            {detalle.cantidad}
+                                            {detalle.cantidad || 0}
                                         </td>
                                         <td style={{ padding: '10px', textAlign: 'right' }}>
-                                            ${detalle.precioUnitario.toLocaleString()}
+                                            ${(detalle.precioUnitario || 0).toLocaleString()}
                                         </td>
                                         <td style={{ padding: '10px', textAlign: 'right', fontWeight: '600' }}>
                                             ${(detalle.subtotal || 0).toLocaleString()}
