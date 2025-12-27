@@ -170,17 +170,28 @@ export default function PerformanceTable() {
     // Filter rendimientos based on selected period
     const filteredRendimientos = rendimientos.filter(r => filterByPeriod(r.fecha));
 
+    // Función para recalcular valores de un rendimiento dinámicamente
+    const getRecalculatedValues = (r: Rendimiento) => {
+        const sacos = calculateSacos(r.fecha);
+        const kilosProducidos = calculateKilosFromVentas(r.fecha);
+        const rinde = kilosProducidos && sacos > 0 ? Number(((kilosProducidos / sacos) * 2).toFixed(2)) : 0;
+        return { ...r, sacos, kilosProducidos, rinde };
+    };
+
+    // Recalcular todos los valores para mostrar siempre datos actualizados
+    const recalculatedRendimientos = filteredRendimientos.map(getRecalculatedValues);
+
     // Calculate statistics for the filtered set
-    const totalKilos = filteredRendimientos.reduce((sum, r) => sum + r.kilosProducidos, 0);
-    const totalSacos = filteredRendimientos.reduce((sum, r) => sum + r.sacos, 0);
+    const totalKilos = recalculatedRendimientos.reduce((sum, r) => sum + r.kilosProducidos, 0);
+    const totalSacos = recalculatedRendimientos.reduce((sum, r) => sum + r.sacos, 0);
 
     // Global Yield = (Total Kilos / Total Sacos) * 2
     // This gives a weighted average instead of an average of averages
     const globalRendimiento = totalSacos > 0 ? (totalKilos / totalSacos) * 2 : 0;
 
     // Totals for Barrido and Merma
-    const totalBarrido = filteredRendimientos.reduce((sum, r) => sum + r.barrido, 0);
-    const totalMerma = filteredRendimientos.reduce((sum, r) => sum + r.merma, 0);
+    const totalBarrido = recalculatedRendimientos.reduce((sum, r) => sum + r.barrido, 0);
+    const totalMerma = recalculatedRendimientos.reduce((sum, r) => sum + r.merma, 0);
 
 
     return (
@@ -352,7 +363,7 @@ export default function PerformanceTable() {
                     </tr>
                 </thead>
                 <tbody>
-                    {[...filteredRendimientos]
+                    {[...recalculatedRendimientos]
                         .sort((a, b) => b.fecha.localeCompare(a.fecha))
                         .map((r) => (
                             <tr key={r.id} style={{ borderBottom: '1px solid #eee' }}>
