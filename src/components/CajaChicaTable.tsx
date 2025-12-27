@@ -7,6 +7,7 @@ import type { CajaChica } from '@/types/dashboard';
 import { formatDate, isSameMonth, getTodayString } from '@/lib/dateUtils';
 import DateFilter from './DateFilter';
 import ExportButtons from './ExportButtons';
+import MoneyInput from './MoneyInput';
 
 export default function CajaChicaTable() {
     const { cajaChica, addCajaChica, updateCajaChica, deleteCajaChica, maestroAreas, maestroProveedores, maestroTrabajadores, addBankTransaction } = useDashboard();
@@ -325,12 +326,10 @@ export default function CajaChicaTable() {
 
                         <div>
                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Monto *</label>
-                            <input
-                                type="number"
+                            <MoneyInput
                                 required
-                                value={formData.monto}
-                                onChange={(e) => setFormData({ ...formData, monto: Number(e.target.value) })}
-                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                value={formData.monto || 0}
+                                onChange={(val) => setFormData({ ...formData, monto: val })}
                             />
                         </div>
 

@@ -6,6 +6,7 @@ import { useDashboard } from '@/context/DashboardContext';
 import type { Payment } from '@/types/dashboard';
 import { formatDate, getTodayString } from '@/lib/dateUtils';
 import DateFilter from './DateFilter';
+import MoneyInput from './MoneyInput';
 
 export default function PaymentsTable() {
     const { payments, addPayment, updatePayment, deletePayment } = useDashboard();
@@ -148,12 +149,10 @@ export default function PaymentsTable() {
                         </div>
                         <div>
                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Monto Pagado *</label>
-                            <input
-                                type="number"
+                            <MoneyInput
                                 required
-                                value={formData.montoPagado}
-                                onChange={(e) => setFormData({ ...formData, montoPagado: Number(e.target.value) })}
-                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
+                                value={formData.montoPagado || 0}
+                                onChange={(val) => setFormData({ ...formData, montoPagado: val })}
                             />
                         </div>
                     </div>

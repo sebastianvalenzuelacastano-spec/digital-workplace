@@ -7,6 +7,7 @@ import type { BankTransaction } from '@/types/dashboard';
 import { formatDate, getTodayString } from '@/lib/dateUtils';
 import DateFilter from './DateFilter';
 import ExportButtons from './ExportButtons';
+import MoneyInput from './MoneyInput';
 
 export default function BankTable() {
     const { bankTransactions, addBankTransaction, updateBankTransaction, deleteBankTransaction, insumoTransactions, maestroProveedores, maestroClientes, maestroInsumos } = useDashboard();
@@ -221,17 +222,13 @@ export default function BankTable() {
 
                         <div>
                             <label style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 'bold', fontSize: '0.9rem' }}>Monto *</label>
-                            <input
-                                type="number"
+                            <MoneyInput
                                 required
-                                min="0"
-                                value={formData.entrada! > 0 ? formData.entrada : formData.salida}
-                                onChange={(e) => {
-                                    const val = Number(e.target.value);
+                                value={formData.entrada! > 0 ? formData.entrada! : (formData.salida || 0)}
+                                onChange={(val) => {
                                     if (formData.entrada! > 0) setFormData({ ...formData, entrada: val, salida: 0 });
                                     else setFormData({ ...formData, salida: val, entrada: 0 });
                                 }}
-                                style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ccc' }}
                             />
                         </div>
 
