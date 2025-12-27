@@ -160,7 +160,7 @@ export default function BankTable() {
 
     const totalIngresos = bankTransactions.reduce((sum, t) => sum + t.entrada, 0);
     const totalEgresos = bankTransactions.reduce((sum, t) => sum + t.salida, 0);
-    const saldoActual = bankTransactions.length > 0 ? bankTransactions[bankTransactions.length - 1].saldo : 0;
+    const saldoActual = totalIngresos - totalEgresos;
 
     return (
         <div style={{ backgroundColor: '#fff', padding: '1.5rem', borderRadius: '8px', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}>
