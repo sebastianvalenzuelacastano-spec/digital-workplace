@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import type { RegistroColegio } from '@/types/dashboard';
 import Modal from '@/components/Modal';
 
-const REPARTIDORES = ['Repartidor 1', 'Repartidor 2', 'Repartidor 3', 'Repartidor 4'];
+const REPARTIDORES = ['Aranda', 'Bazaes', 'Diaz Godoy'];
 
 export default function ColegiosPage() {
     const [registros, setRegistros] = useState<RegistroColegio[]>([]);
