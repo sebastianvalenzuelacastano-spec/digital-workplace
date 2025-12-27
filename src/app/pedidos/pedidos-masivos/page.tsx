@@ -278,30 +278,39 @@ export default function PedidosMasivosPage() {
                         {productosBase.length > 0 && (
                             <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#e8f5e9', borderRadius: '8px' }}>
                                 <h4 style={{ marginBottom: '10px' }}>Productos Seleccionados:</h4>
-                                {productosBase.map(p => (
-                                    <div key={p.productoId} style={{
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center',
-                                        padding: '8px 0',
-                                        borderBottom: '1px solid #c8e6c9'
-                                    }}>
-                                        <span>{p.nombre}</span>
-                                        <span>{p.cantidad} {p.unidad}</span>
-                                        <button
-                                            onClick={() => removeProductoBase(p.productoId)}
-                                            style={{
-                                                background: 'none',
-                                                border: 'none',
-                                                color: '#c62828',
-                                                cursor: 'pointer',
-                                                fontSize: '1.2rem'
-                                            }}
-                                        >
-                                            🗑️
-                                        </button>
-                                    </div>
-                                ))}
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr style={{ borderBottom: '2px solid #c8e6c9', textAlign: 'left' }}>
+                                            <th style={{ padding: '8px', width: '50%' }}>Producto</th>
+                                            <th style={{ padding: '8px', width: '20%', textAlign: 'right' }}>Cantidad</th>
+                                            <th style={{ padding: '8px', width: '20%', textAlign: 'center' }}>Unidad</th>
+                                            <th style={{ padding: '8px', width: '10%', textAlign: 'center' }}></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {productosBase.map(p => (
+                                            <tr key={p.productoId} style={{ borderBottom: '1px solid #c8e6c9' }}>
+                                                <td style={{ padding: '8px', fontWeight: '500' }}>{p.nombre}</td>
+                                                <td style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold', color: '#2e7d32' }}>{p.cantidad}</td>
+                                                <td style={{ padding: '8px', textAlign: 'center' }}>{p.unidad}</td>
+                                                <td style={{ padding: '8px', textAlign: 'center' }}>
+                                                    <button
+                                                        onClick={() => removeProductoBase(p.productoId)}
+                                                        style={{
+                                                            background: 'none',
+                                                            border: 'none',
+                                                            color: '#c62828',
+                                                            cursor: 'pointer',
+                                                            fontSize: '1.2rem'
+                                                        }}
+                                                    >
+                                                        🗑️
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
                             </div>
                         )}
 
