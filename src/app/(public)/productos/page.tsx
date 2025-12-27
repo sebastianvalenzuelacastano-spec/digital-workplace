@@ -1,16 +1,31 @@
 import ProductCard from "@/components/ProductCard";
-import { readDb } from "@/lib/db";
 
 // Force dynamic rendering (don't pre-render at build time)
 export const dynamic = 'force-dynamic';
 
+// Get the base URL for API calls
+const getBaseUrl = () => {
+    // Use environment variable if available, otherwise use the production URL
+    return process.env.NEXT_PUBLIC_BASE_URL || 'https://www.pansansebastian.cl';
+};
 
 export default async function ProductsPage() {
-    // Fetch products from database (server-side)
-    const db = await readDb();
-    const products = (db?.productosCatalogo || [])
-        .filter((p: any) => p.activo) // Only show active products
-        .sort((a: any, b: any) => a.orden - b.orden); // Sort by orden
+    // Fetch products from API (which reads from Supabase)
+    let products = [];
+    try {
+        const res = await fetch(`${getBaseUrl()}/api/productos-catalogo`, {
+            cache: 'no-store',
+            next: { revalidate: 0 }
+        });
+        if (res.ok) {
+            const data = await res.json();
+            products = (data || [])
+                .filter((p: any) => p.activo)
+                .sort((a: any, b: any) => (a.nombre || '').localeCompare(b.nombre || '', 'es'));
+        }
+    } catch (error) {
+        console.error('Error fetching products:', error);
+    }
 
     return (
         <main>
