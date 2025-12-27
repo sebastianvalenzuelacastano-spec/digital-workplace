@@ -9,7 +9,7 @@ import DateFilter from './DateFilter';
 import ExportButtons from './ExportButtons';
 
 export default function BankTable() {
-    const { bankTransactions, addBankTransaction, updateBankTransaction, deleteBankTransaction, insumoTransactions, maestroProveedores, maestroClientes } = useDashboard();
+    const { bankTransactions, addBankTransaction, updateBankTransaction, deleteBankTransaction, insumoTransactions, maestroProveedores, maestroClientes, maestroInsumos } = useDashboard();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
     const [role, setRole] = useState<string | null>(null);
@@ -315,9 +315,19 @@ export default function BankTable() {
                                                         </div>
                                                         <div style={{ display: 'flex', justifyContent: 'space-between', color: '#666', fontSize: '0.8rem' }}>
                                                             <span>{inv.insumo} - {inv.cantidadEntrada} unid. - {inv.fechaCompra}</span>
-                                                            <span style={{ fontWeight: 'bold', color: '#1976d2' }}>
-                                                                ${((inv.precioUnitario || 0) * (inv.cantidadEntrada || 0)).toLocaleString('es-CL')}
-                                                            </span>
+                                                            {(() => {
+                                                                const insumo = maestroInsumos.find(i => i.nombre === inv.insumo);
+                                                                const neto = (inv.precioUnitario || 0) * (inv.cantidadEntrada || 0);
+                                                                const iva = Math.round(neto * 0.19);
+                                                                const ila = insumo?.tieneImpuestoAdicional ? Math.round(neto * 0.12) : 0;
+                                                                const totalConImpuestos = neto + iva + ila;
+                                                                return (
+                                                                    <span style={{ fontWeight: 'bold', color: '#1976d2' }}>
+                                                                        ${totalConImpuestos.toLocaleString('es-CL')}
+                                                                        {insumo?.tieneImpuestoAdicional && <span style={{ fontSize: '0.7rem', color: '#d32f2f' }}> (inc. ILA)</span>}
+                                                                    </span>
+                                                                );
+                                                            })()}
                                                         </div>
                                                     </div>
                                                 ))}
