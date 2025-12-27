@@ -313,8 +313,11 @@ export default function BankTable() {
                                                                 {inv.estadoPago === 'urgente' ? '⚠️ URGENTE' : '⏳ Pendiente'}
                                                             </span>
                                                         </div>
-                                                        <div style={{ color: '#666', fontSize: '0.8rem' }}>
-                                                            {inv.insumo} - {inv.cantidadEntrada} unid. - Compra: {inv.fechaCompra}
+                                                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#666', fontSize: '0.8rem' }}>
+                                                            <span>{inv.insumo} - {inv.cantidadEntrada} unid. - {inv.fechaCompra}</span>
+                                                            <span style={{ fontWeight: 'bold', color: '#1976d2' }}>
+                                                                ${((inv.precioUnitario || 0) * (inv.cantidadEntrada || 0)).toLocaleString('es-CL')}
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 ))}
