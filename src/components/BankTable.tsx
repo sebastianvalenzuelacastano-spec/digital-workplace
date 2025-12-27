@@ -8,13 +8,28 @@ import { formatDate, getTodayString } from '@/lib/dateUtils';
 import DateFilter from './DateFilter';
 import ExportButtons from './ExportButtons';
 import MoneyInput from './MoneyInput';
+import ImportCartolaModal from './ImportCartolaModal';
 
 export default function BankTable() {
     const { bankTransactions, addBankTransaction, updateBankTransaction, deleteBankTransaction, insumoTransactions, maestroProveedores, maestroClientes, maestroInsumos } = useDashboard();
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isImportModalOpen, setIsImportModalOpen] = useState(false);
     const [editingId, setEditingId] = useState<number | null>(null);
+    const [editingCell, setEditingCell] = useState<{ id: number; field: string } | null>(null);
     const [role, setRole] = useState<string | null>(null);
     const [filterDate, setFilterDate] = useState<string>('');
+
+    // Opciones para área de pago
+    const areasPago = ['', 'O.Gerencia', 'OPER. CENTRALES', 'Agustinas', 'O.Florencia', 'D.Gerencia', 'Guiness'];
+
+    // Función para edición inline
+    const handleInlineEdit = async (id: number, field: string, value: string) => {
+        const transaction = bankTransactions.find(t => t.id === id);
+        if (transaction) {
+            await updateBankTransaction(id, { ...transaction, [field]: value });
+        }
+        setEditingCell(null);
+    };
     const [formData, setFormData] = useState<Partial<BankTransaction>>({
         fecha: '',
         entrada: 0,
@@ -167,6 +182,13 @@ export default function BankTable() {
                             { key: 'saldo', header: 'Saldo' }
                         ]}
                     />
+                    <button
+                        className="btn btn-primary"
+                        style={{ fontSize: '0.9rem', padding: '8px 16px', marginRight: '0.5rem' }}
+                        onClick={() => setIsImportModalOpen(true)}
+                    >
+                        📥 Importar Cartola
+                    </button>
                     <button
                         className="btn btn-primary"
                         style={{ fontSize: '0.9rem', padding: '8px 16px' }}
@@ -464,9 +486,63 @@ export default function BankTable() {
                                     <td style={{ padding: '10px', color: 'red', fontWeight: transaction.salida > 0 ? 'bold' : 'normal' }}>
                                         {transaction.salida > 0 ? `$${transaction.salida.toLocaleString()}` : '-'}
                                     </td>
-                                    <td style={{ padding: '10px' }}>{transaction.descripcion}</td>
-                                    <td style={{ padding: '10px' }}>{transaction.documento}</td>
-                                    <td style={{ padding: '10px' }}>{transaction.observacion}</td>
+                                    <td
+                                        style={{ padding: '10px', cursor: 'pointer' }}
+                                        onDoubleClick={() => setEditingCell({ id: transaction.id, field: 'descripcion' })}
+                                        title="Doble clic para editar"
+                                    >
+                                        {editingCell?.id === transaction.id && editingCell?.field === 'descripcion' ? (
+                                            <input
+                                                type="text"
+                                                defaultValue={transaction.descripcion}
+                                                autoFocus
+                                                style={{ width: '100%', padding: '4px', fontSize: '0.9rem' }}
+                                                onBlur={(e) => handleInlineEdit(transaction.id, 'descripcion', e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') handleInlineEdit(transaction.id, 'descripcion', e.currentTarget.value);
+                                                    if (e.key === 'Escape') setEditingCell(null);
+                                                }}
+                                            />
+                                        ) : transaction.descripcion}
+                                    </td>
+                                    <td
+                                        style={{ padding: '10px', cursor: 'pointer' }}
+                                        onDoubleClick={() => setEditingCell({ id: transaction.id, field: 'documento' })}
+                                        title="Doble clic para editar"
+                                    >
+                                        {editingCell?.id === transaction.id && editingCell?.field === 'documento' ? (
+                                            <input
+                                                type="text"
+                                                defaultValue={transaction.documento}
+                                                autoFocus
+                                                style={{ width: '80px', padding: '4px', fontSize: '0.9rem' }}
+                                                onBlur={(e) => handleInlineEdit(transaction.id, 'documento', e.target.value)}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') handleInlineEdit(transaction.id, 'documento', e.currentTarget.value);
+                                                    if (e.key === 'Escape') setEditingCell(null);
+                                                }}
+                                            />
+                                        ) : transaction.documento}
+                                    </td>
+                                    <td
+                                        style={{ padding: '10px', cursor: 'pointer' }}
+                                        onDoubleClick={() => setEditingCell({ id: transaction.id, field: 'observacion' })}
+                                        title="Doble clic para editar"
+                                    >
+                                        {editingCell?.id === transaction.id && editingCell?.field === 'observacion' ? (
+                                            <select
+                                                defaultValue={transaction.observacion || ''}
+                                                autoFocus
+                                                style={{ padding: '4px', fontSize: '0.9rem' }}
+                                                onChange={(e) => handleInlineEdit(transaction.id, 'observacion', e.target.value)}
+                                                onBlur={(e) => handleInlineEdit(transaction.id, 'observacion', e.target.value)}
+                                            >
+                                                {areasPago.map(area => (
+                                                    <option key={area} value={area}>{area || '(vacío)'}</option>
+                                                ))}
+                                            </select>
+                                        ) : (transaction.observacion || '-')}
+                                    </td>
                                     <td style={{ padding: '10px', fontWeight: 'bold', color: transaction.saldo >= 0 ? 'green' : 'red' }}>
                                         ${transaction.saldo.toLocaleString()}
                                     </td>
@@ -492,6 +568,32 @@ export default function BankTable() {
                             ))}</tbody>
                 </table >
             </div >
-        </div>
+            <ImportCartolaModal
+                isOpen={isImportModalOpen}
+                onClose={() => setIsImportModalOpen(false)}
+                onImport={async (movimientos) => {
+                    try {
+                        let importados = 0;
+                        for (const mov of movimientos) {
+                            await addBankTransaction({
+                                fecha: mov.fecha,
+                                entrada: mov.entrada,
+                                salida: mov.salida,
+                                descripcion: mov.descripcion,
+                                documento: mov.documento,
+                                observacion: mov.observacion || '',
+                                areaPago: mov.areaPago || ''
+                            });
+                            importados++;
+                        }
+                        alert(`✅ Se importaron ${importados} movimientos correctamente`);
+                    } catch (error) {
+                        console.error('Error importing movimientos:', error);
+                        alert('Error al importar algunos movimientos');
+                    }
+                }}
+            />
+        </div >
+
     );
 }
